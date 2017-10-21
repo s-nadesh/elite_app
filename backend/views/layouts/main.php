@@ -20,7 +20,7 @@ ThemeAsset::register($this);
         <title><?= Html::encode($this->title) ?></title>
         <?php $this->head() ?>
     </head>
-    <body>
+    <body class="skin-blue">
         <?php $this->beginBody() ?>
         <?php $this->beginContent('@app/views/layouts/header.php'); ?>
         <?php $this->endContent(); ?>
