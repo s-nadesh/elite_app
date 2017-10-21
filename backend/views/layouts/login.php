@@ -2,16 +2,15 @@
 /* @var $this View */
 /* @var $content string */
 
-use backend\assets\ThemeAsset;
-use common\widgets\Alert;
+use backend\assets\LoginThemeAsset;
 use yii\helpers\Html;
 use yii\web\View;
 
-ThemeAsset::register($this);
+LoginThemeAsset::register($this);
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
-<html lang="<?= Yii::$app->language ?>">
+<html lang="<?= Yii::$app->language ?>" class="bg-black">
     <head>
         <meta charset="<?= Yii::$app->charset ?>">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -20,16 +19,9 @@ ThemeAsset::register($this);
         <title><?= Html::encode($this->title) ?></title>
         <?php $this->head() ?>
     </head>
-    <body>
+    <body class="bg-black">
         <?php $this->beginBody() ?>
-        <?php $this->beginContent('@app/views/layouts/header.php'); ?>
-        <?php $this->endContent(); ?>
-        <div class="wrapper row-offcanvas row-offcanvas-left">
-            <?php $this->beginContent('@app/views/layouts/aside.php'); ?>
-            <?php $this->endContent(); ?>
-            <?= Alert::widget() ?>
-            <?= $content ?>
-        </div>
+        <?= $content ?>
         <?php $this->endBody() ?>
     </body>
 </html>
