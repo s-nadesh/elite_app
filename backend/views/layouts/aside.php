@@ -27,18 +27,24 @@ use yii\widgets\Menu;
             </div>
         </form>
         <!-- /.search form -->
+        <!-- sidebar menu: : style can be found in sidebar.less -->
         <?php
         echo Menu::widget([
-            'options' => [
-                    ['class' => 'sidebar-menu'],
-            ],
+            'options' => ['class' => 'sidebar-menu'],
+            'encodeLabels' => false,
+            'activateParents' => true,
+            'activateItems' => true,
             'items' => [
-                    ['label' => 'Dashboard', 'class' => 'fa fa-dashboard', 'url' => ['site/index']],
-                    ['label' => 'User Management', 'items' => [
-                            ['label' => 'Types', 'url' => ['user-types/index']],
-                            ['label' => 'Users', 'url' => ['users/index']],
+                    ['label' => '<i class="fa fa-dashboard"></i> <span>Dashboard</span>', 'url' => ['site/index']],
+                    ['label' => '<i class="fa fa-users"></i> <span>User Management</span><i class="fa fa-angle-left pull-right"></i>',
+                    'url' => ['#'],
+                    'options' => ['class' => 'treeview'],
+                    'items' => [
+                            ['label' => '<i class="fa fa-circle-o"></i>Types', 'url' => ['user-types/index']],
+                            ['label' => '<i class="fa fa-circle-o"></i>Users', 'url' => ['users/index']],
                     ]],
             ],
+            'submenuTemplate' => "\n<ul class='treeview-menu'>\n{items}\n</ul>\n",
         ]);
         ?>
     </section>

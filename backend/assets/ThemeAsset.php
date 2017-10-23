@@ -14,7 +14,7 @@ use yii\web\AssetBundle;
 class ThemeAsset extends AssetBundle {
 
     public $css = [
-        '//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css',
+//        '//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css',
         '//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css',
         '//code.ionicframework.com/ionicons/1.5.2/css/ionicons.min.css',
         'css/morris/morris.css',
@@ -25,7 +25,7 @@ class ThemeAsset extends AssetBundle {
         'css/AdminLTE.css',
     ];
     public $js = [
-        '//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js',
+//        '//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js',
         '//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js',
         '//code.jquery.com/ui/1.11.1/jquery-ui.min.js',
         '//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js',
@@ -43,10 +43,7 @@ class ThemeAsset extends AssetBundle {
         'js/AdminLTE/demo.js',
     ];
     public $depends = [
-//        'yii\web\YiiAsset',
-//        'yii\bootstrap\BootstrapAsset',
         'backend\assets\AppAsset',
-//        'rmrevin\yii\fontawesome\AssetBundle',
     ];
 
     public function init() {

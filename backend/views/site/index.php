@@ -464,5 +464,6 @@
         </div><!-- /.row (main row) -->
 
     </section><!-- /.content -->
-</aside><!-- /.right-side -->
+</aside>
+<!-- /.right-side -->
 
