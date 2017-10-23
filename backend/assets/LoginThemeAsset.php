@@ -14,19 +14,16 @@ use yii\web\AssetBundle;
 class LoginThemeAsset extends AssetBundle {
 
     public $css = [
-        '//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css',
+//        '//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css',
         '//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css',
         'css/AdminLTE.css',
     ];
     public $js = [
-        '//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js',
+//        '//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js',
         '//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js',
     ];
     public $depends = [
-//        'yii\web\YiiAsset',
-//        'yii\bootstrap\BootstrapAsset',
         'backend\assets\AppAsset',
-//        'rmrevin\yii\fontawesome\AssetBundle',
     ];
 
     public function init() {

@@ -22,9 +22,9 @@ class m171021_060022_create_insert_master_records_table extends Migration
      */
     public function down()
     {
-        $this->dropTable('insert_master_records');
-        $this->delete('{{%user_types}}', ['type_name' => 'admin', 'type_code' => 'AD']);
-        $this->delete('{{%users}}', ['name' => 'admin']);
-        $this->delete('{{%logins}}', ['user_id'=>'1','username' => 'admin','auth_key'=>'UrkcrjINfapGyQ08ZDVSALvr93MRfGCc','password_hash'=>'$2y$13$Gj2KhuT3sASdkNCoWPsQDuPPMGg0o05wcrs2hlLYxaYErhV6wUd.K','email'=>'admin@gmail.com']);
+        //Master records , Delete not need.
+//        $this->delete('{{%user_types}}', ['type_name' => 'admin', 'type_code' => 'AD']);
+//        $this->delete('{{%users}}', ['user_type_id'=>'1', 'name' => 'admin']);
+//        $this->delete('{{%logins}}', ['user_id'=>'1', 'username' => 'admin', 'email'=>'admin@gmail.com']);
     }
 }
