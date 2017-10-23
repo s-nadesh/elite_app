@@ -2,7 +2,10 @@
 
 namespace common\models;
 
-use Yii;
+use yii\behaviors\BlameableBehavior;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "{{%user_types}}".
@@ -21,36 +24,59 @@ use Yii;
  *
  * @property Users[] $users
  */
-class UserTypes extends \yii\db\ActiveRecord
-{
+class UserTypes extends ActiveRecord {
+
     /**
      * @inheritdoc
      */
-    public static function tableName()
-    {
+    public function behaviors() {
+        return [
+            BlameableBehavior::className(),
+            TimestampBehavior::className(),
+//            'sluggable' => [
+//                'class' => SluggableBehavior::className(),
+//                'attribute' => 'title',
+//            ],
+//            'multilingual' => [
+//                'class' => MultilingualBehavior::className(),
+//                'langForeignKey' => 'post_category_id',
+//                'tableName' => "{{%post_category_lang}}",
+//                'attributes' => [
+//                    'title', 'description',
+//                ]
+//            ],
+//            'nestedInterval' => [
+//                'class' => NestedIntervalsBehavior::className(),
+//                'leftAttribute' => 'left_border',
+//                'rightAttribute' => 'right_border',
+//                'amountOptimize' => '25',
+//                'noPrepend' => true,
+//            ],
+        ];
+    }
+
+    public static function tableName() {
         return '{{%user_types}}';
     }
 
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
-            [['type_name', 'type_code'], 'required'],
-            [['visible_site', 'reorder_notify', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
-            [['type_name'], 'string', 'max' => 64],
-            [['type_code'], 'string', 'max' => 3],
-            [['type_name'], 'unique'],
-            [['type_code'], 'unique'],
+                [['type_name', 'type_code'], 'required'],
+                [['visible_site', 'reorder_notify', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
+                [['type_name'], 'string', 'max' => 64],
+                [['type_code'], 'string', 'max' => 3],
+                [['type_name'], 'unique'],
+                [['type_code'], 'unique'],
         ];
     }
 
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'user_type_id' => 'User Type ID',
             'type_name' => 'Type Name',
@@ -67,10 +93,9 @@ class UserTypes extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getUsers()
-    {
+    public function getUsers() {
         return $this->hasMany(Users::className(), ['user_type_id' => 'user_type_id']);
     }
 
@@ -78,8 +103,8 @@ class UserTypes extends \yii\db\ActiveRecord
      * @inheritdoc
      * @return UserTypesQuery the active query used by this AR class.
      */
-    public static function find()
-    {
+    public static function find() {
         return new UserTypesQuery(get_called_class());
     }
+
 }

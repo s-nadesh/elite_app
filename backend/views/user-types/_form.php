@@ -8,22 +8,35 @@ use yii\widgets\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="user-types-form">
+<div class="box-body">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php
+    $form = ActiveForm::begin([
+                'options' => [
+                    'class' => 'form-horizontal'
+                ],
+                'fieldConfig' => [
+                    'template' => "{label}<div class=\"col-sm-5\">{input}<div class=\"errorMessage\">{error}</div></div>",
+                    'labelOptions' => ['class' => 'col-sm-2 control-label'],
+                ],
+                    ]
+    );
+    ?>
 
     <?= $form->field($model, 'type_name')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'type_code')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'visible_site')->checkbox() ?>
+    <?= $form->field($model, 'visible_site')->checkbox(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'reorder_notify')->checkbox() ?>
+    <?= $form->field($model, 'reorder_notify')->checkbox(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'status')->checkbox() ?>
+    <?= $form->field($model, 'status')->checkbox(['maxlength' => true]) ?>
 
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <div class="col-sm-0 col-sm-offset-2">
+            <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        </div>
     </div>
 
     <?php ActiveForm::end(); ?>

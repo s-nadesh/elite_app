@@ -62,7 +62,7 @@ class UserTypesController extends Controller {
         $model = new UserTypes();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->user_type_id]);
+            return $this->redirect(['index', 'id' => $model->user_type_id]);
         } else {
             return $this->render('create', [
                         'model' => $model,
@@ -80,7 +80,7 @@ class UserTypesController extends Controller {
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->user_type_id]);
+            return $this->redirect(['index', 'id' => $model->user_type_id]);
         } else {
             return $this->render('update', [
                         'model' => $model,
