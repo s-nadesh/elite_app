@@ -23,13 +23,15 @@ class ThemeAsset extends AssetBundle {
         'css/daterangepicker/daterangepicker-bs3.css',
         'css/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css',
         'css/AdminLTE.css',
+//        'css/AdminLTE.min.css',
+        'css/custom.css',
     ];
     public $js = [
 //        '//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js',
         '//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js',
         '//code.jquery.com/ui/1.11.1/jquery-ui.min.js',
         '//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js',
-        'js/plugins/morris/morris.min.js',
+//        'js/plugins/morris/morris.min.js',
         'js/plugins/sparkline/jquery.sparkline.min.js',
         'js/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js',
         'js/plugins/jvectormap/jquery-jvectormap-world-mill-en.js',
@@ -39,11 +41,12 @@ class ThemeAsset extends AssetBundle {
         'js/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js',
         'js/plugins/iCheck/icheck.min.js',
         'js/AdminLTE/app.js',
-        'js/AdminLTE/dashboard.js',
+//        'js/AdminLTE/dashboard.js',
         'js/AdminLTE/demo.js',
     ];
     public $depends = [
         'backend\assets\AppAsset',
+        'yii\bootstrap\BootstrapAsset',
     ];
 
     public function init() {

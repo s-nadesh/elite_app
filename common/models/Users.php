@@ -2,7 +2,13 @@
 
 namespace common\models;
 
-use Yii;
+use common\models\Logins;
+use common\models\UsersQuery;
+use common\models\UserTypes;
+use yii\behaviors\BlameableBehavior;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "{{%users}}".
@@ -22,39 +28,43 @@ use Yii;
  * @property Logins[] $logins
  * @property UserTypes $userType
  */
-class Users extends \yii\db\ActiveRecord
-{
+class Users extends ActiveRecord {
+
     /**
      * @inheritdoc
      */
-    public static function tableName()
-    {
+    public function behaviors() {
+        return [
+            BlameableBehavior::className(),
+            TimestampBehavior::className(),
+        ];
+    }
+
+    public static function tableName() {
         return '{{%users}}';
     }
 
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
-            [['user_type_id', 'name'], 'required'],
-            [['user_type_id', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
-            [['address'], 'string'],
-            [['name'], 'string', 'max' => 255],
-            [['mobile_no'], 'string', 'max' => 20],
-            [['user_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserTypes::className(), 'targetAttribute' => ['user_type_id' => 'user_type_id']],
+                [['user_type_id', 'name'], 'required'],
+                [['user_type_id', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
+                [['address'], 'string'],
+                [['name'], 'string', 'max' => 255],
+                [['mobile_no'], 'string', 'max' => 20],
+                [['user_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserTypes::className(), 'targetAttribute' => ['user_type_id' => 'user_type_id']],
         ];
     }
 
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'user_id' => 'User ID',
-            'user_type_id' => 'User Type ID',
+            'user_type_id' => 'User Type',
             'name' => 'Name',
             'address' => 'Address',
             'mobile_no' => 'Mobile No',
@@ -68,18 +78,16 @@ class Users extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getLogins()
-    {
+    public function getLogins() {
         return $this->hasMany(Logins::className(), ['user_id' => 'user_id']);
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getUserType()
-    {
+    public function getUserType() {
         return $this->hasOne(UserTypes::className(), ['user_type_id' => 'user_type_id']);
     }
 
@@ -87,8 +95,8 @@ class Users extends \yii\db\ActiveRecord
      * @inheritdoc
      * @return UsersQuery the active query used by this AR class.
      */
-    public static function find()
-    {
+    public static function find() {
         return new UsersQuery(get_called_class());
     }
+
 }

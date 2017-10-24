@@ -4,16 +4,15 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\UserTypes */
+/* @var $model common\models\UserTypes */
 /* @var $form yii\widgets\ActiveForm */
 ?>
-
-<div class="box-body">
-
+<div class="box box-primary">
     <?php
     $form = ActiveForm::begin([
+                'id' => 'active-form',
                 'options' => [
-                    'class' => 'form-horizontal'
+                    'class' => 'form-horizontal',
                 ],
                 'fieldConfig' => [
                     'template' => "{label}<div class=\"col-sm-5\">{input}<div class=\"errorMessage\">{error}</div></div>",
@@ -22,23 +21,23 @@ use yii\widgets\ActiveForm;
                     ]
     );
     ?>
+    <div class="box-body">
+        <?= $form->field($model, 'type_name')->textInput(['maxlength' => true])->label('Type Name<span class="required-label"></span>'); ?>
 
-    <?= $form->field($model, 'type_name')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'type_code')->textInput(['maxlength' => true])->label('Type Code<span class="required-label"></span>'); ?>
 
-    <?= $form->field($model, 'type_code')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'visible_site')->checkbox(['label' => ('Active ')])->label('Visible Site') ?>
 
-    <?= $form->field($model, 'visible_site')->checkbox(['maxlength' => true]) ?>
+        <?= $form->field($model, 'reorder_notify')->checkbox(['label' => ('Active ')])->label('Reorder Notification') ?>
 
-    <?= $form->field($model, 'reorder_notify')->checkbox(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'status')->checkbox(['maxlength' => true]) ?>
-
-    <div class="form-group">
-        <div class="col-sm-0 col-sm-offset-2">
-            <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= $form->field($model, 'status')->checkbox(['label' => ('Active ')])->label('Status') ?>
+        <div class="box-footer">
+            <div class="form-group">
+                <div class="col-sm-0 col-sm-offset-2">
+                    <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+                </div>
+            </div>
         </div>
+        <?php ActiveForm::end(); ?>
     </div>
-
-    <?php ActiveForm::end(); ?>
-
 </div>

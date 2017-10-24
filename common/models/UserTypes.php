@@ -33,25 +33,6 @@ class UserTypes extends ActiveRecord {
         return [
             BlameableBehavior::className(),
             TimestampBehavior::className(),
-//            'sluggable' => [
-//                'class' => SluggableBehavior::className(),
-//                'attribute' => 'title',
-//            ],
-//            'multilingual' => [
-//                'class' => MultilingualBehavior::className(),
-//                'langForeignKey' => 'post_category_id',
-//                'tableName' => "{{%post_category_lang}}",
-//                'attributes' => [
-//                    'title', 'description',
-//                ]
-//            ],
-//            'nestedInterval' => [
-//                'class' => NestedIntervalsBehavior::className(),
-//                'leftAttribute' => 'left_border',
-//                'rightAttribute' => 'right_border',
-//                'amountOptimize' => '25',
-//                'noPrepend' => true,
-//            ],
         ];
     }
 

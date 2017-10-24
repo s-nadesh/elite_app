@@ -10,24 +10,22 @@ use common\models\Users;
 /**
  * UsersSearch represents the model behind the search form about `common\models\Users`.
  */
-class UsersSearch extends Users
-{
+class UsersSearch extends Users {
+
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
-            [['user_id', 'user_type_id', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
-            [['name', 'address', 'mobile_no'], 'safe'],
+                [['user_id', 'user_type_id', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
+                [['name', 'address', 'mobile_no'], 'safe'],
         ];
     }
 
     /**
      * @inheritdoc
      */
-    public function scenarios()
-    {
+    public function scenarios() {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
@@ -39,14 +37,15 @@ class UsersSearch extends Users
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
-    {
+    public function search($params) {
         $query = Users::find();
 
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => array('pageSize' => 10),
+            'sort' => ['defaultOrder' => ['created_at' => SORT_DESC]],
         ]);
 
         $this->load($params);
@@ -70,9 +69,10 @@ class UsersSearch extends Users
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'address', $this->address])
-            ->andFilterWhere(['like', 'mobile_no', $this->mobile_no]);
+                ->andFilterWhere(['like', 'address', $this->address])
+                ->andFilterWhere(['like', 'mobile_no', $this->mobile_no]);
 
         return $dataProvider;
     }
+
 }

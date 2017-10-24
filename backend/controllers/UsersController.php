@@ -4,8 +4,10 @@ namespace backend\controllers;
 
 use common\models\Users;
 use common\models\UsersSearch;
+use common\models\UserTypes;
 use Yii;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
@@ -60,12 +62,14 @@ class UsersController extends Controller {
      */
     public function actionCreate() {
         $model = new Users();
-
+        $items = ArrayHelper::map(UserTypes::find()->where('status=:id', ['id' => 1])->all(), 'user_type_id', 'type_name');
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index', 'id' => $model->user_id]);
+            Yii::$app->getSession()->setFlash('success', 'User added successfully!!!');
+            return $this->redirect(['index']);
         } else {
             return $this->render('create', [
                         'model' => $model,
+                        'items' => $items,
             ]);
         }
     }
@@ -78,12 +82,13 @@ class UsersController extends Controller {
      */
     public function actionUpdate($id) {
         $model = $this->findModel($id);
-
+        $items = ArrayHelper::map(UserTypes::find()->where('status=:id', ['id' => 1])->all(), 'user_type_id', 'type_name');
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index', 'id' => $model->user_id]);
         } else {
             return $this->render('update', [
                         'model' => $model,
+                        'items' => $items,
             ]);
         }
     }

@@ -1,0 +1,61 @@
+.cke_dialog_ui_vbox_child {
+  height: 65px !important;
+}
+.cke_dialog_ui_input_file {
+  height: 200px !important;
+}
+.createbtncls{
+    float: right;
+    margin-top: 10px;
+    margin-right: 10px;
+}
+.success{
+    background-color: #00a65a !important;
+}
+.failure{
+    background-color: red !important;
+    
+}
+.imgcls{
+    margin-left: 210px;
+}
+.errormsg{
+    margin-left: 210px;
+}
+.required-label:after {
+  content:" * ";
+  color:red;
+}
+
+span.slug {
+  float: left;
+  margin-top: 10px;
+}
+#services-service_slug{
+  width: 55%;
+}
+#pages-page_slug, #products-product_slug {
+  width: 69%;
+}
+.advance_search{
+    margin-bottom: 20px;
+  padding-bottom: 10px;
+  padding-top: 20px;
+  padding-left: 25px;
+   padding-right: 25px;
+}
+.reset1{
+    margin-top: 25px;
+}
+.datepicker table tr td.old, .datepicker table tr td.new ,.datepicker table tr td.disabled {
+  color: #777;
+}
+.col-sm-5.valueright {
+  padding-top: 7px;
+}
+.form-horizontal .control-label.valueleft{
+  margin-bottom: 0;
+  padding-top: 7px;
+  text-align: left;
+}
+

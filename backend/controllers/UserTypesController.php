@@ -62,7 +62,8 @@ class UserTypesController extends Controller {
         $model = new UserTypes();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index', 'id' => $model->user_type_id]);
+            Yii::$app->getSession()->setFlash('success', 'Type added successfully!!!');
+            return $this->redirect(['index']);
         } else {
             return $this->render('create', [
                         'model' => $model,
