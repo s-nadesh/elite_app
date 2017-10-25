@@ -11,19 +11,24 @@ return [
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',
     'modules' => [
-        'app' => [
-            'class' => 'app\modules\app\Module',
+        'api' => [
+            'class' => 'app\modules\api\Module',
         ],
     ],
     'components' => [
         'request' => [
-            'csrfParam' => '_csrf-frontend',
+            'class' => '\yii\web\Request',
+            'enableCookieValidation' => false,
+            'enableCsrfValidation' => false,
+            'parsers' => [
+                '*' => 'yii\web\JsonParser',
+            ],
             'baseUrl' => '',
         ],
         'user' => [
-            'identityClass' => 'common\models\User',
-            'enableAutoLogin' => true,
-            'identityCookie' => ['name' => '_identity-frontend', 'httpOnly' => true],
+            'identityClass' => 'common\models\Logins',
+            'enableSession' => false,
+            'loginUrl' => null,
         ],
         'session' => [
             // this is the name of the session cookie used for login on the frontend

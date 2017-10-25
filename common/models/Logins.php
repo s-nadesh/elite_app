@@ -107,7 +107,7 @@ class Logins extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
+        return static::findOne(['auth_key' => $token]);
     }
 
     /**
@@ -119,6 +119,11 @@ class Logins extends ActiveRecord implements IdentityInterface
     public static function findByUsername($username)
     {
         return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
+    }
+    
+    public static function findByEmail($email)
+    {
+        return static::findOne(['email' => $email, 'status' => self::STATUS_ACTIVE]);
     }
 
     /**
