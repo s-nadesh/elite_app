@@ -48,8 +48,11 @@ return [
         ],
         'urlManager' => [
             'enablePrettyUrl' => true,
+            'enableStrictParsing' => false,
             'showScriptName' => false,
             'rules' => [
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/v1/users'],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/v1/usertypes']
             ],
         ],
     ],
