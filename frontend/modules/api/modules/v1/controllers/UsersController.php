@@ -40,6 +40,7 @@ class UsersController extends ActiveController {
         return $behaviors;
     }
 
+    //Override rest default actions
 //    public function actions() {
 //        $actions = parent::actions();
 //        unset($actions['index']);

@@ -2,8 +2,6 @@
 
 namespace app\modules\api\modules\v1\controllers;
 
-use common\models\LoginForm;
-use Yii;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\ContentNegotiator;
 use yii\rest\ActiveController;
@@ -26,20 +24,6 @@ class UsertypesController extends ActiveController {
             ],
         ];
         return $behaviors;
-    }
-
-    public function actionLogin() {
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->getBodyParams(), '') && $model->login()) {
-            return [
-                'success' => 'true',
-                'access_token' => Yii::$app->user->identity->getAuthKey()];
-        } else {
-            return [
-                'success' => 'false',
-                'message' => 'Email / Password Combination is wrong',
-            ];
-        }
     }
 
 }
