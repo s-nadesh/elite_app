@@ -14,7 +14,7 @@ use yii\web\View;
 
     <div class="body bg-gray">
         <div class="form-group">
-            <?= $form->field($model, 'username')->textInput(['placeholder' => 'Username', 'class' => 'form-control'])->label(false); ?>
+            <?= $form->field($model, 'email')->textInput(['placeholder' => 'Email', 'class' => 'form-control'])->label(false); ?>
         </div>
         <div class="form-group">
             <?= $form->field($model, 'password')->passwordInput(['placeholder' => 'Password', 'class' => 'form-control'])->label(false); ?>
