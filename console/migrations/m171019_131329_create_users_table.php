@@ -31,11 +31,11 @@ class m171019_131329_create_users_table extends Migration
             'address' => $this->text(),
             'mobile_no' => $this->string(20),
             'status' => $this->smallInteger()->notNull()->defaultValue(1),
-            'created_at' => $this->integer(),
-            'updated_at' => $this->integer(),
-            'created_by' => $this->integer(),
-            'updated_by' => $this->integer(),
-            'deleted_at' => $this->integer()
+            'created_at' => $this->integer()->defaultValue(0),
+            'updated_at' => $this->integer()->defaultValue(0),
+            'created_by' => $this->integer()->defaultValue(0),
+            'updated_by' => $this->integer()->defaultValue(0),
+            'deleted_at' => $this->integer()->defaultValue(0)
         ], $tableOptions);
 
         // creates index for column `user_type_id`

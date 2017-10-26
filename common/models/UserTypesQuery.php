@@ -7,12 +7,11 @@ namespace common\models;
  *
  * @see UserTypes
  */
-class UserTypesQuery extends \yii\db\ActiveQuery
+class UserTypesQuery extends CommonQuery
 {
-    /*public function active()
-    {
-        return $this->andWhere('[[status]]=1');
-    }*/
+    public function visibleSite($visible_site = '1') {
+        return $this->andWhere(["{$this->tblName}.visible_site" => $visible_site]);
+    }
 
     /**
      * @inheritdoc

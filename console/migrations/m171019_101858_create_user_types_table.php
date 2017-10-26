@@ -26,11 +26,11 @@ class m171019_101858_create_user_types_table extends Migration {
             'visible_site' => $this->smallInteger()->notNull()->defaultValue(0),
             'reorder_notify' => $this->smallInteger()->notNull()->defaultValue(0),
             'status' => $this->smallInteger()->notNull()->defaultValue(1),
-            'created_at' => $this->integer(),
-            'updated_at' => $this->integer(),
-            'created_by' => $this->integer(),
-            'updated_by' => $this->integer(),
-            'deleted_at' => $this->integer()
+            'created_at' => $this->integer()->defaultValue(0),
+            'updated_at' => $this->integer()->defaultValue(0),
+            'created_by' => $this->integer()->defaultValue(0),
+            'updated_by' => $this->integer()->defaultValue(0),
+            'deleted_at' => $this->integer()->defaultValue(0)
                 ], $tableOptions);
     }
 
