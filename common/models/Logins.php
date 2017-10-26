@@ -232,6 +232,7 @@ class Logins extends ActiveRecord implements IdentityInterface {
 
     /**
      * @inheritdoc
+     * Get Logged in User Type Id 
      */
     public function getUserTypeId() {
         return $this->user->user_type_id;
