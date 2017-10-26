@@ -37,6 +37,7 @@ class DefaultController extends ActiveController {
         if ($model->load(Yii::$app->request->getBodyParams(), '') && $model->login()) {
             return [
                 'success' => 'true',
+                'message' => 'Login successfull',
                 'access_token' => Yii::$app->user->identity->getAuthKey()
             ];
         } else {
