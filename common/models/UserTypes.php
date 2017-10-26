@@ -25,6 +25,8 @@ use yii\db\ActiveRecord;
  * @property Users[] $users
  */
 class UserTypes extends ActiveRecord {
+    
+    const ADMIN_USER_TYPE = 1;
 
     /**
      * @inheritdoc

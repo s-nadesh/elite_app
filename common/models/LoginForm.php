@@ -13,6 +13,7 @@ class LoginForm extends Model
     public $email;
     public $password;
     public $rememberMe = true;
+    public $login_from;
 
     private $_user;
 
@@ -29,6 +30,7 @@ class LoginForm extends Model
             ['rememberMe', 'boolean'],
             // password is validated by validatePassword()
             ['password', 'validatePassword'],
+            ['login_from', 'safe'],
         ];
     }
 
@@ -71,7 +73,7 @@ class LoginForm extends Model
     protected function getUser()
     {
         if ($this->_user === null) {
-            $this->_user = Logins::findByEmail($this->email);
+            $this->_user = Logins::findByEmail($this->email, $this->login_from);
         }
 
         return $this->_user;

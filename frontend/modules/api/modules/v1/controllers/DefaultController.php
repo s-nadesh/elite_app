@@ -33,9 +33,11 @@ class DefaultController extends ActiveController {
 
     public function actionLogin() {
         $model = new LoginForm();
+        $model->login_from = \common\models\Logins::FRONT_LOGIN;
         if ($model->load(Yii::$app->request->getBodyParams(), '') && $model->login()) {
             return [
                 'success' => 'true',
+                'user_type_id' => Yii::$app->user->identity->getUserTypeId(),
                 'access_token' => Yii::$app->user->identity->getAuthKey()
             ];
         } else {

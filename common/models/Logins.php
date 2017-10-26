@@ -27,39 +27,39 @@ use yii\web\IdentityInterface;
  *
  * @property Users $user
  */
-class Logins extends ActiveRecord implements IdentityInterface
-{
+class Logins extends ActiveRecord implements IdentityInterface {
+
     const STATUS_ACTIVE = 1;
+    const FRONT_LOGIN = 1;
+    const BACK_LOGIN = -1;
+
     /**
      * @inheritdoc
      */
-    public static function tableName()
-    {
+    public static function tableName() {
         return '{{%logins}}';
     }
 
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
-            [['user_id', 'username', 'auth_key', 'password_hash', 'email'], 'required'],
-            [['user_id', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
-            [['username', 'password_hash', 'password_reset_token', 'email'], 'string', 'max' => 255],
-            [['auth_key'], 'string', 'max' => 32],
-            [['username'], 'unique'],
-            [['email'], 'unique'],
-            [['password_reset_token'], 'unique'],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'user_id']],
+                [['user_id', 'username', 'auth_key', 'password_hash', 'email'], 'required'],
+                [['user_id', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
+                [['username', 'password_hash', 'password_reset_token', 'email'], 'string', 'max' => 255],
+                [['auth_key'], 'string', 'max' => 32],
+                [['username'], 'unique'],
+                [['email'], 'unique'],
+                [['password_reset_token'], 'unique'],
+                [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'user_id']],
         ];
     }
 
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'login_id' => 'Login ID',
             'user_id' => 'User ID',
@@ -80,33 +80,29 @@ class Logins extends ActiveRecord implements IdentityInterface
     /**
      * @return ActiveQuery
      */
-    public function getUser()
-    {
+    public function getUser() {
         return $this->hasOne(Users::className(), ['user_id' => 'user_id']);
     }
-    
+
     /**
      * @inheritdoc
      * @return LoginsQuery the active query used by this AR class.
      */
-    public static function find()
-    {
+    public static function find() {
         return new LoginsQuery(get_called_class());
     }
-    
+
     /**
      * @inheritdoc
      */
-    public static function findIdentity($id)
-    {
+    public static function findIdentity($id) {
         return static::findOne(['login_id' => $id, 'status' => self::STATUS_ACTIVE]);
     }
 
     /**
      * @inheritdoc
      */
-    public static function findIdentityByAccessToken($token, $type = null)
-    {
+    public static function findIdentityByAccessToken($token, $type = null) {
         return static::findOne(['auth_key' => $token]);
     }
 
@@ -116,14 +112,28 @@ class Logins extends ActiveRecord implements IdentityInterface
      * @param string $username
      * @return static|null
      */
-    public static function findByUsername($username)
-    {
+    public static function findByUsername($username) {
         return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
     }
-    
-    public static function findByEmail($email)
-    {
-        return static::findOne(['email' => $email, 'status' => self::STATUS_ACTIVE]);
+
+    public static function findByEmail($email, $login_from) {
+        $login_table = self::tableName();
+        $users_table = Users::tableName();
+
+        if ($login_from == self::FRONT_LOGIN) {
+            $user_type_cond = "{$users_table}.user_type_id != " . UserTypes::ADMIN_USER_TYPE;
+        } else {
+            $user_type_cond = "{$users_table}.user_type_id = " . UserTypes::ADMIN_USER_TYPE;
+        }
+        $login = self::find()
+                ->joinWith('user')
+                ->where([
+                    "{$login_table}.email" => $email,
+                    "{$login_table}.status" => self::STATUS_ACTIVE
+                ])
+                ->andWhere($user_type_cond)
+                ->one();
+        return $login;
     }
 
     /**
@@ -132,15 +142,14 @@ class Logins extends ActiveRecord implements IdentityInterface
      * @param string $token password reset token
      * @return static|null
      */
-    public static function findByPasswordResetToken($token)
-    {
+    public static function findByPasswordResetToken($token) {
         if (!static::isPasswordResetTokenValid($token)) {
             return null;
         }
 
         return static::findOne([
-            'password_reset_token' => $token,
-            'status' => self::STATUS_ACTIVE,
+                    'password_reset_token' => $token,
+                    'status' => self::STATUS_ACTIVE,
         ]);
     }
 
@@ -150,8 +159,7 @@ class Logins extends ActiveRecord implements IdentityInterface
      * @param string $token password reset token
      * @return bool
      */
-    public static function isPasswordResetTokenValid($token)
-    {
+    public static function isPasswordResetTokenValid($token) {
         if (empty($token)) {
             return false;
         }
@@ -164,24 +172,21 @@ class Logins extends ActiveRecord implements IdentityInterface
     /**
      * @inheritdoc
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->getPrimaryKey();
     }
 
     /**
      * @inheritdoc
      */
-    public function getAuthKey()
-    {
+    public function getAuthKey() {
         return $this->auth_key;
     }
 
     /**
      * @inheritdoc
      */
-    public function validateAuthKey($authKey)
-    {
+    public function validateAuthKey($authKey) {
         return $this->getAuthKey() === $authKey;
     }
 
@@ -191,8 +196,7 @@ class Logins extends ActiveRecord implements IdentityInterface
      * @param string $password password to validate
      * @return bool if password provided is valid for current user
      */
-    public function validatePassword($password)
-    {
+    public function validatePassword($password) {
         return Yii::$app->security->validatePassword($password, $this->password_hash);
     }
 
@@ -201,32 +205,36 @@ class Logins extends ActiveRecord implements IdentityInterface
      *
      * @param string $password
      */
-    public function setPassword($password)
-    {
+    public function setPassword($password) {
         $this->password_hash = Yii::$app->security->generatePasswordHash($password);
     }
 
     /**
      * Generates "remember me" authentication key
      */
-    public function generateAuthKey()
-    {
+    public function generateAuthKey() {
         $this->auth_key = Yii::$app->security->generateRandomString();
     }
 
     /**
      * Generates new password reset token
      */
-    public function generatePasswordResetToken()
-    {
+    public function generatePasswordResetToken() {
         $this->password_reset_token = Yii::$app->security->generateRandomString() . '_' . time();
     }
 
     /**
      * Removes password reset token
      */
-    public function removePasswordResetToken()
-    {
+    public function removePasswordResetToken() {
         $this->password_reset_token = null;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getUserTypeId() {
+        return $this->user->user_type_id;
+    }
+
 }
