@@ -25,7 +25,7 @@ use yii\db\ActiveRecord;
  * @property Users[] $users
  */
 class UserTypes extends ActiveRecord {
-    
+
     const ADMIN_USER_TYPE = 1;
 
     /**
@@ -88,6 +88,13 @@ class UserTypes extends ActiveRecord {
      */
     public static function find() {
         return new UserTypesQuery(get_called_class());
+    }
+
+    public function afterFind() {
+        // convert to display format
+        $this->created_at = date('Y-m-d H:i:s');
+
+        parent::afterFind();
     }
 
 }

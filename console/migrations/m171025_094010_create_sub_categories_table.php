@@ -25,11 +25,11 @@ class m171025_094010_create_sub_categories_table extends Migration {
             'category_id' => $this->integer()->notNull(),
             'subcat_name' => $this->string(20)->notNull(),
             'status' => $this->smallInteger()->notNull()->defaultValue(1),
-            'created_at' => $this->dateTime(),
-            'updated_at' => $this->dateTime(),
-            'created_by' => $this->integer(),
-            'updated_by' => $this->integer(),
-            'deleted_at' => $this->integer()
+            'created_at' => $this->integer()->defaultValue(0),
+            'updated_at' => $this->integer()->defaultValue(0),
+            'created_by' => $this->integer()->defaultValue(0),
+            'updated_by' => $this->integer()->defaultValue(0),
+            'deleted_at' => $this->integer()->defaultValue(0)
                 ], $tableOptions);
         
         

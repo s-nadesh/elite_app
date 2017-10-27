@@ -60,13 +60,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                             }
                                         },
                                         'format' => 'raw'],
-//                        'created_at:datetime',
-                                    [
-                                        'attribute' => 'created_at',
-                                        'value' => function ($model, $key, $index, $grid) {
-                                            return date('Y-m-d H:i:s', $model->created_at);
-                                        },
-                                    ],
+                        'created_at:datetime',
+//                                    [
+//                                        'attribute' => 'created_at',
+//                                        'value' => function ($model, $key, $index, $grid) {
+//                                            return date('Y-m-d H:i:s', $model->created_at);
+//                                        },
+//                                    ],
 //                        'updated_at:datetime',
                                     // 'updated_at',
                                     // 'created_by',

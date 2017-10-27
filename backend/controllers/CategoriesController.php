@@ -66,7 +66,6 @@ class CategoriesController extends Controller
         $model = new Categories();
 
         if ($model->load(Yii::$app->request->post())) {
-            $model->created_at = date('Y-m-d H:i:s');
             $model->save();
             return $this->redirect(['index', 'id' => $model->category_id]);
         } else {

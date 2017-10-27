@@ -2,7 +2,10 @@
 
 namespace common\models;
 
-use Yii;
+use Faker\Provider\zh_TW\DateTime;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "{{%categories}}".
@@ -10,43 +13,45 @@ use Yii;
  * @property integer $category_id
  * @property string $category_name
  * @property integer $status
- * @property string $created_at
- * @property string $updated_at
+ * @property integer $created_at
+ * @property integer $updated_at
  * @property integer $created_by
  * @property integer $updated_by
  * @property integer $deleted_at
  *
  * @property SubCategories[] $subCategories
  */
-class Categories extends \yii\db\ActiveRecord
-{
+class Categories extends ActiveRecord {
+
     /**
      * @inheritdoc
      */
-    public static function tableName()
-    {
+    public function behaviors() {
+        return [
+            TimestampBehavior::className(),
+        ];
+    }
+
+    public static function tableName() {
         return '{{%categories}}';
     }
 
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
-            [['category_name'], 'required'],
-            [['status', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
-            [['created_at', 'updated_at'], 'safe'],
-            [['category_name'], 'string', 'max' => 20],
-            [['category_name'], 'unique'],
+                [['category_name'], 'required'],
+                [['status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
+                [['category_name'], 'string', 'max' => 20],
+                [['category_name'], 'unique'],
         ];
     }
 
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'category_id' => 'Category ID',
             'category_name' => 'Category Name',
@@ -60,10 +65,9 @@ class Categories extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getSubCategories()
-    {
+    public function getSubCategories() {
         return $this->hasMany(SubCategories::className(), ['category_id' => 'category_id']);
     }
 
@@ -71,8 +75,15 @@ class Categories extends \yii\db\ActiveRecord
      * @inheritdoc
      * @return CategoriesQuery the active query used by this AR class.
      */
-    public static function find()
-    {
+    public static function find() {
         return new CategoriesQuery(get_called_class());
     }
+
+    public function afterFind() {
+        // convert to display format
+        $this->created_at = date('Y-m-d H:i:s');
+
+        parent::afterFind();
+    }
+
 }

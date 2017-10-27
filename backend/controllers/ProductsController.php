@@ -3,8 +3,9 @@
 namespace backend\controllers;
 
 use common\models\Categories;
+use common\models\Products;
+use common\models\ProductsSearch;
 use common\models\SubCategories;
-use common\models\SubCategoriesSearch;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
@@ -12,9 +13,9 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
 /**
- * SubCategoriesController implements the CRUD actions for SubCategories model.
+ * ProductsController implements the CRUD actions for Products model.
  */
-class SubCategoriesController extends Controller
+class ProductsController extends Controller
 {
     /**
      * @inheritdoc
@@ -32,12 +33,12 @@ class SubCategoriesController extends Controller
     }
 
     /**
-     * Lists all SubCategories models.
+     * Lists all Products models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new SubCategoriesSearch();
+        $searchModel = new ProductsSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -47,7 +48,7 @@ class SubCategoriesController extends Controller
     }
 
     /**
-     * Displays a single SubCategories model.
+     * Displays a single Products model.
      * @param integer $id
      * @return mixed
      */
@@ -59,27 +60,28 @@ class SubCategoriesController extends Controller
     }
 
     /**
-     * Creates a new SubCategories model.
+     * Creates a new Products model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new SubCategories();
-        $items = ArrayHelper::map(Categories::find()->where('status=:id',['id'=>1])->all(), 'category_id', 'category_name');
-        if ($model->load(Yii::$app->request->post())) {
-            $model->save();
-            return $this->redirect(['index']);
+        $model = new Products();
+        $categories = ArrayHelper::map(Categories::find()->where('status=:id',['id'=>1])->all(), 'category_id', 'category_name');
+        $sub_categories = ArrayHelper::map(SubCategories::find()->where('status=:id',['id'=>1])->all(), 'subcat_id', 'subcat_name');
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['index', 'id' => $model->product_id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
-                'items' => $items,
+                'categories' => $categories,
+                'sub_categories' => $sub_categories,
             ]);
         }
     }
 
     /**
-     * Updates an existing SubCategories model.
+     * Updates an existing Products model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -87,19 +89,21 @@ class SubCategoriesController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $items = ArrayHelper::map(Categories::find()->where('status=:id',['id'=>1])->all(), 'category_id', 'category_name');
+        $categories = ArrayHelper::map(Categories::find()->where('status=:id',['id'=>1])->all(), 'category_id', 'category_name');
+        $sub_categories = ArrayHelper::map(SubCategories::find()->where('status=:id',['id'=>1])->all(), 'subcat_id', 'subcat_name');
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
+            return $this->redirect(['index', 'id' => $model->product_id]);
         } else {
             return $this->render('update', [
                 'model' => $model,
-                'items' => $items,
+                'categories' => $categories,
+                'sub_categories' => $sub_categories,
             ]);
         }
     }
 
     /**
-     * Deletes an existing SubCategories model.
+     * Deletes an existing Products model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -112,15 +116,15 @@ class SubCategoriesController extends Controller
     }
 
     /**
-     * Finds the SubCategories model based on its primary key value.
+     * Finds the Products model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return SubCategories the loaded model
+     * @return Products the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = SubCategories::findOne($id)) !== null) {
+        if (($model = Products::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
