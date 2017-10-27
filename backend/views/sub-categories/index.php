@@ -1,19 +1,18 @@
 <?php
 
-use common\models\UsersSearch;
-use common\models\UserTypes;
+use common\models\Categories;
+use common\models\SubCategoriesSearch;
 use yii\data\ActiveDataProvider;
 use yii\grid\GridView;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use yii\helpers\Url;
 use yii\web\View;
 
 /* @var $this View */
-/* @var $searchModel UsersSearch */
+/* @var $searchModel SubCategoriesSearch */
 /* @var $dataProvider ActiveDataProvider */
 
-$this->title = 'Users';
+$this->title = 'Sub Categories';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <aside class="right-side">
@@ -24,31 +23,31 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="services-index">
             <div class="col-md-12">
                 <div class="row">
+                    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+
                     <div class="pull-right">
-                        <?= Html::a('Create User', ['create'], ['class' => 'btn btn-success']) ?>
+                        <?= Html::a('Create Sub Category', ['create'], ['class' => 'btn btn-success']) ?>
                     </div>
                 </div>
-            </div>
+            </div>   
+
             <div class="col-lg-12 col-md-12">&nbsp;</div>
             <div class="row">
                 <div class="col-md-12">
                     <div class="box box-primary">
                         <div class="box-body">
-                            <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
                             <?=
                             GridView::widget([
                                 'dataProvider' => $dataProvider,
                                 'filterModel' => $searchModel,
                                 'columns' => [
                                         ['class' => 'yii\grid\SerialColumn'],
-                                    'name',
-                                        [
-                                        'attribute' => 'user_type_id',
-                                        'value' => 'userType.type_name',
-                                        'filter' => Html::activeDropDownlist($searchModel, 'user_type_id', ArrayHelper::map(UserTypes::find()->where('status=:id', ['id' => 1])->all(), 'user_type_id', 'type_name'), ['class' => 'form-control', 'id' => null, 'prompt' => 'All']),
+                                    'subcat_name',
+                                    [
+                                        'attribute' => 'category_id',
+                                        'value' => 'category.category_name',
+                                        'filter' => Html::activeDropDownlist($searchModel, 'category_id', ArrayHelper::map(Categories::find()->where('status=:id', ['id' => 1])->all(), 'category_id', 'category_name'), ['class' => 'form-control', 'id' => null, 'prompt' => 'All']),
                                     ],
-                                    'address:ntext',
-                                    'mobile_no',
                                         [
                                         'attribute' => 'status',
                                         'filter' => Html::activeDropDownlist($searchModel, 'status', ["0" => 'In active', '1' => 'active'], ['class' => 'form-control', 'id' => null, 'prompt' => 'All']),
@@ -60,26 +59,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                             }
                                         },
                                         'format' => 'raw'],
-//                        'created_at:datetime',
-                                    [
-                                        'attribute' => 'created_at',
-                                        'value' => function ($model, $key, $index, $grid) {
-                                            return date('Y-m-d H:i:s', $model->created_at);
-                                        },
-                                    ],
-//                        'updated_at:datetime',
+                                    'created_at',
                                     // 'updated_at',
                                     // 'created_by',
                                     // 'updated_by',
                                     // 'deleted_at',
                                     ['class' => 'yii\grid\ActionColumn',
-                                        'template' => '{update}&nbsp;&nbsp;{delete}&nbsp;&nbsp;{login}',
-                                        'buttons' => [
-                                            'login' => function($url, $model) {
-                                                $url = Url::toRoute('users/login?id=' . $model->user_id);
-                                                return Html::a('<span title="Login" class="glyphicon glyphicon-lock"></span>', $url);
-                                            }
-                                        ],
+                                        'template' => '{update}&nbsp;&nbsp;{delete}',
                                     ],
                                 ],
                             ]);

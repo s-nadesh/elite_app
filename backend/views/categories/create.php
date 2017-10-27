@@ -1,13 +1,12 @@
 <?php
 
 use yii\helpers\Html;
-use yii\web\View;
 
-/* @var $this View */
-/* @var $model common\models\Users */
+/* @var $this yii\web\View */
+/* @var $model common\models\Categories */
 
-$this->title = 'Create Users';
-$this->params['breadcrumbs'][] = ['label' => 'Users', 'url' => ['index']];
+$this->title = 'Create Categories';
+$this->params['breadcrumbs'][] = ['label' => 'Categories', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <aside class="right-side">
@@ -19,10 +18,9 @@ $this->params['breadcrumbs'][] = $this->title;
             <?=
             $this->render('_form', [
                 'model' => $model,
-//                'model1' => $model1,
-                'items' => $items,
             ])
             ?>
+
         </div>
     </div>
 </aside>

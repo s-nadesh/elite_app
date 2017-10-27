@@ -3,6 +3,8 @@
 namespace common\models;
 
 use Yii;
+use yii\behaviors\BlameableBehavior;
+use yii\behaviors\TimestampBehavior;
 use yii\base\NotSupportedException;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
@@ -36,6 +38,13 @@ class Logins extends ActiveRecord implements IdentityInterface {
     /**
      * @inheritdoc
      */
+    public function behaviors() {
+        return [
+            BlameableBehavior::className(),
+            TimestampBehavior::className(),
+        ];
+    }
+
     public static function tableName() {
         return '{{%logins}}';
     }
@@ -45,7 +54,8 @@ class Logins extends ActiveRecord implements IdentityInterface {
      */
     public function rules() {
         return [
-                [['user_id', 'username', 'auth_key', 'password_hash', 'email'], 'required'],
+                [['user_id', 'username', 'password_hash', 'email'], 'required'],
+                [['username', 'email'], 'required', 'on' => 'update'],
                 [['user_id', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
                 [['username', 'password_hash', 'password_reset_token', 'email'], 'string', 'max' => 255],
                 [['auth_key'], 'string', 'max' => 32],
@@ -54,6 +64,12 @@ class Logins extends ActiveRecord implements IdentityInterface {
                 [['password_reset_token'], 'unique'],
                 [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'user_id']],
         ];
+    }
+
+    public function scenarios() {
+        $scenarios = parent::scenarios();
+        $scenarios['update'] = ['username', 'email']; //Scenario Values Only Accepted
+        return $scenarios;
     }
 
     /**
@@ -65,7 +81,7 @@ class Logins extends ActiveRecord implements IdentityInterface {
             'user_id' => 'User ID',
             'username' => 'Username',
             'auth_key' => 'Auth Key',
-            'password_hash' => 'Password Hash',
+            'password_hash' => 'Password',
             'password_reset_token' => 'Password Reset Token',
             'email' => 'Email',
             'status' => 'Status',

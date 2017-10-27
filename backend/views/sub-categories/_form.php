@@ -4,10 +4,10 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\Users */
+/* @var $model common\models\SubCategories */
 /* @var $form yii\widgets\ActiveForm */
 ?>
-<!--<h3 class="box-title">User Details</h3>-->
+
 <div class="box-body">
 
     <?php
@@ -24,24 +24,12 @@ use yii\widgets\ActiveForm;
     );
     ?>
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true])->label('Name<span class="required-label"></span>'); ?>
+    <?= $form->field($model, 'subcat_name')->textInput(['maxlength' => true])->label('Sub Category Name<span class="required-label"></span>'); ?>
 
-    <?= $form->field($model, 'user_type_id')->dropDownList($items, ['prompt' => '--Select Type--'])->label('Type<span class="required-label"></span>'); ?>
-
-    <?= $form->field($model, 'address')->textarea(['rows' => 4]) ?>
-
-    <?= $form->field($model, 'mobile_no')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'category_id')->dropDownList($items, ['prompt' => '--Select Type--'])->label('Category Type<span class="required-label"></span>'); ?>
 
     <?= $form->field($model, 'status')->checkbox(['label' => ('Active ')])->label('Status') ?>
-    
-    <!--<h3 class="box-title">Login Details</h3>-->
-    
-    <?php // $form->field($model1, 'username')->textInput(['maxlength' => true])->label('User Name<span class="required-label"></span>'); ?>
-    
-    <?php // $form->field($model1, 'password_hash')->passwordInput(['maxlength' => true])->label('Password<span class="required-label"></span>'); ?>
-    
-    <?php // $form->field($model1, 'email')->textInput(['maxlength' => true])->label('Email<span class="required-label"></span>'); ?>
-    
+
     <div class="box-footer">
         <div class="form-group">
             <div class="col-sm-0 col-sm-offset-2">
@@ -49,6 +37,7 @@ use yii\widgets\ActiveForm;
             </div>
         </div>
     </div>
+
     <?php ActiveForm::end(); ?>
 
 </div>

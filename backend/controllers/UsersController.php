@@ -2,10 +2,12 @@
 
 namespace backend\controllers;
 
+use common\models\Logins;
 use common\models\Users;
 use common\models\UsersSearch;
 use common\models\UserTypes;
 use Yii;
+use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
@@ -21,6 +23,20 @@ class UsersController extends Controller {
      */
     public function behaviors() {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                        [
+                        'actions' => [''],
+                        'allow' => true,
+                    ],
+                        [
+                        'actions' => ['index', 'create', 'update', 'view', 'delete', 'login'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -62,14 +78,24 @@ class UsersController extends Controller {
      */
     public function actionCreate() {
         $model = new Users();
+//        $login = new Logins();
         $items = ArrayHelper::map(UserTypes::find()->where('status=:id', ['id' => 1])->all(), 'user_type_id', 'type_name');
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->getSession()->setFlash('success', 'User added successfully!!!');
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->validate()) {
+                $model->attributes;
+//                $model1->attributes;
+            }
+            $model->save();
+//            $login->user_id = $model->user_id;
+//            $model1->setPassword($model1->password_hash);
+//            $model1->generateAuthKey();
+//            $login->save();
             return $this->redirect(['index']);
         } else {
             return $this->render('create', [
                         'model' => $model,
                         'items' => $items,
+//                        'model1' => $model1,
             ]);
         }
     }
@@ -82,12 +108,15 @@ class UsersController extends Controller {
      */
     public function actionUpdate($id) {
         $model = $this->findModel($id);
+//        $model1 = Logins::find()->where(['user_id' => $id])->one();
         $items = ArrayHelper::map(UserTypes::find()->where('status=:id', ['id' => 1])->all(), 'user_type_id', 'type_name');
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index', 'id' => $model->user_id]);
+//            $model1->save();
+            return $this->redirect(['index']);
         } else {
             return $this->render('update', [
                         'model' => $model,
+//                        'model1' => $model1,
                         'items' => $items,
             ]);
         }
@@ -118,6 +147,31 @@ class UsersController extends Controller {
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+    public function actionLogin($id) {
+        $model = $this->findModel($id);
+        $login = Logins::find()->where(['user_id' => $model->user_id])->one();
+        if (!empty($login)) {
+            $login->scenario = 'update';
+            if ($login->load(Yii::$app->request->post())) {
+                $login->setPassword($login->password_hash);
+                $login->save();
+                return $this->redirect(['index']);
+            }
+        } else {
+            $login = new Logins();
+            if ($login->load(Yii::$app->request->post())) {
+                $login->user_id = $model->user_id;
+                $login->setPassword($login->password_hash);
+                $login->generateAuthKey();
+                $login->save(false);
+                return $this->redirect(['index']);
+            }
+        }
+        return $this->render('login', [
+                    'login' => $login,
+        ]);
     }
 
 }

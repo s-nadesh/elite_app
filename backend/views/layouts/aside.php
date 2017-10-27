@@ -43,6 +43,14 @@ use yii\widgets\Menu;
                             ['label' => '<i class="fa fa-circle-o"></i>Types', 'url' => ['user-types/index']],
                             ['label' => '<i class="fa fa-circle-o"></i>Users', 'url' => ['users/index']],
                     ]],
+                    ['label' => '<i class="fa fa-th"></i> <span>Product Management</span><i class="fa fa-angle-left pull-right"></i>',
+                    'url' => ['#'],
+                    'options' => ['class' => 'treeview'],
+                    'items' => [
+                            ['label' => '<i class="fa fa-circle-o"></i>Category', 'url' => ['categories/index']],
+                            ['label' => '<i class="fa fa-circle-o"></i>Sub-Category', 'url' => ['sub-categories/index']],
+                            ['label' => '<i class="fa fa-circle-o"></i>Product', 'url' => ['#']],
+                    ]],
             ],
             'submenuTemplate' => "\n<ul class='treeview-menu'>\n{items}\n</ul>\n",
         ]);
