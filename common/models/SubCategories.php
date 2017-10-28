@@ -81,11 +81,4 @@ class SubCategories extends ActiveRecord {
         return new SubCategoriesQuery(get_called_class());
     }
 
-    public function afterFind() {
-        // convert to display format
-        $this->created_at = date('Y-m-d H:i:s');
-
-        parent::afterFind();
-    }
-
 }
