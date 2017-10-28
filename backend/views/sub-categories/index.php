@@ -60,7 +60,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             }
                                         },
                                         'format' => 'raw'],
-                                    'created_at',
+                                    'created_at:datetime',
                                     // 'updated_at',
                                     // 'created_by',
                                     // 'updated_by',
