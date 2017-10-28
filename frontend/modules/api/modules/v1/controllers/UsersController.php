@@ -2,6 +2,8 @@
 
 namespace app\modules\api\modules\v1\controllers;
 
+use common\models\Users;
+use Yii;
 use yii\filters\AccessControl;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\ContentNegotiator;
@@ -17,7 +19,7 @@ class UsersController extends ActiveController {
         //Authenticator - It is used to login the user by using header (Authorization Bearer Token).
         $behaviors['authenticator'] = [
             'class' => HttpBearerAuth::className(),
-            'only' => ['index', 'view'],
+            'only' => ['listbyusertype'],
         ];
         $behaviors['contentNegotiator'] = [
             'class' => ContentNegotiator::className(),
@@ -28,10 +30,10 @@ class UsersController extends ActiveController {
         //Access - After Login, Role wise access 
         $behaviors['access'] = [
             'class' => AccessControl::className(),
-            'only' => ['index', 'view'],
+            'only' => ['listbyusertype'],
             'rules' => [
                     [
-                    'actions' => ['index', 'view'],
+                    'actions' => ['listbyusertype'],
                     'allow' => true,
                     'roles' => ['@'],
                 ],
@@ -39,15 +41,22 @@ class UsersController extends ActiveController {
         ];
         return $behaviors;
     }
+    
+    public function actionListbyusertype(){
+        $post = Yii::$app->request->getBodyParams();
+        
+        $users = Users::find()
+                ->select('user_id, user_type_id, name, address, mobile_no')
+                ->userType($post['type_id'])
+                ->status()
+                ->active()
+                ->all();
+        
+        return [
+            'success' => true,
+            'message' => 'Success',
+            'data' => $users
+        ];
+    }
 
-    //Override rest default actions
-//    public function actions() {
-//        $actions = parent::actions();
-//        unset($actions['index']);
-//        return $actions;
-//    }
-//
-//    public function actionIndex() {
-//        echo 'hi'; exit;
-//    }
 }
