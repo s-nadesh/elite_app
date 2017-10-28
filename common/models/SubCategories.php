@@ -44,6 +44,7 @@ class SubCategories extends ActiveRecord {
                 [['category_id', 'subcat_name'], 'required'],
                 [['category_id', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
                 [['subcat_name'], 'string', 'max' => 20],
+                [['subcat_name'], 'unique', 'targetAttribute' => ['category_id', 'subcat_name'], 'message' => 'The combination of Category ID and Subcat Name has already been taken.'],
                 [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Categories::className(), 'targetAttribute' => ['category_id' => 'category_id']],
         ];
     }

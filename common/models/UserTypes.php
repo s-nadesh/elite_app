@@ -26,7 +26,11 @@ use yii\db\ActiveRecord;
  */
 class UserTypes extends ActiveRecord {
 
-    const ADMIN_USER_TYPE = 1;
+    const AD_USER_TYPE = 1;
+    const CU_USER_TYPE = 2;
+    const DE_USER_TYPE = 3;
+    const SE_USER_TYPE = 4;
+    const BE_USER_TYPE = 5;
 
     /**
      * @inheritdoc

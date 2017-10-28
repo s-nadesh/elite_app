@@ -38,6 +38,14 @@ class m171025_094010_create_sub_categories_table extends Migration {
             self::SUB_CATEGORIES_TABLE,
             'category_id'
         );
+        
+        //Two columns unique
+        $this->createIndex(
+                'idx-sub_categories-unique_category_id_subcat_name',
+                self::SUB_CATEGORIES_TABLE,
+                ['category_id', 'subcat_name'], 
+                true
+        );
 
         // add foreign key for table `el_categories`
         $this->addForeignKey(
@@ -57,6 +65,11 @@ class m171025_094010_create_sub_categories_table extends Migration {
         
         $this->dropForeignKey(
             'fk-sub_categories-category_id',
+            self::SUB_CATEGORIES_TABLE
+        );
+        
+        $this->dropIndex(
+            'idx-sub_categories-unique_category_id_subcat_name',
             self::SUB_CATEGORIES_TABLE
         );
 

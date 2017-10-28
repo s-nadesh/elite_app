@@ -53,9 +53,10 @@ class Users extends ActiveRecord {
                 [['user_type_id', 'name', 'email'], 'required'],
                 [['user_type_id', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
                 [['address'], 'string'],
-                [['email'], 'unique'],
                 [['name'], 'string', 'max' => 255],
                 [['mobile_no'], 'string', 'max' => 20],
+                [['email'], 'string', 'max' => 64],
+                [['email'], 'unique'],
                 [['user_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserTypes::className(), 'targetAttribute' => ['user_type_id' => 'user_type_id']],
         ];
     }

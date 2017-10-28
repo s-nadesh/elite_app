@@ -32,13 +32,20 @@ class m171019_101858_create_user_types_table extends Migration {
             'updated_by' => $this->integer()->defaultValue(0),
             'deleted_at' => $this->integer()->defaultValue(0)
                 ], $tableOptions);
+
+        $this->insert('{{%user_types}}', ['type_name' => 'Admin', 'type_code' => 'AD']);
+        $this->insert('{{%user_types}}', ['type_name' => 'Customer', 'type_code' => 'CU']);
+        $this->insert('{{%user_types}}', ['type_name' => 'Dealer', 'type_code' => 'DE']);
+        $this->insert('{{%user_types}}', ['type_name' => 'Sales Executive', 'type_code' => 'SE']);
+        $this->insert('{{%user_types}}', ['type_name' => 'Billing Executive', 'type_code' => 'BE']);
     }
 
     /**
      * @inheritdoc
      */
     public function down() {
-        $this->dropTable(self::USER_TYPES_TABLE);
+        echo "m171019_101858_create_user_types_table cannot be reverted.\n";
+        return false;
     }
 
 }

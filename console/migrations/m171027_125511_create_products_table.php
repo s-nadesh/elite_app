@@ -69,12 +69,25 @@ class m171027_125511_create_products_table extends Migration {
             'CASCADE'
         );
         
+         //Three columns unique
+        $this->createIndex(
+                'idx-products-unique_category_id_subcat_id_product_name',
+                self::PRODUCTS_TABLE,
+                ['category_id', 'subcat_id', 'product_name'], 
+                true
+        );
+        
     }
 
     /**
      * @inheritdoc
      */
     public function down() {
+        
+        $this->dropIndex(
+            'idx-products-unique_category_id_subcat_id_product_name',
+            self::PRODUCTS_TABLE
+        );
         
         $this->dropForeignKey(
             'fk-products-category_id',
@@ -98,7 +111,7 @@ class m171027_125511_create_products_table extends Migration {
             self::PRODUCTS_TABLE
         );
         
-        $this->dropTable('products');
+        $this->dropTable(self::PRODUCTS_TABLE);
     }
 
 }

@@ -50,6 +50,7 @@ class Products extends ActiveRecord {
                 [['category_id', 'subcat_id', 'min_reorder', 'stock', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
                 [['price_per_unit'], 'number'],
                 [['product_name'], 'string', 'max' => 64],
+                [['product_name'], 'unique', 'targetAttribute' => ['category_id', 'subcat_id', 'product_name'], 'message' => 'The combination of Category ID, Subcat ID and Product Name has already been taken.'],
                 [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Categories::className(), 'targetAttribute' => ['category_id' => 'category_id']],
                 [['subcat_id'], 'exist', 'skipOnError' => true, 'targetClass' => SubCategories::className(), 'targetAttribute' => ['subcat_id' => 'subcat_id']],
         ];
