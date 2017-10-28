@@ -22,27 +22,21 @@ use yii\helpers\Html;
                 <li class="dropdown user user-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="glyphicon glyphicon-user"></i>
-                        <span>Jane Doe <i class="caret"></i></span>
+                        <span><?= Yii::$app->user->identity->username; ?> <i class="caret"></i></span>
                     </a>
                     <ul class="dropdown-menu">
                         <!-- User image -->
                         <li class="user-header bg-light-blue">
                             <img src="<?php echo Yii::$app->view->theme->baseUrl ?>/img/avatar3.png" class="img-circle" alt="User Image" />
                             <p>
-                                Jane Doe - Web Developer
-                                <small>Member since Nov. 2012</small>
+                                <?= Yii::$app->user->identity->username; ?>
+                                <small> <?= Yii::$app->user->identity->email; ?></small>
                             </p>
                         </li>
                         <!-- Menu Body -->
                         <li class="user-body">
                             <div class="col-xs-4 text-center">
-                                <a href="#">Followers</a>
-                            </div>
-                            <div class="col-xs-4 text-center">
-                                <a href="#">Sales</a>
-                            </div>
-                            <div class="col-xs-4 text-center">
-                                <a href="#">Friends</a>
+                                <a href="#">Change Password</a>
                             </div>
                         </li>
                         <!-- Menu Footer-->

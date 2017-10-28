@@ -18,6 +18,7 @@ use yii\db\ActiveRecord;
  * @property string $name
  * @property string $address
  * @property string $mobile_no
+ * @property string $email
  * @property integer $status
  * @property integer $created_at
  * @property integer $updated_at
@@ -49,9 +50,10 @@ class Users extends ActiveRecord {
      */
     public function rules() {
         return [
-                [['user_type_id', 'name'], 'required'],
+                [['user_type_id', 'name', 'email'], 'required'],
                 [['user_type_id', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
                 [['address'], 'string'],
+                [['email'], 'unique'],
                 [['name'], 'string', 'max' => 255],
                 [['mobile_no'], 'string', 'max' => 20],
                 [['user_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserTypes::className(), 'targetAttribute' => ['user_type_id' => 'user_type_id']],
@@ -68,6 +70,7 @@ class Users extends ActiveRecord {
             'name' => 'Name',
             'address' => 'Address',
             'mobile_no' => 'Mobile No',
+            'email' => 'Email',
             'status' => 'Status',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',

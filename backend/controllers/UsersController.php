@@ -85,7 +85,7 @@ class UsersController extends Controller {
                 $model->attributes;
 //                $model1->attributes;
             }
-            $model->save();
+            $model->save(false);
 //            $login->user_id = $model->user_id;
 //            $model1->setPassword($model1->password_hash);
 //            $model1->generateAuthKey();
@@ -161,6 +161,7 @@ class UsersController extends Controller {
             }
         } else {
             $login = new Logins();
+            $login->email = $model->email;
             if ($login->load(Yii::$app->request->post())) {
                 $login->user_id = $model->user_id;
                 $login->setPassword($login->password_hash);

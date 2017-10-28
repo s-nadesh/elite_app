@@ -49,6 +49,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     ],
                                     'address:ntext',
                                     'mobile_no',
+                                    'email',
                                         [
                                         'attribute' => 'status',
                                         'filter' => Html::activeDropDownlist($searchModel, 'status', ["0" => 'In active', '1' => 'active'], ['class' => 'form-control', 'id' => null, 'prompt' => 'All']),

@@ -70,7 +70,7 @@ class ProductsController extends Controller
         $categories = ArrayHelper::map(Categories::find()->where('status=:id',['id'=>1])->all(), 'category_id', 'category_name');
         $sub_categories = ArrayHelper::map(SubCategories::find()->where('status=:id',['id'=>1])->all(), 'subcat_id', 'subcat_name');
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index', 'id' => $model->product_id]);
+            return $this->redirect(['index']);
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -92,7 +92,7 @@ class ProductsController extends Controller
         $categories = ArrayHelper::map(Categories::find()->where('status=:id',['id'=>1])->all(), 'category_id', 'category_name');
         $sub_categories = ArrayHelper::map(SubCategories::find()->where('status=:id',['id'=>1])->all(), 'subcat_id', 'subcat_name');
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index', 'id' => $model->product_id]);
+            return $this->redirect(['index']);
         } else {
             return $this->render('update', [
                 'model' => $model,

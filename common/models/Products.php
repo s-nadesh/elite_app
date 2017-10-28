@@ -2,7 +2,9 @@
 
 namespace common\models;
 
-use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "{{%products}}".
@@ -24,36 +26,39 @@ use Yii;
  * @property Categories $category
  * @property SubCategories $subcat
  */
-class Products extends \yii\db\ActiveRecord
-{
+class Products extends ActiveRecord {
+
     /**
      * @inheritdoc
      */
-    public static function tableName()
-    {
+    public function behaviors() {
+        return [
+            TimestampBehavior::className(),
+        ];
+    }
+
+    public static function tableName() {
         return '{{%products}}';
     }
 
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
-            [['category_id', 'subcat_id', 'product_name', 'stock', 'price_per_unit'], 'required'],
-            [['category_id', 'subcat_id', 'min_reorder', 'stock', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
-            [['price_per_unit'], 'number'],
-            [['product_name'], 'string', 'max' => 64],
-            [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Categories::className(), 'targetAttribute' => ['category_id' => 'category_id']],
-            [['subcat_id'], 'exist', 'skipOnError' => true, 'targetClass' => SubCategories::className(), 'targetAttribute' => ['subcat_id' => 'subcat_id']],
+                [['category_id', 'subcat_id', 'product_name', 'stock', 'price_per_unit'], 'required'],
+                [['category_id', 'subcat_id', 'min_reorder', 'stock', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
+                [['price_per_unit'], 'number'],
+                [['product_name'], 'string', 'max' => 64],
+                [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Categories::className(), 'targetAttribute' => ['category_id' => 'category_id']],
+                [['subcat_id'], 'exist', 'skipOnError' => true, 'targetClass' => SubCategories::className(), 'targetAttribute' => ['subcat_id' => 'subcat_id']],
         ];
     }
 
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'product_id' => 'Product ID',
             'category_id' => 'Category Type',
@@ -72,18 +77,16 @@ class Products extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getCategory()
-    {
+    public function getCategory() {
         return $this->hasOne(Categories::className(), ['category_id' => 'category_id']);
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getSubcat()
-    {
+    public function getSubcat() {
         return $this->hasOne(SubCategories::className(), ['subcat_id' => 'subcat_id']);
     }
 
@@ -91,8 +94,8 @@ class Products extends \yii\db\ActiveRecord
      * @inheritdoc
      * @return ProductsQuery the active query used by this AR class.
      */
-    public static function find()
-    {
+    public static function find() {
         return new ProductsQuery(get_called_class());
     }
+
 }
