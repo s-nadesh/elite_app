@@ -46,7 +46,7 @@ class UsersController extends ActiveController {
         $post = Yii::$app->request->getBodyParams();
         
         $users = Users::find()
-                ->select('user_id, user_type_id, name, address, mobile_no')
+                ->select('user_id, user_type_id, name, address, mobile_no, email')
                 ->userType($post['type_id'])
                 ->status()
                 ->active()
