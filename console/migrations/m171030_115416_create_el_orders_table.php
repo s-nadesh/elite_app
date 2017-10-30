@@ -59,6 +59,22 @@ class m171030_115416_create_el_orders_table extends Migration
             'user_id',
             'CASCADE'
         );
+        
+         $this->createIndex(
+            'idx-orders-user_id',
+           self::ORDERS_TABLE,
+            'ordered_by'
+        );
+
+        // add foreign key for table  'el_users'
+        $this->addForeignKey(
+            'fk-orders-user_id',
+           self::ORDERS_TABLE,
+            'ordered_by',
+           self::USERS_TABLE,
+            'user_id',
+            'CASCADE'
+        );
     }
 
     /**
