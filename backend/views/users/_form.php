@@ -13,6 +13,8 @@ use yii\widgets\ActiveForm;
     <?php
     $form = ActiveForm::begin([
                 'id' => 'active-form',
+                'enableClientValidation' => true,
+                'validateOnSubmit' => true,
                 'options' => [
                     'class' => 'form-horizontal',
                 ],

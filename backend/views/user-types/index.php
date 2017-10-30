@@ -65,7 +65,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             'delete' => function($url, $model) {
                                                 $usercount = Users::find()->where(['user_type_id' => $model->user_type_id])->count();
                                                 if (!$usercount) {
-                                                    return Html::a('<span class="glyphicon glyphicon-trash"></span>', ['delete', 'id' => $model['user_type_id']], [
+                                                    return $model->created_by == 0 ? '' : Html::a('<span class="glyphicon glyphicon-trash"></span>', ['delete', 'id' => $model['user_type_id']], [
                                                                 'title' => Yii::t('app', 'Delete'), 'data-confirm' => Yii::t('app', 'Are you sure you want to delete this usertype?'), 'data-method' => 'post']);
                                                 }
                                             }

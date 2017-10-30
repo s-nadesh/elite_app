@@ -91,13 +91,8 @@ class SiteController extends Controller {
     public function actionChangepassword() {
         $model = Logins::findOne(Yii::$app->user->getId());
         $model->scenario = 'changepassword';
-        if ($model->load(Yii::$app->request->post())) {
-            $pass = $model->password_hash;
-            if ($model->validate()) {
-                $model->new_pass = $_POST['Logins']['new_pass'];
-                $hash = Yii::$app->getSecurity()->generatePasswordHash($model->new_pass);
-                $model->password_hash = $hash;
-            }
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $model->password_hash = Yii::$app->getSecurity()->generatePasswordHash($model->new_pass);
             $model->save();
             Yii::$app->getSession()->setFlash('success', 'Changed the password successfully!!!');
             $this->redirect(array('/site/index'));

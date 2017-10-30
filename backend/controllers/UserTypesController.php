@@ -5,6 +5,7 @@ namespace backend\controllers;
 use common\models\UserTypes;
 use common\models\UserTypesSearch;
 use Yii;
+use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -19,6 +20,20 @@ class UserTypesController extends Controller {
      */
     public function behaviors() {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                        [
+                        'actions' => [''],
+                        'allow' => true,
+                    ],
+                        [
+                        'actions' => ['index', 'create', 'update', 'view', 'delete'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [

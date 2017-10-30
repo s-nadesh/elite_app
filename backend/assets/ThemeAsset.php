@@ -15,8 +15,8 @@ class ThemeAsset extends AssetBundle {
 
     public $css = [
 //        '//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css',
-        '//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css',
-        '//code.ionicframework.com/ionicons/1.5.2/css/ionicons.min.css',
+        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css',
+        'https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css',
         'css/morris/morris.css',
         'css/jvectormap/jquery-jvectormap-1.2.2.css',
         'css/datepicker/datepicker3.css',
