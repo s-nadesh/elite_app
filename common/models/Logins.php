@@ -155,9 +155,9 @@ class Logins extends ActiveRecord implements IdentityInterface {
         $users_table = Users::tableName();
 
         if ($login_from == self::FRONT_LOGIN) {
-            $user_type_cond = "{$users_table}.user_type_id != " . UserTypes::ADMIN_USER_TYPE;
+            $user_type_cond = "{$users_table}.user_type_id != " . UserTypes::AD_USER_TYPE;
         } else {
-            $user_type_cond = "{$users_table}.user_type_id = " . UserTypes::ADMIN_USER_TYPE;
+            $user_type_cond = "{$users_table}.user_type_id = " . UserTypes::AD_USER_TYPE;
         }
         $login = self::find()
                 ->joinWith('user')
