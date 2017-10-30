@@ -13,6 +13,7 @@ class m171030_115416_create_el_orders_table extends Migration
     /**
      * @inheritdoc
      */
+    const ORDER_STATUS_TABLE = '{{%order_status}}';
     const ORDERS_TABLE = '{{%orders}}';
     const USERS_TABLE = '{{%users}}';
 
@@ -27,13 +28,13 @@ class m171030_115416_create_el_orders_table extends Migration
             'invoice_no' => $this->string(50)->unique(),
             'invoice_date' => $this->date()->Null(),
             'user_id' => $this->integer()->notNull(),
+            'order_status_id' => $this->integer()->notNull(),
             'ordered_by' => $this->integer()->defaultValue(0)->notNull(),
             'items_total_amount' => $this->decimal(10, 2)->Null(),
             'tax_percentage' => $this->decimal(10, 2)->Null(),
             'tax_amount' => $this->decimal(10, 2)->Null(),
             'total_amount' => $this->decimal(10, 2)->Null(),
             'payment_status' => "ENUM('P','C','PC')",
-            'order_status' => $this->smallInteger()->notNull()->defaultValue(1),
             'signature' => $this->string(300)->Null(),
             'status' => $this->smallInteger()->notNull()->defaultValue(1),
             'created_at' => $this->integer()->defaultValue(0),
@@ -61,18 +62,34 @@ class m171030_115416_create_el_orders_table extends Migration
         );
         
          $this->createIndex(
-            'idx-orders-user_id',
+            'idx-orders-ordered_by',
            self::ORDERS_TABLE,
             'ordered_by'
         );
 
         // add foreign key for table  'el_users'
         $this->addForeignKey(
-            'fk-orders-user_id',
+            'fk-orders-ordered_by',
            self::ORDERS_TABLE,
             'ordered_by',
            self::USERS_TABLE,
             'user_id',
+            'CASCADE'
+        );
+        
+         $this->createIndex(
+            'idx-orders-order_status_id',
+           self::ORDERS_TABLE,
+            'order_status_id'
+        );
+
+        // add foreign key for table  'el_users'
+        $this->addForeignKey(
+            'fk-orders-order_status_id',
+           self::ORDERS_TABLE,
+            'order_status_id',
+           self::ORDER_STATUS_TABLE,
+            'order_status_id',
             'CASCADE'
         );
     }
@@ -91,6 +108,28 @@ class m171030_115416_create_el_orders_table extends Migration
         // drops index for column `user_id`
         $this->dropIndex(
             'idx-orders-user_id',
+            self::ORDERS_TABLE
+        );
+
+         $this->dropForeignKey(
+            'fk-orders-ordered_by',
+            self::ORDERS_TABLE
+        );
+
+        // drops index for column `user_id`
+        $this->dropIndex(
+            'idx-orders-ordered_by',
+            self::ORDERS_TABLE
+        );
+        
+         $this->dropForeignKey(
+            'fk-orders-order_status_id',
+            self::ORDERS_TABLE
+        );
+
+        // drops index for column `user_id`
+        $this->dropIndex(
+            'idx-orders-order_status_id',
             self::ORDERS_TABLE
         );
 
