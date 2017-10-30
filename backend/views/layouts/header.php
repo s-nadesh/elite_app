@@ -3,10 +3,8 @@
 use yii\helpers\Html;
 ?>
 <header class="header">
-    <a href="index.html" class="logo">
-        <!-- Add the class icon to your logo image or logo icon to add the margining -->
-        Elite
-    </a>
+    <!--<a href="index.html" class="logo">-->
+        <?php echo Html::a('Elite', ['/site/index'],['class'=>'logo']); ?>
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top" role="navigation">
         <!-- Sidebar toggle button-->
@@ -36,7 +34,7 @@ use yii\helpers\Html;
                         <!-- Menu Body -->
                         <li class="user-body">
                             <div class="col-xs-4 text-center">
-                                <a href="#">Change Password</a>
+                                <?php echo Html::a('Change Password', ['/site/changepassword']); ?>
                             </div>
                         </li>
                         <!-- Menu Footer-->
@@ -45,7 +43,7 @@ use yii\helpers\Html;
                                 <a href="#" class="btn btn-default btn-flat">Profile</a>
                             </div>
                             <div class="pull-right">
-                                <?= Html::a('Sign out', ['/site/logout'], $options = ['class' => 'btn btn-default btn-flat']); ?>
+                                <?= Html::a('Sign out', ['/site/logout'],['class' => 'btn btn-default btn-flat']); ?>
                             </div>
                         </li>
                     </ul>

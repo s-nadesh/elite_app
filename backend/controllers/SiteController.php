@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use common\models\LoginForm;
+use common\models\Logins;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -26,7 +27,7 @@ class SiteController extends Controller {
                         'allow' => true,
                     ],
                         [
-                        'actions' => ['logout', 'index'],
+                        'actions' => ['logout', 'index', 'changepassword'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -87,10 +88,29 @@ class SiteController extends Controller {
      *
      * @return string
      */
+    public function actionChangepassword() {
+        $model = Logins::findOne(Yii::$app->user->getId());
+        $model->scenario = 'changepassword';
+        if ($model->load(Yii::$app->request->post())) {
+            $pass = $model->password_hash;
+            if ($model->validate()) {
+                $model->new_pass = $_POST['Logins']['new_pass'];
+                $hash = Yii::$app->getSecurity()->generatePasswordHash($model->new_pass);
+                $model->password_hash = $hash;
+            }
+            $model->save();
+            Yii::$app->getSession()->setFlash('success', 'Changed the password successfully!!!');
+            $this->redirect(array('/site/index'));
+        }
+        return $this->render('changepassword', [
+                    'model' => $model,
+        ]);
+    }
+
     public function actionLogout() {
         Yii::$app->user->logout();
 
-        $this->redirect(array('/admin/site/login'));
+        $this->redirect(array('/site/login'));
     }
 
 }

@@ -38,6 +38,10 @@ class Logins extends ActiveRecord implements IdentityInterface {
     /**
      * @inheritdoc
      */
+    public $old_pass;
+    public $new_pass;
+    public $confirm_pass;
+
     public function behaviors() {
         return [
             BlameableBehavior::className(),
@@ -56,8 +60,11 @@ class Logins extends ActiveRecord implements IdentityInterface {
         return [
                 [['user_id', 'username', 'password_hash', 'email'], 'required'],
                 [['username', 'email'], 'required', 'on' => 'update'],
+                [['old_pass', 'new_pass', 'confirm_pass'], 'required', 'on' => 'changepassword'],
+                ['old_pass', 'findPasswords', 'on' => 'changepassword'],
                 [['user_id', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
                 [['username', 'password_hash', 'password_reset_token', 'email'], 'string', 'max' => 255],
+                ['confirm_pass', 'compare', 'compareAttribute' => 'new_pass', 'on' => 'changepassword'],
                 [['auth_key'], 'string', 'max' => 32],
                 [['username'], 'unique'],
                 [['email'], 'unique'],
@@ -69,7 +76,15 @@ class Logins extends ActiveRecord implements IdentityInterface {
     public function scenarios() {
         $scenarios = parent::scenarios();
         $scenarios['update'] = ['username', 'email']; //Scenario Values Only Accepted
+        $scenarios['changepassword'] = ['old_pass', 'new_pass', 'confirm_pass']; //Scenario Values Only Accepted
         return $scenarios;
+    }
+
+    public function findPasswords($attribute, $params) {
+        $user = Logins::findOne(Yii::$app->user->getId());
+        $password = $user->password_hash;
+        if (!Yii::$app->security->validatePassword($this->old_pass, $password))
+            $this->addError($attribute, 'Old password is incorrect');
     }
 
     /**
@@ -90,6 +105,9 @@ class Logins extends ActiveRecord implements IdentityInterface {
             'created_by' => 'Created By',
             'updated_by' => 'Updated By',
             'deleted_at' => 'Deleted At',
+            'old_pass' => 'Old Password',
+            'new_pass' => 'New Password',
+            'confirm_pass' => 'Confirm Password',
         ];
     }
 
