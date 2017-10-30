@@ -41,17 +41,19 @@ class UsersController extends ActiveController {
         ];
         return $behaviors;
     }
-    
-    public function actionListbyusertype(){
+
+    public function actionListbyusertype() {
         $post = Yii::$app->request->getBodyParams();
-        
-        $users = Users::find()
-                ->select('user_id, user_type_id, name, address, mobile_no, email')
-                ->userType($post['type_id'])
-                ->status()
-                ->active()
-                ->all();
-        
+        $users = [];
+        if (!empty($post)) {
+            $users = Users::find()
+                    ->select('user_id, user_type_id, name, address, mobile_no, email')
+                    ->userType($post['type_id'])
+                    ->status()
+                    ->active()
+                    ->all();
+        }
+
         return [
             'success' => true,
             'message' => 'Success',
