@@ -44,7 +44,6 @@ class UsersController extends ActiveController {
 
     public function actionListbyusertype() {
         $post = Yii::$app->request->getBodyParams();
-        $users = [];
         if (!empty($post)) {
             $users = Users::find()
                     ->select('user_id, user_type_id, name, address, mobile_no, email')
@@ -52,13 +51,24 @@ class UsersController extends ActiveController {
                     ->status()
                     ->active()
                     ->all();
+            if (!empty($users)) {
+                return [
+                    'success' => true,
+                    'message' => 'Success',
+                    'data' => $users
+                ];
+            } else {
+                return [
+                    'success' => true,
+                    'message' => 'No records found',
+                ];
+            }
+        } else {
+            return [
+                'success' => true,
+                'message' => 'Invalid request'
+            ];
         }
-
-        return [
-            'success' => true,
-            'message' => 'Success',
-            'data' => $users
-        ];
     }
 
 }
