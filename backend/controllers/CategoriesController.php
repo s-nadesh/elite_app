@@ -76,8 +76,7 @@ class CategoriesController extends Controller {
     public function actionCreate() {
         $model = new Categories();
 
-        if ($model->load(Yii::$app->request->post())) {
-            $model->save();
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index', 'id' => $model->category_id]);
         } else {
             return $this->render('create', [

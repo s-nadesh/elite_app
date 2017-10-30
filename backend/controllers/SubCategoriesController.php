@@ -78,8 +78,7 @@ class SubCategoriesController extends Controller {
     public function actionCreate() {
         $model = new SubCategories();
         $items = ArrayHelper::map(Categories::find()->where('status=:id', ['id' => 1])->all(), 'category_id', 'category_name');
-        if ($model->load(Yii::$app->request->post())) {
-            $model->save();
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index']);
         } else {
             return $this->render('create', [

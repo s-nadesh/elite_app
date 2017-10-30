@@ -78,24 +78,13 @@ class UsersController extends Controller {
      */
     public function actionCreate() {
         $model = new Users();
-//        $login = new Logins();
         $items = ArrayHelper::map(UserTypes::find()->where('status=:id', ['id' => 1])->all(), 'user_type_id', 'type_name');
-        if ($model->load(Yii::$app->request->post())) {
-            if ($model->validate()) {
-                $model->attributes;
-//                $model1->attributes;
-            }
-            $model->save(false);
-//            $login->user_id = $model->user_id;
-//            $model1->setPassword($model1->password_hash);
-//            $model1->generateAuthKey();
-//            $login->save();
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index']);
         } else {
             return $this->render('create', [
                         'model' => $model,
                         'items' => $items,
-//                        'model1' => $model1,
             ]);
         }
     }
@@ -108,15 +97,12 @@ class UsersController extends Controller {
      */
     public function actionUpdate($id) {
         $model = $this->findModel($id);
-//        $model1 = Logins::find()->where(['user_id' => $id])->one();
         $items = ArrayHelper::map(UserTypes::find()->where('status=:id', ['id' => 1])->all(), 'user_type_id', 'type_name');
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-//            $model1->save();
             return $this->redirect(['index']);
         } else {
             return $this->render('update', [
                         'model' => $model,
-//                        'model1' => $model1,
                         'items' => $items,
             ]);
         }
@@ -154,15 +140,15 @@ class UsersController extends Controller {
         $login = Logins::find()->where(['user_id' => $model->user_id])->one();
         if (!empty($login)) {
             $login->scenario = 'update';
-            if ($login->load(Yii::$app->request->post())) {
+            if ($login->load(Yii::$app->request->post()) && $login->validate()) {
                 $login->setPassword($login->password_hash);
-                $login->save();
+                $login->save(false);
                 return $this->redirect(['index']);
             }
         } else {
             $login = new Logins();
             $login->email = $model->email;
-            if ($login->load(Yii::$app->request->post())) {
+            if ($login->load(Yii::$app->request->post()) && $login->validate()) {
                 $login->user_id = $model->user_id;
                 $login->setPassword($login->password_hash);
                 $login->generateAuthKey();
