@@ -68,7 +68,6 @@ $script = <<< JS
       
         $('#products-category_id').on('change', function() {
             var catid     = $(this).val(); 
-//          alert(catid);
             if(catid!=""){  
             subcatlist(catid);  
             } else{ 
@@ -84,10 +83,6 @@ $script = <<< JS
                 },
                 success: function(data1) {
                   $("#products-subcat_id").html(data1);
-                  if(catid!=""){         
-                    $('#products-subcat_id').val(subcat_id);
-                  }
-//                  $('#products-subcat_id').selectpicker('refresh');
                 }
            });  
         }
