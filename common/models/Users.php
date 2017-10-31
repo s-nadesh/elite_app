@@ -103,4 +103,17 @@ class Users extends ActiveRecord {
         return new UsersQuery(get_called_class());
     }
 
+    public static function getUsersbytype($user_type_id, $map = true) {
+        $users = self::find()
+                ->userType($user_type_id)
+                ->status()
+                ->active()
+                ->all();
+        if ($map) {
+            return \yii\helpers\ArrayHelper::map($users, 'user_id', 'name');
+        } else {
+            return $users;
+        }
+    }
+
 }

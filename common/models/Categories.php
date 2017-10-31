@@ -79,4 +79,16 @@ class Categories extends ActiveRecord {
         return new CategoriesQuery(get_called_class());
     }
 
+    public static function getCategories($map = true) {
+        $categories = self::find()
+                ->status()
+                ->active()
+                ->all();
+        if ($map) {
+            return \yii\helpers\ArrayHelper::map($categories, 'category_id', 'category_name');
+        } else {
+            return $categories;
+        }
+    }
+
 }

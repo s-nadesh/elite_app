@@ -7,12 +7,11 @@ namespace common\models;
  *
  * @see SubCategories
  */
-class SubCategoriesQuery extends \yii\db\ActiveQuery
+class SubCategoriesQuery extends CommonQuery
 {
-    /*public function active()
-    {
-        return $this->andWhere('[[status]]=1');
-    }*/
+    public function category($category_id) {
+        return $this->andWhere(["{$this->tblName}.category_id" => $category_id]);
+    }
 
     /**
      * @inheritdoc

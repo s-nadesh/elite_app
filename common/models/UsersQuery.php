@@ -10,6 +10,9 @@ namespace common\models;
 class UsersQuery extends CommonQuery {
 
     public function userType($user_type_id) {
+        if (strpos($user_type_id, ',') !== false) {
+            $user_type_id = explode(',', $user_type_id);
+        }
         return $this->andWhere(["{$this->tblName}.user_type_id" => $user_type_id]);
     }
 

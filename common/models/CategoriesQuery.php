@@ -7,7 +7,7 @@ namespace common\models;
  *
  * @see Categories
  */
-class CategoriesQuery extends \yii\db\ActiveQuery
+class CategoriesQuery extends CommonQuery
 {
     /*public function active()
     {

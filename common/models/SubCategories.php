@@ -81,4 +81,17 @@ class SubCategories extends ActiveRecord {
         return new SubCategoriesQuery(get_called_class());
     }
 
+    public static function getSubcategories($category_id, $map = true) {
+        $subcategories = self::find()
+                ->category($category_id)
+                ->status()
+                ->active()
+                ->all();
+        if ($map) {
+            return \yii\helpers\ArrayHelper::map($subcategories, 'subcat_id', 'subcat_name');
+        } else {
+            return $subcategories;
+        }
+    }
+
 }
