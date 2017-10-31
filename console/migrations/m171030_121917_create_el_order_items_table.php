@@ -11,7 +11,7 @@ use yii\db\Migration;
  * - `category`
  * - `product`
  */
-class m171030_121917_create_el_order_items_table extends Migration
+class m171030_121917_create_order_items_table extends Migration
 {
     /**
      * @inheritdoc
@@ -31,16 +31,16 @@ class m171030_121917_create_el_order_items_table extends Migration
         
         $this->createTable(self::ORDER_ITEMS_TABLE, [
             'item_id' => $this->primaryKey(),
-            'subcat_id' => $this->integer()->Null(),
-            'order_id' => $this->integer()->Null(),
-            'category_id' => $this->integer()->Null(),
-            'product_id' => $this->integer()->Null(),
+            'order_id' => $this->integer()->notNull(),
+            'category_id' => $this->integer()->notNull(),
+            'subcat_id' => $this->integer()->notNull(),
+            'product_id' => $this->integer()->notNull(),
             'category_name' => $this->string(20)->notNull(),
             'subcat_name' => $this->string(20)->notNull(),
             'product_name' => $this->string(20)->notNull(),
             'quantity' =>$this->integer()->Null(),
-            'price' => $this->decimal(10, 2)->Null(),
-            'total' => $this->decimal(10, 2)->Null(),
+            'price' => $this->decimal(10, 2)->notNull(),
+            'total' => $this->decimal(10, 2)->notNull(),
             'status' => $this->smallInteger()->notNull()->defaultValue(1),
             'created_at' => $this->integer()->defaultValue(0),
             'updated_at' => $this->integer()->defaultValue(0),
@@ -62,8 +62,7 @@ class m171030_121917_create_el_order_items_table extends Migration
            self::ORDER_ITEMS_TABLE,
             'subcat_id',
              self::SUB_CATEGORIES_TABLE,
-            'subcat_id',
-            'CASCADE'
+            'subcat_id'
         );
 
         // creates index for column `order_id`
@@ -96,8 +95,7 @@ class m171030_121917_create_el_order_items_table extends Migration
             self::ORDER_ITEMS_TABLE,
             'category_id',
              self::CATEGORIES_TABLE,
-            'category_id',
-            'CASCADE'
+            'category_id'
         );
 
         // creates index for column `product_id`
@@ -113,8 +111,7 @@ class m171030_121917_create_el_order_items_table extends Migration
             self::ORDER_ITEMS_TABLE,
             'product_id',
              self::PRODUCTS_TABLE,
-            'product_id',
-            'CASCADE'
+            'product_id'
         );
     }
 

@@ -20,7 +20,7 @@ class m171030_140318_create_order_status_table extends Migration
         }
         $this->createTable(self::ORDER_STATUS_TABLE, [
             'order_status_id' => $this->primaryKey(),
-            'status_position_id' =>$this->integer()->Null(),
+            'status_position_id' =>$this->integer()->notNull()->defaultValue(0),
             'status_name' => $this->string(20)->notNull()->unique(),
             'status' => $this->smallInteger()->notNull()->defaultValue(1),
             'created_at' => $this->integer()->defaultValue(0),
@@ -30,12 +30,12 @@ class m171030_140318_create_order_status_table extends Migration
             'deleted_at' => $this->integer()->defaultValue(0)
         ], $tableOptions);
        
-        $this->insert('{{%order_status}}', ['status_name' => 'New Order', 'status_position_id' => 1]);
-        $this->insert('{{%order_status}}', ['status_name' => 'In Progress', 'status_position_id' => 2]);
-        $this->insert('{{%order_status}}', ['status_name' => 'Completed', 'status_position_id' => 3]);
-        $this->insert('{{%order_status}}', ['status_name' => 'Dispatched', 'status_position_id' => 4]);
-        $this->insert('{{%order_status}}', ['status_name' => 'Delivered', 'status_position_id' =>5]);
-        $this->insert('{{%order_status}}', ['status_name' => 'Canceled', 'status_position_id' => 0]);
+        $this->insert(self::ORDER_STATUS_TABLE, ['status_name' => 'New Order', 'status_position_id' => 1]);
+        $this->insert(self::ORDER_STATUS_TABLE, ['status_name' => 'In Progress', 'status_position_id' => 2]);
+        $this->insert(self::ORDER_STATUS_TABLE, ['status_name' => 'Completed', 'status_position_id' => 3]);
+        $this->insert(self::ORDER_STATUS_TABLE, ['status_name' => 'Dispatched', 'status_position_id' => 4]);
+        $this->insert(self::ORDER_STATUS_TABLE, ['status_name' => 'Delivered', 'status_position_id' =>5]);
+        $this->insert(self::ORDER_STATUS_TABLE, ['status_name' => 'Canceled', 'status_position_id' => 0]);
       
     }
 

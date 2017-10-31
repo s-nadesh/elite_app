@@ -8,7 +8,7 @@ use yii\db\Migration;
  *
  * - `user`
  */
-class m171030_115416_create_el_orders_table extends Migration
+class m171030_115416_create_orders_table extends Migration
 {
     /**
      * @inheritdoc
@@ -26,14 +26,14 @@ class m171030_115416_create_el_orders_table extends Migration
         $this->createTable(self::ORDERS_TABLE, [
             'order_id' => $this->primaryKey(),
             'invoice_no' => $this->string(50)->unique(),
-            'invoice_date' => $this->date()->Null(),
+            'invoice_date' => $this->date()->notNull(),
             'user_id' => $this->integer()->notNull(),
             'order_status_id' => $this->integer()->notNull(),
-            'ordered_by' => $this->integer()->defaultValue(0)->notNull(),
-            'items_total_amount' => $this->decimal(10, 2)->Null(),
-            'tax_percentage' => $this->decimal(10, 2)->Null(),
-            'tax_amount' => $this->decimal(10, 2)->Null(),
-            'total_amount' => $this->decimal(10, 2)->Null(),
+            'ordered_by' => $this->integer()->notNull(),
+            'items_total_amount' => $this->decimal(10, 2)->notNull(),
+            'tax_percentage' => $this->decimal(10, 2)->notNull()->defaultValue(0.00),
+            'tax_amount' => $this->decimal(10, 2)->notNull()->defaultValue(0.00),
+            'total_amount' => $this->decimal(10, 2)->notNull(),
             'payment_status' => "ENUM('P','C','PC')",
             'signature' => $this->string(300)->Null(),
             'status' => $this->smallInteger()->notNull()->defaultValue(1),

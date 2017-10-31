@@ -8,7 +8,7 @@ use yii\db\Migration;
  *
  * - `order`
  */
-class m171030_123729_create_el_order_billings_table extends Migration
+class m171030_123729_create_order_billings_table extends Migration
 {
     /**
      * @inheritdoc
@@ -24,8 +24,8 @@ class m171030_123729_create_el_order_billings_table extends Migration
         }
         $this->createTable( self::ORDER_BILLINGS_TABLE, [
             'billing_id' => $this->primaryKey(),
-            'order_id' => $this->integer()->Null(),
-            'paid_amount' => $this->decimal(10, 2)->Null(),
+            'order_id' => $this->integer()->notNull(),
+            'paid_amount' => $this->decimal(10, 2)->notNull()->defaultValue(0.00),
             'status' => $this->smallInteger()->notNull()->defaultValue(1),
             'created_at' => $this->integer()->defaultValue(0),
             'updated_at' => $this->integer()->defaultValue(0),
