@@ -29,7 +29,11 @@ use yii\widgets\ActiveForm;
         <?= $form->field($model, 'visible_site')->checkbox(['label' => ('Active ')])->label('Visible Site') ?>
 
         <?= $form->field($model, 'reorder_notify')->checkbox(['label' => ('Active ')])->label('Reorder Notification') ?>
-
+        <?php
+        if ($model->isNewRecord) {
+            $model->status = true;
+        }
+        ?>
         <?= $form->field($model, 'status')->checkbox(['label' => ('Active ')])->label('Status') ?>
         <div class="box-footer">
             <div class="form-group">

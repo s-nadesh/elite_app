@@ -24,7 +24,11 @@ use yii\widgets\ActiveForm;
     ?>
 
     <?= $form->field($model, 'category_name')->textInput(['maxlength' => true])->label('Category Name<span class="required-label"></span>'); ?>
-
+    <?php
+    if ($model->isNewRecord) {
+        $model->status = true;
+    }
+    ?>
     <?= $form->field($model, 'status')->checkbox(['label' => ('Active ')])->label('Status') ?>
 
     <div class="box-footer">

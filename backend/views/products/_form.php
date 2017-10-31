@@ -1,11 +1,15 @@
 <?php
 
+use common\models\Products;
+use common\models\SubCategories;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\web\View;
 use yii\widgets\ActiveForm;
 
-/* @var $this yii\web\View */
-/* @var $model common\models\Products */
-/* @var $form yii\widgets\ActiveForm */
+/* @var $this View */
+/* @var $model Products */
+/* @var $form ActiveForm */
 ?>
 
 <div class="box-body">
@@ -24,19 +28,23 @@ use yii\widgets\ActiveForm;
     );
     ?>
 
-    <?= $form->field($model, 'product_name')->textInput(['maxlength' => true])->label('Product Name<span class="required-label"></span>'); ?>
-
     <?= $form->field($model, 'category_id')->dropDownList($categories, ['prompt' => '--Select Type--'])->label('Category Type<span class="required-label"></span>'); ?>
 
-    <?= $form->field($model, 'subcat_id')->dropDownList($sub_categories, ['prompt' => '--Select Type--'])->label('Sub Category Type<span class="required-label"></span>'); ?>
+    <?= $form->field($model, 'subcat_id')->dropDownList(ArrayHelper::map(SubCategories::find()->andWhere(' status=1')->all(), 'subcat_id', 'subcat_name'), ['prompt' => '--Select Subcategory--'])->label('Sub Category Type<span class="required-label"></span>'); ?>
+
+    <?= $form->field($model, 'product_name')->textInput(['maxlength' => true])->label('Product Name<span class="required-label"></span>'); ?>
 
     <?= $form->field($model, 'min_reorder')->textInput() ?>
 
     <?= $form->field($model, 'stock')->textInput(['maxlength' => true])->label('Stock<span class="required-label"></span>'); ?>
 
     <?= $form->field($model, 'price_per_unit')->textInput(['maxlength' => true])->label('Price-per-unit<span class="required-label"></span>'); ?>
-
-    <?= $form->field($model, 'status')->checkbox(['label' => ('Active ')])->label('Status') ?>
+    <?php
+    if ($model->isNewRecord) {
+        $model->status = true;
+    }
+    ?>
+    <?= $form->field($model, 'status')->checkbox(['label' => ('Active')])->label('Status') ?>
 
     <div class="box-footer">
         <div class="form-group">
@@ -48,3 +56,43 @@ use yii\widgets\ActiveForm;
     <?php ActiveForm::end(); ?>
 
 </div>
+
+<?php
+/* For Subcategory dropdown list */
+$subcatcallback = Yii::$app->urlManager->createUrl(['/products/getsubcatlist']);
+
+$script = <<< JS
+           jQuery(document).ready(function () { 
+        
+        var catid  = $('#products-category_id').val();
+      
+        $('#products-category_id').on('change', function() {
+            var catid     = $(this).val(); 
+//          alert(catid);
+            if(catid!=""){  
+            subcatlist(catid);  
+            } else{ 
+            subcatlist('0'); 
+            }
+            });
+          function subcatlist(catid){
+            $.ajax({
+                url  : "{$subcatcallback}",
+                type : "POST",                   
+                data: {
+                  id: catid,                       
+                },
+                success: function(data1) {
+                  $("#products-subcat_id").html(data1);
+                  if(catid!=""){         
+                    $('#products-subcat_id').val(subcat_id);
+                  }
+//                  $('#products-subcat_id').selectpicker('refresh');
+                }
+           });  
+        }
+        
+         });
+JS;
+$this->registerJs($script, View::POS_END);
+?>

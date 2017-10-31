@@ -24,20 +24,24 @@ use yii\widgets\ActiveForm;
     );
     ?>
 
-    <?= $form->field($model, 'subcat_name')->textInput(['maxlength' => true])->label('Sub Category Name<span class="required-label"></span>'); ?>
-
     <?= $form->field($model, 'category_id')->dropDownList($items, ['prompt' => '--Select Type--'])->label('Category Type<span class="required-label"></span>'); ?>
 
-    <?= $form->field($model, 'status')->checkbox(['label' => ('Active ')])->label('Status') ?>
+    <?= $form->field($model, 'subcat_name')->textInput(['maxlength' => true])->label('Sub Category Name<span class="required-label"></span>'); ?>
+    <?php
+    if ($model->isNewRecord) {
+        $model->status = true;
+    }
+    ?>
+<?= $form->field($model, 'status')->checkbox(['label' => ('Active')])->label('Status') ?>
 
     <div class="box-footer">
         <div class="form-group">
             <div class="col-sm-0 col-sm-offset-2">
-                <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+<?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
             </div>
         </div>
     </div>
 
-    <?php ActiveForm::end(); ?>
+<?php ActiveForm::end(); ?>
 
 </div>

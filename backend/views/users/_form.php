@@ -7,7 +7,6 @@ use yii\widgets\ActiveForm;
 /* @var $model common\models\Users */
 /* @var $form yii\widgets\ActiveForm */
 ?>
-<!--<h3 class="box-title">User Details</h3>-->
 <div class="box-body">
 
     <?php
@@ -35,16 +34,12 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'address')->textarea(['rows' => 4]) ?>
 
     <?= $form->field($model, 'mobile_no')->textInput(['maxlength' => true]) ?>
-
+    <?php
+    if ($model->isNewRecord) {
+        $model->status = true;
+    }
+    ?>
     <?= $form->field($model, 'status')->checkbox(['label' => ('Active ')])->label('Status') ?>
-
-    <!--<h3 class="box-title">Login Details</h3>-->
-
-    <?php // $form->field($model1, 'username')->textInput(['maxlength' => true])->label('User Name<span class="required-label"></span>'); ?>
-
-    <?php // $form->field($model1, 'password_hash')->passwordInput(['maxlength' => true])->label('Password<span class="required-label"></span>'); ?>
-
-    <?php // $form->field($model1, 'email')->textInput(['maxlength' => true])->label('Email<span class="required-label"></span>'); ?>
 
     <div class="box-footer">
         <div class="form-group">

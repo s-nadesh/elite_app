@@ -31,7 +31,7 @@ class ProductsController extends Controller {
                         'allow' => true,
                     ],
                         [
-                        'actions' => ['index', 'create', 'update', 'view', 'delete'],
+                        'actions' => ['index', 'create', 'update', 'view', 'delete', 'getsubcatlist'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -76,17 +76,43 @@ class ProductsController extends Controller {
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
+    public function actionGetsubcatlist() {
+        if (Yii::$app->request->isAjax) {
+
+            $cat_id = $_POST['id'];
+            if ($cat_id != 0) {
+                $subcatlists = SubCategories::find()->andWhere([
+                            'category_id' => $cat_id,
+                            'status' => 1,
+                        ])->all();
+                $lists = ArrayHelper::map($subcatlists, "subcat_id", function($model, $defaultValue) {
+                            return $model->subcat_name;
+                        });
+                if (!empty($lists)) {
+                    $slist = "<option value=''>--Select Subcategory--</option>";
+                    foreach ($lists as $key => $list) {
+
+                        $slist .= "<option value='" . $key . "'>" . $list . "</option>";
+                    }
+                } else {
+                    $slist = "<option value=''>No Records</option>";
+                }
+
+                echo $slist;
+                exit;
+            }
+        }
+    }
+
     public function actionCreate() {
         $model = new Products();
         $categories = ArrayHelper::map(Categories::find()->where('status=:id', ['id' => 1])->all(), 'category_id', 'category_name');
-        $sub_categories = ArrayHelper::map(SubCategories::find()->where('status=:id', ['id' => 1])->all(), 'subcat_id', 'subcat_name');
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index']);
         } else {
             return $this->render('create', [
                         'model' => $model,
                         'categories' => $categories,
-                        'sub_categories' => $sub_categories,
             ]);
         }
     }
