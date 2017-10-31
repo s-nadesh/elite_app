@@ -30,6 +30,8 @@ use yii\widgets\Menu;
                             ['label' => '<i class="fa fa-circle-o"></i>Sub-Category', 'url' => ['sub-categories/index']],
                             ['label' => '<i class="fa fa-circle-o"></i>Product', 'url' => ['products/index']],
                     ]],
+                ['label' => '<i class="fa fa-list"></i> <span>Order Management</span>', 'url' => ['orders/index']
+                   ],
             ],
             'submenuTemplate' => "\n<ul class='treeview-menu'>\n{items}\n</ul>\n",
         ]);
