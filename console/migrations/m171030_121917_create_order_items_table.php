@@ -38,7 +38,7 @@ class m171030_121917_create_order_items_table extends Migration
             'category_name' => $this->string(20)->notNull(),
             'subcat_name' => $this->string(20)->notNull(),
             'product_name' => $this->string(20)->notNull(),
-            'quantity' =>$this->integer()->Null(),
+            'quantity' =>$this->integer()->notNull(),
             'price' => $this->decimal(10, 2)->notNull(),
             'total' => $this->decimal(10, 2)->notNull(),
             'status' => $this->smallInteger()->notNull()->defaultValue(1),

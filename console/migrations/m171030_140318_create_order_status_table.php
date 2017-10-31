@@ -35,7 +35,7 @@ class m171030_140318_create_order_status_table extends Migration
         $this->insert(self::ORDER_STATUS_TABLE, ['status_name' => 'Completed', 'status_position_id' => 3]);
         $this->insert(self::ORDER_STATUS_TABLE, ['status_name' => 'Dispatched', 'status_position_id' => 4]);
         $this->insert(self::ORDER_STATUS_TABLE, ['status_name' => 'Delivered', 'status_position_id' =>5]);
-        $this->insert(self::ORDER_STATUS_TABLE, ['status_name' => 'Canceled', 'status_position_id' => 0]);
+        $this->insert(self::ORDER_STATUS_TABLE, ['status_name' => 'Canceled', 'status_position_id' => 6]);
       
     }
 
