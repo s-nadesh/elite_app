@@ -5,6 +5,8 @@ namespace backend\controllers;
 use common\models\Categories;
 use common\models\Products;
 use common\models\ProductsSearch;
+use common\models\StockLog;
+use common\models\StockLogSearch;
 use common\models\SubCategories;
 use Yii;
 use yii\filters\AccessControl;
@@ -31,7 +33,7 @@ class ProductsController extends Controller {
                         'allow' => true,
                     ],
                         [
-                        'actions' => ['index', 'create', 'update', 'view', 'delete', 'getsubcatlist'],
+                        'actions' => ['index', 'create', 'update', 'view', 'delete', 'getsubcatlist', 'stocklog'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -148,6 +150,50 @@ class ProductsController extends Controller {
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+    }
+
+    public function actionStocklog($id) {
+        $model = $this->findModel($id);
+        $stock = StockLog::find()->where(['product_id' => $model->product_id])->one();
+        if (!empty($stock)) {
+            if ($stock->load(Yii::$app->request->post())) {
+                $stock->adjust_from = $model->stock;
+                if ($stock->adjust_quantity != NULL) {
+                    $quantity = $stock->adjust_quantity + $model->stock;
+                } else {
+                    $quantity = $model->stock;
+                }
+                $model->stock = $quantity;                
+                $model->save();
+                $stock->adjust_to = $model->stock;
+                $stock->save();
+                return $this->redirect(['stocklog?id=' . $model->product_id]);
+            }
+        } else {
+            $stock = new StockLog();
+            if ($stock->load(Yii::$app->request->post())) {
+                $stock->adjust_from = $model->stock;
+                if ($stock->adjust_quantity != NULL) {
+                    $quantity = $stock->adjust_quantity + $model->stock;
+                } else {
+                    $quantity = $model->stock;
+                }
+                $model->stock = $quantity;
+                $model->save();
+                $stock->product_id = $model->product_id;
+                $stock->adjust_to = $model->stock;
+                $stock->save();
+                return $this->redirect(['stocklog?id=' . $model->product_id]);
+            }
+        }
+        $searchModel = new StockLogSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        return $this->render('stocklog', [
+                    'model' => $this->findModel($id),
+                    'stock' => $stock,
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
+        ]);
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
@@ -33,6 +34,7 @@ class Products extends ActiveRecord {
      */
     public function behaviors() {
         return [
+            BlameableBehavior::className(),
             TimestampBehavior::className(),
         ];
     }
@@ -65,8 +67,8 @@ class Products extends ActiveRecord {
             'category_id' => 'Category Type',
             'subcat_id' => 'Sub Category Type',
             'product_name' => 'Product Name',
-            'min_reorder' => 'Min Reorder',
-            'stock' => 'Stock',
+            'min_reorder' => 'Minimum Reorder Level',
+            'stock' => 'Quantity Purchased',
             'price_per_unit' => 'Price Per Unit',
             'status' => 'Status',
             'created_at' => 'Created At',

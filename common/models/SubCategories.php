@@ -2,9 +2,11 @@
 
 namespace common\models;
 
+use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "{{%sub_categories}}".
@@ -28,6 +30,7 @@ class SubCategories extends ActiveRecord {
      */
     public function behaviors() {
         return [
+            BlameableBehavior::className(),
             TimestampBehavior::className(),
         ];
     }
@@ -88,7 +91,7 @@ class SubCategories extends ActiveRecord {
                 ->active()
                 ->all();
         if ($map) {
-            return \yii\helpers\ArrayHelper::map($subcategories, 'subcat_id', 'subcat_name');
+            return ArrayHelper::map($subcategories, 'subcat_id', 'subcat_name');
         } else {
             return $subcategories;
         }

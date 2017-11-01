@@ -5,12 +5,12 @@ namespace common\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\SubCategories;
+use common\models\StockLog;
 
 /**
- * SubCategoriesSearch represents the model behind the search form about `common\models\SubCategories`.
+ * StockLogSearch represents the model behind the search form about `common\models\StockLog`.
  */
-class SubCategoriesSearch extends SubCategories
+class StockLogSearch extends StockLog
 {
     /**
      * @inheritdoc
@@ -18,8 +18,7 @@ class SubCategoriesSearch extends SubCategories
     public function rules()
     {
         return [
-            [['subcat_id', 'category_id', 'status', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
-            [['subcat_name', 'created_at', 'updated_at'], 'safe'],
+            [['stocklog_id', 'product_id', 'adjust_datetime', 'adjust_from', 'adjust_to', 'adjust_quantity', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
         ];
     }
 
@@ -41,14 +40,12 @@ class SubCategoriesSearch extends SubCategories
      */
     public function search($params)
     {
-        $query = SubCategories::find();
+        $query = StockLog::find();
 
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'pagination' => array('pageSize' => 10),
-            'sort' => ['defaultOrder' => ['created_at' => SORT_DESC]],
         ]);
 
         $this->load($params);
@@ -61,8 +58,12 @@ class SubCategoriesSearch extends SubCategories
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'subcat_id' => $this->subcat_id,
-            'category_id' => $this->category_id,
+            'stocklog_id' => $this->stocklog_id,
+            'product_id' => $this->product_id,
+            'adjust_datetime' => $this->adjust_datetime,
+            'adjust_from' => $this->adjust_from,
+            'adjust_to' => $this->adjust_to,
+            'adjust_quantity' => $this->adjust_quantity,
             'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
@@ -70,8 +71,6 @@ class SubCategoriesSearch extends SubCategories
             'updated_by' => $this->updated_by,
             'deleted_at' => $this->deleted_at,
         ]);
-
-        $query->andFilterWhere(['like', 'subcat_name', $this->subcat_name]);
 
         return $dataProvider;
     }

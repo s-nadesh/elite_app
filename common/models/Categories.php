@@ -2,10 +2,11 @@
 
 namespace common\models;
 
-use Faker\Provider\zh_TW\DateTime;
+use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "{{%categories}}".
@@ -28,6 +29,7 @@ class Categories extends ActiveRecord {
      */
     public function behaviors() {
         return [
+            BlameableBehavior::className(),
             TimestampBehavior::className(),
         ];
     }
@@ -85,7 +87,7 @@ class Categories extends ActiveRecord {
                 ->active()
                 ->all();
         if ($map) {
-            return \yii\helpers\ArrayHelper::map($categories, 'category_id', 'category_name');
+            return ArrayHelper::map($categories, 'category_id', 'category_name');
         } else {
             return $categories;
         }

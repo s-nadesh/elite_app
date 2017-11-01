@@ -7,6 +7,7 @@ use yii\data\ActiveDataProvider;
 use yii\grid\GridView;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\web\View;
 
 /* @var $this View */
@@ -71,7 +72,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                     // 'updated_by',
                                     // 'deleted_at',
                                     ['class' => 'yii\grid\ActionColumn',
-                                        'template' => '{update}&nbsp;&nbsp;{delete}',
+                                        'template' => '{update}&nbsp;&nbsp;{stock}&nbsp;&nbsp;{delete}',
+                                        'buttons' => [
+                                            'stock' => function ($url, $model) {
+                                                $url = Url::toRoute('products/stocklog?id=' . $model->product_id);
+                                                return Html::a('<span title="Stock Log" class="fa-building-o"></span>', $url);
+                                            },
+                                        ],
                                     ],
                                 ],
                             ]);
