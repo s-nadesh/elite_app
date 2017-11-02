@@ -10,14 +10,18 @@ use common\models\Orders;
 /**
  * OrdersSearch represents the model behind the search form about `common\models\Orders`.
  */
-class OrdersSearch extends Orders
-{
+class OrdersSearch extends Orders {
+
+    public $user;
+    public $started_at;
+    public $ended_at;
+
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
+            [['user', 'started_at', 'ended_at'], 'safe'],
             [['order_id', 'user_id', 'order_status_id', 'ordered_by', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
             [['invoice_no', 'invoice_date', 'payment_status', 'signature'], 'safe'],
             [['items_total_amount', 'tax_percentage', 'tax_amount', 'total_amount'], 'number'],
@@ -27,8 +31,7 @@ class OrdersSearch extends Orders
     /**
      * @inheritdoc
      */
-    public function scenarios()
-    {
+    public function scenarios() {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
@@ -40,12 +43,29 @@ class OrdersSearch extends Orders
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
-    {
+    public function search($params) {
+        $datamod = array();
+        $search_vals = [];
+        $datamod = $_GET;
+        $this->load($params);
+
         $query = Orders::find();
+        if ($this->started_at != "") {
+            if ($this->ended_at == "") {
+                $this->ended_at = date('m/d/Y');
+            }
+
+            $query->where('DATE_FORMAT(el_orders.created_at ,"%Y-%m-%d") >= "' . Orders::dateformat($this->started_at) . '" AND DATE_FORMAT(el_orders.created_at,"%Y-%m-%d") <= "' . Orders::dateformat($this->ended_at) . '"');
+            $datamod['OrdersSearch']['started_at'] = Orders::dateformat($this->started_at);
+            $datamod['OrdersSearch']['ended_at'] = Orders::dateformat($this->ended_at);
+        }
+        $query->andWhere('el_orders.deleted_at=0');
+
+//echo $query->createCommand()->getRawSql();exit();
+        $query->joinWith(['user']);
+
 
         // add conditions that should always apply here
-
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
@@ -69,18 +89,19 @@ class OrdersSearch extends Orders
             'tax_percentage' => $this->tax_percentage,
             'tax_amount' => $this->tax_amount,
             'total_amount' => $this->total_amount,
-            'status' => $this->status,
+            'el_orders.status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_by' => $this->created_by,
             'updated_by' => $this->updated_by,
             'deleted_at' => $this->deleted_at,
         ]);
-
         $query->andFilterWhere(['like', 'invoice_no', $this->invoice_no])
-            ->andFilterWhere(['like', 'payment_status', $this->payment_status])
-            ->andFilterWhere(['like', 'signature', $this->signature]);
+                ->andFilterWhere(['like', 'payment_status', $this->payment_status])
+                ->andFilterWhere(['like', 'el_users.name', $this->user])
+                ->andFilterWhere(['like', 'signature', $this->signature]);
 
         return $dataProvider;
     }
+
 }

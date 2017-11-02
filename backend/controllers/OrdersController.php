@@ -7,6 +7,7 @@ use common\models\OrderBillings;
 use common\models\OrderItems;
 use common\models\Orders;
 use common\models\OrdersSearch;
+use common\models\OrderTrack;
 use common\models\Products;
 use common\models\SubCategories;
 use common\models\Users;
@@ -37,7 +38,7 @@ class OrdersController extends Controller
                         'allow' => true,
                     ],
                         [
-                        'actions' => ['index', 'create', 'update', 'view', 'delete','getsubcategorylist','getproductlist'],
+                        'actions' => ['index', 'create','status', 'update', 'view', 'delete','getsubcategorylist','getproductlist'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -58,12 +59,14 @@ class OrdersController extends Controller
      */
     public function actionIndex()
     {
+         $model = new Orders();
         $searchModel = new OrdersSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'model'=>$model,
         ]);
     }
 
@@ -135,6 +138,36 @@ class OrdersController extends Controller
             }
         }
     }
+    public function actionStatus($id)
+     {
+         $temp_data = array();
+        $model = $this->findModel($id);
+         $tmodel = OrderTrack::findOne(["order_id" => $id]);
+        if (Yii::$app->request->post()) {
+            $model->load(Yii::$app->request->post());
+             $tmodel->load(Yii::$app->request->post());
+            
+             $temp_data['dispatch_track_id'] = $_POST ['OrderTrack'] ['dispatch_track_id'];
+             $temp_data['dispatch_courier_comapny'] = $_POST ['OrderTrack'] ['dispatch_courier_comapny'];
+             $temp_data['dispatch_comment'] = $_POST ['OrderTrack'] ['dispatch_comment'];
+             if($model->save()){
+                 $tmodel->order_status_id=$model->order_status_id;
+                 $tmodel->order_id=$model->order_id;
+                  $tmodel->value= serialize($temp_data);
+                 $tmodel->created_by=$model->created_by;
+                 $tmodel->save();
+                  \Yii::$app->getSession()->setFlash('success', 'Order added successfully');
+                  return $this->redirect(['index']);
+             } else {
+                 print_r($model->getErrors());exit;    
+             }
+        } else {
+            return $this->renderAjax('status', [
+                'model' => $model,
+                'tmodel'=>$tmodel,
+            ]);
+        }
+    }
     /**
      * Creates a new Orders model.
      * If creation is successful, the browser will be redirected to the 'view' page.
@@ -186,13 +219,41 @@ class OrdersController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model =  $this->findModel($id);
+        $orderbilling_model = new OrderBillings();
+        $orderby = ArrayHelper::map(Users::find()->where('user_type_id=:id', ['id' => UserTypes::SE_USER_TYPE])->all(), 'user_id', 'name');
+        $users = ArrayHelper::map(Users::find()->where('user_type_id=:id or user_type_id=:id1', ['id' => UserTypes::CU_USER_TYPE,'id1'=>UserTypes::DE_USER_TYPE])->all(), 'user_id', 'name');
+        $categories = ArrayHelper::map(Categories::find()->where('status=:id', ['id' => 1])->all(), 'category_id', 'category_name');
+        $sub_categories = ArrayHelper::map(SubCategories::find()->where('status=:id', ['id' => 1])->all(), 'subcat_id', 'subcat_name');
+        $products = ArrayHelper::map(Products::find()->where('status=:id', ['id' => 1])->all(), 'product_id', 'product_name');
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->order_id]);
+        if (Yii::$app->request->post()) {
+          
+            $model->load(Yii::$app->request->post());
+             $orderbilling_model->load(Yii::$app->request->post());
+            
+             if ($model->validate()) {
+                 if($orderbilling_model->paid_amount!=''){
+                 $different = $model->total_amount - $orderbilling_model->paid_amount; 
+                 $model->total_amount= $different;
+                 }
+//                   print_r($model->total_amount);exit;
+                $model->save();
+                $orderbilling_model->order_id=$model->order_id;
+                if($orderbilling_model->validate()){
+                  $orderbilling_model->save();
+                return $this->redirect(['index']);
+                }
+             }          
         } else {
             return $this->render('update', [
                 'model' => $model,
+                'orderby'=>$orderby,
+                'users'=>$users,
+                'categories' => $categories,
+                'sub_categories' => $sub_categories,
+                'products'=>$products,
+                'orderbilling_model'=>$orderbilling_model,
             ]);
         }
     }

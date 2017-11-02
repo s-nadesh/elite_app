@@ -28,7 +28,7 @@ class ThemeAsset extends AssetBundle {
     ];
     public $js = [
 //        '//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js',
-        '//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js',
+//        '//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js',//nithya
         '//code.jquery.com/ui/1.11.1/jquery-ui.min.js',
         '//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js',
 //        'js/plugins/morris/morris.min.js',
