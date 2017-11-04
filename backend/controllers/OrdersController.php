@@ -340,7 +340,7 @@ class OrdersController extends Controller {
                     }
                     Carts::clearCart(); // Pending
                     Yii::$app->session->setFlash('success', "Order placed successfully");
-                    return $this->redirect(['carts/index']);
+                    return $this->redirect(['orders/index']);
                 }
             } else {
                 return $this->redirect(['carts/index']);
