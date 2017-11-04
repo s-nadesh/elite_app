@@ -35,7 +35,7 @@ $dispatch = ArrayHelper::map(OrderStatus::find()->where('status=:id and status_p
                     <?php // echo $this->render('_search', ['model' => $searchModel]);  ?>
 
                     <div class="pull-right">
-                        <?= Html::a('Create Orders', ['carts/index'], ['class' => 'btn btn-success']) ?>
+                        <?= Html::a('Create Order', ['carts/index'], ['class' => 'btn btn-success']) ?>
                     </div>
                 </div>
             </div>

@@ -144,6 +144,11 @@ class Orders extends \yii\db\ActiveRecord {
         if ($insert) {
             InternalCodes::increaseInternalCode("O");
             //Order Track codes here
+            $neworder = new OrderTrack();
+            $neworder->order_id = $this->order_id;
+            $neworder->order_status_id = $this->order_status_id;
+            $neworder->save(false);
+ 
         }
         return parent::afterSave($insert, $changedAttributes);
     }

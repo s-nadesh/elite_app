@@ -115,5 +115,15 @@ class Users extends ActiveRecord {
             return $users;
         }
     }
+    public static function userExists($info) {
+        $user = self::find()
+                ->andWhere([
+                    'user_id' => $info->created_by,
+                    'status' => 1,
+                ])
+                ->one();
+        return $user;
+    }
+
 
 }

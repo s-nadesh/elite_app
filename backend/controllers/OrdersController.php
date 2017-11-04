@@ -201,7 +201,6 @@ class OrdersController extends Controller {
             $orderbilling_model->load(Yii::$app->request->post());
 
             if ($model->validate() && $odritem_model->validate() && $orderbilling_model->validate()) {
-
                 $model->save();
                 $odritem_model->save();
                 $orderbilling_model->save();

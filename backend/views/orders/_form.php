@@ -154,7 +154,7 @@ $order_models = OrderItems::find()->where('status=:sid and order_id=:id', ['sid'
     </div>
 <?php } else { ?>
     <div class="form-group">
-        <label class="col-sm-2 control-label valueleft">Total Amount</label>
+        <label class="col-sm-2 control-label valueleft">Pending Amount</label>
         <div class="col-sm-5 valueright">
             <?= $form->field($model, 'total_amount')->textInput(['readonly' => !$model->isNewRecord])->label(false) ?>
         </div>

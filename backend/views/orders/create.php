@@ -10,7 +10,7 @@ $this->title = 'Create Orders';
 $this->params['breadcrumbs'][] = ['label' => 'Orders', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<<aside class="right-side">
+<aside class="right-side">
     <section class="content-header">
 
     <h1><?= Html::encode($this->title) ?></h1>
