@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use common\models\Carts;
 use common\models\Categories;
 use common\models\OrderBillings;
 use common\models\OrderItems;
@@ -19,18 +20,15 @@ use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
-
-
 /**
  * OrdersController implements the CRUD actions for Orders model.
  */
-class OrdersController extends Controller
-{
+class OrdersController extends Controller {
+
     /**
      * @inheritdoc
      */
-    public function behaviors()
-    {
+    public function behaviors() {
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -40,7 +38,7 @@ class OrdersController extends Controller
                         'allow' => true,
                     ],
                         [
-                        'actions' => ['index', 'create','status', 'update', 'view', 'delete','getsubcategorylist','getproductlist'],
+                        'actions' => ['index', 'create', 'status', 'update', 'view', 'delete', 'getsubcategorylist', 'getproductlist', 'placeorder'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -59,16 +57,15 @@ class OrdersController extends Controller
      * Lists all Orders models.
      * @return mixed
      */
-    public function actionIndex()
-    {
-         $model = new Orders();
+    public function actionIndex() {
+        $model = new Orders();
         $searchModel = new OrdersSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-            'model'=>$model,
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
+                    'model' => $model,
         ]);
     }
 
@@ -77,16 +74,17 @@ class OrdersController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionView($id)
-    {
+    public function actionView($id) {
         return $this->render('view', [
-            'model' => $this->findModel($id),
+                    'model' => $this->findModel($id),
         ]);
     }
-     public function actionGetsubcategorylist() {
+
+    public function actionGetsubcategorylist() {
         if (Yii::$app->request->isAjax) {
             $cat_id = $_POST['id'];
-            print_r($cat_id);exit;
+            print_r($cat_id);
+            exit;
             if ($cat_id != 0) {
                 $subcatlists = SubCategories::find()->andWhere([
                             'category_id' => $cat_id,
@@ -112,8 +110,8 @@ class OrdersController extends Controller
             }
         }
     }
-    
- public function actionGetproductlist() {
+
+    public function actionGetproductlist() {
         if (Yii::$app->request->isAjax) {
             $subcat_id = $_POST['id'];
             if ($subcat_id != 0) {
@@ -140,6 +138,7 @@ class OrdersController extends Controller
             }
         }
     }
+
     public function actionStatus($id)
      {
          $temp_data = array();
@@ -179,45 +178,45 @@ class OrdersController extends Controller
             ]);
         }
     }
+
     /**
      * Creates a new Orders model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
-    {
+    public function actionCreate() {
         $model = new Orders();
         $odritem_model = new OrderItems();
         $orderbilling_model = new OrderBillings();
         $orderby = ArrayHelper::map(Users::find()->where('user_type_id=:id', ['id' => UserTypes::SE_USER_TYPE])->all(), 'user_id', 'name');
-        $users = ArrayHelper::map(Users::find()->where('user_type_id=:id or user_type_id=:id1', ['id' => UserTypes::CU_USER_TYPE,'id1'=>UserTypes::DE_USER_TYPE])->all(), 'user_id', 'name');
+        $users = ArrayHelper::map(Users::find()->where('user_type_id=:id or user_type_id=:id1', ['id' => UserTypes::CU_USER_TYPE, 'id1' => UserTypes::DE_USER_TYPE])->all(), 'user_id', 'name');
         $categories = ArrayHelper::map(Categories::find()->where('status=:id', ['id' => 1])->all(), 'category_id', 'category_name');
         $sub_categories = ArrayHelper::map(SubCategories::find()->where('status=:id', ['id' => 1])->all(), 'subcat_id', 'subcat_name');
         $products = ArrayHelper::map(Products::find()->where('status=:id', ['id' => 1])->all(), 'product_id', 'product_name');
 
-                                
+
         if (Yii::$app->request->post()) {
             $model->load(Yii::$app->request->post());
             $odritem_model->load(Yii::$app->request->post());
-             $orderbilling_model->load(Yii::$app->request->post());
-            
-             if ($model->validate() && $odritem_model->validate() && $orderbilling_model->validate() ) {
+            $orderbilling_model->load(Yii::$app->request->post());
+
+            if ($model->validate() && $odritem_model->validate() && $orderbilling_model->validate()) {
 
                 $model->save();
-                 $odritem_model->save();
-                  $orderbilling_model->save();
-             }
+                $odritem_model->save();
+                $orderbilling_model->save();
+            }
             return $this->redirect(['view', 'id' => $model->order_id]);
         } else {
             return $this->render('create', [
-                'model' => $model,
-                'odritem_model'=>$odritem_model,
-                'orderby'=>$orderby,
-                'users'=>$users,
-                'categories' => $categories,
-                'sub_categories' => $sub_categories,
-                'products'=>$products,
-                'orderbilling_model'=>$orderbilling_model,
+                        'model' => $model,
+                        'odritem_model' => $odritem_model,
+                        'orderby' => $orderby,
+                        'users' => $users,
+                        'categories' => $categories,
+                        'sub_categories' => $sub_categories,
+                        'products' => $products,
+                        'orderbilling_model' => $orderbilling_model,
             ]);
         }
     }
@@ -228,43 +227,42 @@ class OrdersController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionUpdate($id)
-    {
-        $model =  $this->findModel($id);
+    public function actionUpdate($id) {
+        $model = $this->findModel($id);
         $orderbilling_model = new OrderBillings();
         $orderby = ArrayHelper::map(Users::find()->where('user_type_id=:id', ['id' => UserTypes::SE_USER_TYPE])->all(), 'user_id', 'name');
-        $users = ArrayHelper::map(Users::find()->where('user_type_id=:id or user_type_id=:id1', ['id' => UserTypes::CU_USER_TYPE,'id1'=>UserTypes::DE_USER_TYPE])->all(), 'user_id', 'name');
+        $users = ArrayHelper::map(Users::find()->where('user_type_id=:id or user_type_id=:id1', ['id' => UserTypes::CU_USER_TYPE, 'id1' => UserTypes::DE_USER_TYPE])->all(), 'user_id', 'name');
         $categories = ArrayHelper::map(Categories::find()->where('status=:id', ['id' => 1])->all(), 'category_id', 'category_name');
         $sub_categories = ArrayHelper::map(SubCategories::find()->where('status=:id', ['id' => 1])->all(), 'subcat_id', 'subcat_name');
         $products = ArrayHelper::map(Products::find()->where('status=:id', ['id' => 1])->all(), 'product_id', 'product_name');
 
         if (Yii::$app->request->post()) {
-          
+
             $model->load(Yii::$app->request->post());
-             $orderbilling_model->load(Yii::$app->request->post());
-            
-             if ($model->validate()) {
-                 if($orderbilling_model->paid_amount!=''){
-                 $different = $model->total_amount - $orderbilling_model->paid_amount; 
-                 $model->total_amount= $different;
-                 }
+            $orderbilling_model->load(Yii::$app->request->post());
+
+            if ($model->validate()) {
+                if ($orderbilling_model->paid_amount != '') {
+                    $different = $model->total_amount - $orderbilling_model->paid_amount;
+                    $model->total_amount = $different;
+                }
 //                   print_r($model->total_amount);exit;
                 $model->save();
-                $orderbilling_model->order_id=$model->order_id;
-                if($orderbilling_model->validate()){
-                  $orderbilling_model->save();
-                return $this->redirect(['index']);
+                $orderbilling_model->order_id = $model->order_id;
+                if ($orderbilling_model->validate()) {
+                    $orderbilling_model->save();
+                    return $this->redirect(['index']);
                 }
-             }          
+            }
         } else {
             return $this->render('update', [
-                'model' => $model,
-                'orderby'=>$orderby,
-                'users'=>$users,
-                'categories' => $categories,
-                'sub_categories' => $sub_categories,
-                'products'=>$products,
-                'orderbilling_model'=>$orderbilling_model,
+                        'model' => $model,
+                        'orderby' => $orderby,
+                        'users' => $users,
+                        'categories' => $categories,
+                        'sub_categories' => $sub_categories,
+                        'products' => $products,
+                        'orderbilling_model' => $orderbilling_model,
             ]);
         }
     }
@@ -275,8 +273,7 @@ class OrdersController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionDelete($id)
-    {
+    public function actionDelete($id) {
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
@@ -289,12 +286,68 @@ class OrdersController extends Controller
      * @return Orders the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
-    {
+    protected function findModel($id) {
         if (($model = Orders::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
+    protected function prepareCartitems($carts) {
+        $cart_items = [];
+
+        foreach ($carts as $cart) {
+            $cart_items[] = [
+                'category_id' => $cart->product->category_id,
+                'subcat_id' => $cart->product->subcat_id,
+                'product_id' => $cart->product_id,
+                'category_name' => $cart->product->category->category_name,
+                'subcat_name' => $cart->product->subcat->subcat_name,
+                'product_name' => $cart->product->product_name,
+                'quantity' => $cart->qty,
+                'price' => $cart->product->price_per_unit,
+                'total' => ($cart->qty * $cart->product->price_per_unit),
+            ];
+        }
+
+        return $cart_items;
+    }
+
+    public function actionPlaceorder() {
+        $session = Yii::$app->session;
+        if (isset($session['carts'])) {
+            $cart_detail = $session['carts'];
+
+            $carts = Carts::find()
+                    ->andWhere($cart_detail)
+                    ->all();
+
+            if (!empty($carts)) {
+                $cart_items = $this->prepareCartitems($carts);
+
+                //Order Insert
+                $order = new Orders();
+                $order->user_id = $cart_detail['user_id'];
+                $order->ordered_by = $cart_detail['ordered_by'];
+                $order->items_total_amount = Orders::calcItemsTotal($cart_items);
+                if ($order->save(false)) {
+                    foreach ($cart_items as $cart_item) {
+                        $order_item = new OrderItems();
+                        $order_item->order_id = $order->order_id;
+                        $order_item->load($cart_item, '');
+                        $order_item->save(false);
+                    }
+                    Carts::clearCart(); // Pending
+                    Yii::$app->session->setFlash('success', "Order placed successfully");
+                    return $this->redirect(['carts/index']);
+                }
+            } else {
+                return $this->redirect(['carts/index']);
+            }
+        } else {
+            return $this->redirect(['carts/index']);
+        }
+    }
+
 }

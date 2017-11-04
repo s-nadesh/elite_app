@@ -21,6 +21,9 @@ use Yii;
  */
 class OrderStatus extends \yii\db\ActiveRecord
 {
+    const OR_NEW = 1;
+    const OR_INPROGRESS = 2;
+    const OR_COMPLETED = 3;
     /**
      * @inheritdoc
      */

@@ -12,6 +12,7 @@ use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
@@ -33,7 +34,7 @@ class ProductsController extends Controller {
                         'allow' => true,
                     ],
                         [
-                        'actions' => ['index', 'create', 'update', 'view', 'delete', 'getsubcatlist', 'stocklog'],
+                        'actions' => ['index', 'create', 'update', 'view', 'delete', 'getsubcatlist', 'getproduct', 'getproducts', 'stocklog'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -209,6 +210,45 @@ class ProductsController extends Controller {
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+    public function actionGetproduct($id) {
+        $product = $this->findModel($id);
+        echo Json::encode($product);
+        return;
+    }
+
+    //DepDrop widget
+    /**
+     * the getProdList function will query the database based on the
+     * cat_id and sub_cat_id and return an array like below:
+     *  [
+     *      'out'=>[
+     *          ['id'=>'<prod-id-1>', 'name'=>'<prod-name1>'],
+     *          ['id'=>'<prod_id_2>', 'name'=>'<prod-name2>']
+     *       ],
+     *       'selected'=>'<prod-id-1>'
+     *  ]
+     */
+    public function actionGetproducts() {
+        $result = [];
+        if (isset($_POST['depdrop_parents'])) {
+            $ids = $_POST['depdrop_parents'];
+            $cat_id = empty($ids[0]) ? null : $ids[0];
+            $subcat_id = empty($ids[1]) ? null : $ids[1];
+            if ($cat_id != null && $subcat_id != null) {
+                $data = Products::getProducts($cat_id, $subcat_id, false);
+                foreach ($data as $key => $value) {
+                    $result[] = [
+                        'id' => $value->product_id,
+                        'name' => $value->product_name,
+                    ];
+                }
+                echo Json::encode(['output' => $result, 'selected' => '']);
+                return;
+            }
+        }
+        echo Json::encode(['output' => '', 'selected' => '']);
     }
 
 }

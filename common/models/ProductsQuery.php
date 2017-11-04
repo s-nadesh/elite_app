@@ -7,8 +7,15 @@ namespace common\models;
  *
  * @see Products
  */
-class ProductsQuery extends \yii\db\ActiveQuery
+class ProductsQuery extends CommonQuery
 {
+    public function category($category_id) {
+        return $this->andWhere(["{$this->tblName}.category_id" => $category_id]);
+    }
+    
+    public function subcategory($subcat_id) {
+        return $this->andWhere(["{$this->tblName}.subcat_id" => $subcat_id]);
+    }
     /*public function active()
     {
         return $this->andWhere('[[status]]=1');

@@ -100,5 +100,19 @@ class Products extends ActiveRecord {
     public static function find() {
         return new ProductsQuery(get_called_class());
     }
+    
+    public static function getProducts($category_id, $subcat_id, $map = true) {
+        $products = self::find()
+                ->category($category_id)
+                ->subcategory($subcat_id)
+                ->status()
+                ->active()
+                ->all();
+        if ($map) {
+            return \yii\helpers\ArrayHelper::map($products, 'product_id', 'product_name');
+        } else {
+            return $products;
+        }
+    }
 
 }

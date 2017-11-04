@@ -32,41 +32,38 @@ use Yii;
  * @property Users $orderedBy
  * @property Users $user
  */
-class Orders extends \yii\db\ActiveRecord
-{
+class Orders extends \yii\db\ActiveRecord {
+
     /**
      * @inheritdoc
      */
-    public static function tableName()
-    {
+    public static function tableName() {
         return '{{%orders}}';
     }
 
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
-            [['invoice_no', 'invoice_date', 'user_id', 'order_status_id', 'ordered_by', 'items_total_amount', 'total_amount'], 'required'],
-            [['invoice_date'], 'safe'],
-            [['user_id', 'order_status_id', 'ordered_by', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
-            [['items_total_amount', 'tax_percentage', 'tax_amount', 'total_amount'], 'number'],
-            [['payment_status'], 'string'],
-            [['invoice_no'], 'string', 'max' => 50],
-            [['signature'], 'string', 'max' => 300],
-            [['invoice_no'], 'unique'],
-            [['order_status_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrderStatus::className(), 'targetAttribute' => ['order_status_id' => 'order_status_id']],
-            [['ordered_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['ordered_by' => 'user_id']],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'user_id']],
+                [['user_id', 'order_status_id', 'ordered_by', 'items_total_amount', 'total_amount'], 'required'],
+                [['invoice_date'], 'safe'],
+                [['user_id', 'order_status_id', 'ordered_by', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
+                [['items_total_amount', 'tax_percentage', 'tax_amount', 'total_amount'], 'number'],
+                [['payment_status'], 'string'],
+                [['invoice_no'], 'string', 'max' => 50],
+                [['signature'], 'string', 'max' => 300],
+                [['invoice_no'], 'unique'],
+                [['order_status_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrderStatus::className(), 'targetAttribute' => ['order_status_id' => 'order_status_id']],
+                [['ordered_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['ordered_by' => 'user_id']],
+                [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'user_id']],
         ];
     }
 
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'order_id' => 'Order ID',
             'invoice_no' => 'Invoice No',
@@ -92,40 +89,35 @@ class Orders extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getOrderBillings()
-    {
+    public function getOrderBillings() {
         return $this->hasMany(OrderBillings::className(), ['order_id' => 'order_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getOrderItems()
-    {
+    public function getOrderItems() {
         return $this->hasMany(OrderItems::className(), ['order_id' => 'order_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getOrderStatus()
-    {
+    public function getOrderStatus() {
         return $this->hasOne(OrderStatus::className(), ['order_status_id' => 'order_status_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getOrderedBy()
-    {
+    public function getOrderedBy() {
         return $this->hasOne(Users::className(), ['user_id' => 'ordered_by']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getUser()
-    {
+    public function getUser() {
         return $this->hasOne(Users::className(), ['user_id' => 'user_id']);
     }
 
@@ -133,8 +125,37 @@ class Orders extends \yii\db\ActiveRecord
      * @inheritdoc
      * @return OrdersQuery the active query used by this AR class.
      */
-    public static function find()
-    {
+    public static function find() {
         return new OrdersQuery(get_called_class());
     }
+
+    public function beforeSave($insert) {
+        if ($insert) {
+            $this->invoice_no = InternalCodes::generateInternalCode('O', 'common\models\Orders', 'invoice_no');
+            $this->invoice_date = date("Y-m-d H:m:i");
+            $this->order_status_id = OrderStatus::OR_NEW;
+            $this->total_amount = $this->items_total_amount; // Tax calculation is not done. 
+            $this->payment_status = 'P';
+        }
+        return parent::beforeSave($insert);
+    }
+    
+    public function afterSave($insert, $changedAttributes) {
+        if ($insert) {
+            InternalCodes::increaseInternalCode("O");
+            //Order Track codes here
+        }
+        return parent::afterSave($insert, $changedAttributes);
+    }
+    
+    public static function calcItemsTotal($order_items) {
+        $items_total_amount = 0;
+        if(!empty($order_items)){
+            foreach($order_items as $value) {
+                $items_total_amount += $value['total'];
+            }
+        }
+        return $items_total_amount;
+    }
+
 }

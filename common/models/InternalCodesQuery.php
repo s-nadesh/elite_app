@@ -7,12 +7,11 @@ namespace common\models;
  *
  * @see InternalCodes
  */
-class InternalCodesQuery extends \yii\db\ActiveQuery
+class InternalCodesQuery extends CommonQuery
 {
-    /*public function active()
-    {
-        return $this->andWhere('[[status]]=1');
-    }*/
+    public function codeType($code_type = 'O') {
+        return $this->andWhere(["{$this->tblName}.code_type" => $code_type]);
+    }
 
     /**
      * @inheritdoc
