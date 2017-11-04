@@ -44,16 +44,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'type_name',
                                     'type_code',
                                         [
+                                        'class' => 'backend\components\StatusColumn',
                                         'attribute' => 'status',
-                                        'filter' => Html::activeDropDownlist($searchModel, 'status', ["0" => 'In active', '1' => 'active'], ['class' => 'form-control', 'id' => null, 'prompt' => 'All']),
-                                        'value' => function($model) {
-                                            if ($model->status == 1) {
-                                                return '<span class="label success">Active</span>';
-                                            } else {
-                                                return '<span class="label failure">InActive</span>';
-                                            }
-                                        },
-                                        'format' => 'raw'],
+                                    ],
                                     'created_at:datetime',
 //                        'updated_at:datetime',
                                     // 'created_by',
