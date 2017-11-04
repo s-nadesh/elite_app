@@ -27,7 +27,7 @@ use yii\db\ActiveRecord;
  * @property Users $user
  */
 class Carts extends ActiveRecord {
-    
+
     public $category_id;
     public $subcat_id;
     public $product_price;
@@ -52,7 +52,15 @@ class Carts extends ActiveRecord {
                 [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Products::className(), 'targetAttribute' => ['product_id' => 'product_id']],
                 [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'user_id']],
                 [['category_id', 'subcat_id', 'product_price', 'total_amount'], 'safe'],
+                ['qty', 'stockCheck']
         ];
+    }
+
+    public function stockCheck($attribute, $params) {
+        if (!empty($this->qty)) {
+            if ($this->qty > $this->product->stock)
+                $this->addError($attribute, "Stock is not available");
+        }
     }
 
     /**
@@ -107,8 +115,8 @@ class Carts extends ActiveRecord {
     public static function find() {
         return new CartsQuery(get_called_class());
     }
-    
-    public static function clearCart(){
+
+    public static function clearCart() {
         $session = Yii::$app->session;
         if (isset($session['carts'])) {
             self::deleteAll($session['carts']);
@@ -127,10 +135,10 @@ class Carts extends ActiveRecord {
                 ->one();
         return $cart;
     }
-    
-    public static function getTotalAmount($provider){
+
+    public static function getTotalAmount($provider) {
         $total = 0;
-        foreach($provider as $model) {
+        foreach ($provider as $model) {
             $total += ($model->product->price_per_unit * $model->qty);
         }
         return $total;

@@ -39,9 +39,20 @@ $this->registerJs(
                 <?= $form->field($model, 'category_id')->dropDownList($categories, ['prompt' => '--Select--']) ?>
             </div>
             <div class="col-md-4">
+                <?php
+                //Set selected value after validation.
+                $data = [];
+                if ($model->subcat_id) {
+                    $data = [
+                        $model->subcat_id => $model->product->subcat->subcat_name
+                    ];
+                }
+                ?>
                 <?=
                 $form->field($model, 'subcat_id')->widget(DepDrop::classname(), [
+                    'data' => $data,
                     'pluginOptions' => [
+                        'initialize' => true,
                         'depends' => ['carts-category_id'],
                         'placeholder' => '--Select--',
                         'url' => Url::to(['/sub-categories/getsubcategories'])
@@ -50,6 +61,15 @@ $this->registerJs(
                 ?>
             </div>
             <div class="col-md-4">
+                <?php
+                //Set selected value after validation.
+                $product_data = [];
+                if ($model->product_id) {
+                    $product_data = [
+                        $model->product_id => $model->product->product_name
+                    ];
+                }
+                ?>
                 <?=
                 $form->field($model, 'product_id')->widget(DepDrop::classname(), [
                     'options' => [
@@ -58,7 +78,9 @@ $this->registerJs(
                             $( "#carts-product_price" ).val( data.price_per_unit );
                         }, "json");
                 '],
+                    'data' => $product_data,
                     'pluginOptions' => [
+                        'initialize' => true,
                         'depends' => ['carts-category_id', 'carts-subcat_id'],
                         'placeholder' => '--Select--',
                         'url' => Url::to(['/products/getproducts'])
@@ -70,7 +92,7 @@ $this->registerJs(
 
         <div class="row">
             <div class="col-md-4">
-                <?= $form->field($model, 'product_price')->textInput(['readOnly'=> true]) ?>
+                <?= $form->field($model, 'product_price')->textInput(['readOnly' => true]) ?>
             </div>
             <div class="col-md-4">
                 <?= $form->field($model, 'qty')->textInput() ?>

@@ -46,7 +46,7 @@ class ThemeAsset extends AssetBundle {
     ];
     public $depends = [
         'backend\assets\AppAsset',
-        'yii\bootstrap\BootstrapAsset',
+        'yii\bootstrap\BootstrapPluginAsset',
     ];
 
     public function init() {
