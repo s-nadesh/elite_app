@@ -19,6 +19,8 @@ use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
+
+
 /**
  * OrdersController implements the CRUD actions for Orders model.
  */
@@ -142,25 +144,34 @@ class OrdersController extends Controller
      {
          $temp_data = array();
         $model = $this->findModel($id);
-         $tmodel = OrderTrack::findOne(["order_id" => $id]);
+         $tmodel = new OrderTrack();
         if (Yii::$app->request->post()) {
             $model->load(Yii::$app->request->post());
-             $tmodel->load(Yii::$app->request->post());
-            
+            $tmodel->load(Yii::$app->request->post());
+            if($model->order_status_id==4){
              $temp_data['dispatch_track_id'] = $_POST ['OrderTrack'] ['dispatch_track_id'];
              $temp_data['dispatch_courier_comapny'] = $_POST ['OrderTrack'] ['dispatch_courier_comapny'];
              $temp_data['dispatch_comment'] = $_POST ['OrderTrack'] ['dispatch_comment'];
+            }elseif($model->order_status_id==5) {
+             $temp_data['deliver_to'] = $_POST ['OrderTrack'] ['deliver_to'];
+             $temp_data['deliver_phone'] = $_POST ['OrderTrack'] ['deliver_phone'];
+             $temp_data['deliver_address'] = $_POST ['OrderTrack'] ['deliver_address'];
+            }elseif ($model->order_status_id==6) {
+                  $temp_data['cancel_comment'] = $_POST ['OrderTrack'] ['cancel_comment'];
+            }
              if($model->save()){
+                 
+                 if(isset($tmodel)){
                  $tmodel->order_status_id=$model->order_status_id;
                  $tmodel->order_id=$model->order_id;
-                  $tmodel->value= serialize($temp_data);
+                  $tmodel->value=json_encode($temp_data,true);
                  $tmodel->created_by=$model->created_by;
                  $tmodel->save();
-                  \Yii::$app->getSession()->setFlash('success', 'Order added successfully');
+                 }
+                  Yii::$app->getSession()->setFlash('success', 'Order added successfully');
                   return $this->redirect(['index']);
-             } else {
-                 print_r($model->getErrors());exit;    
-             }
+                
+             } 
         } else {
             return $this->renderAjax('status', [
                 'model' => $model,
