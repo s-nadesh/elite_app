@@ -47,15 +47,20 @@ $this->params['breadcrumbs'][] = $this->title;
                                         'class' => 'backend\components\StatusColumn',
                                         'attribute' => 'status',
                                     ],
-                                    'created_at:datetime',
-                                        ['class' => 'yii\grid\ActionColumn',
+                                        [
+                                        'attribute' => 'created_at',
+                                        'filter' => false,
+                                        'format' => ['date', 'php:Y-m-d H:i:s'],
+                                    ],
+                                        [
+                                        'class' => 'yii\grid\ActionColumn',
+                                        'header' => 'Action',
                                         'template' => '{update}&nbsp;&nbsp;{delete}',
-                                        'buttons' => [
-                                            'delete' => function($url, $model) {
+                                        'visibleButtons' => [
+                                            'delete' => function($model, $key, $index){
                                                 $usercount = Users::find()->where(['user_type_id' => $model->user_type_id])->count();
-                                                if (!$usercount) {
-                                                    return $model->created_by == 0 ? '' : Html::a('<span class="glyphicon glyphicon-trash"></span>', ['delete', 'id' => $model['user_type_id']], [
-                                                                'title' => Yii::t('app', 'Delete'), 'data-confirm' => Yii::t('app', 'Are you sure you want to delete this usertype?'), 'data-method' => 'post']);
+                                                if($usercount == 0 && $model->created_by > 0){
+                                                    return true;
                                                 }
                                             }
                                         ],

@@ -25,7 +25,7 @@ $view = "View All <i class='fa fa-arrow-circle-right'></i>";
                 <!-- small box -->
                 <div class="small-box bg-purple">
                     <div class="inner">
-                        <?php $users = Users::find()->where(['status' => 1])->count(); ?>
+                        <?php $users = Users::find()->count(); ?>
                         <h3>
                             <?php echo $users; ?>
                         </h3>
@@ -43,7 +43,7 @@ $view = "View All <i class='fa fa-arrow-circle-right'></i>";
                 <!-- small box -->
                 <div class="small-box bg-aqua">
                     <div class="inner">
-                        <?php $products = Products::find()->where(['status'=>1])->count()?>
+                        <?php $products = Products::find()->count()?>
                         <h3>
                             <?= $products ?>
                         </h3>
@@ -57,8 +57,8 @@ $view = "View All <i class='fa fa-arrow-circle-right'></i>";
                     <?php echo Html::a($view, ['/products'], ["class" => 'small-box-footer']); ?>
                 </div>
             </div><!-- ./col -->
-            <div class="col-lg-3 col-xs-6">
-                <!-- small box -->
+<!--            <div class="col-lg-3 col-xs-6">
+                 small box 
                 <div class="small-box bg-red">
                     <div class="inner">
                         <h3>
@@ -73,7 +73,8 @@ $view = "View All <i class='fa fa-arrow-circle-right'></i>";
                     </div>
                     <?php echo Html::a($view, ['#'], ["class" => 'small-box-footer']); ?>
                 </div>
-            </div><!-- ./col -->
+            </div>-->
+            <!-- ./col -->
 
     </section><!-- /.content -->
 </aside>

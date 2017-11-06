@@ -47,6 +47,7 @@ class UserTypesController extends Controller {
      * Lists all UserTypes models.
      * @return mixed
      */
+    /*checked*/
     public function actionIndex() {
         $searchModel = new UserTypesSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);

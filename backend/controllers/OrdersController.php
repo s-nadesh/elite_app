@@ -146,7 +146,7 @@ class OrdersController extends Controller {
             $model->load(Yii::$app->request->post());
             $model->change_status = true;
             if ($model->save()) {
-                Yii::$app->getSession()->setFlash('success', 'Order added successfully');
+                Yii::$app->getSession()->setFlash('success', 'Status changed successfully');
                 return $this->redirect(['index']);
             }
         } else {
