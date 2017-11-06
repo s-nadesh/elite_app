@@ -48,11 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         'attribute' => 'status',
                                     ],
                                     'created_at:datetime',
-//                        'updated_at:datetime',
-                                    // 'created_by',
-                                    // 'updated_by',
-                                    // 'deleted_at',
-                                    ['class' => 'yii\grid\ActionColumn',
+                                        ['class' => 'yii\grid\ActionColumn',
                                         'template' => '{update}&nbsp;&nbsp;{delete}',
                                         'buttons' => [
                                             'delete' => function($url, $model) {
