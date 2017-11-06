@@ -323,6 +323,7 @@ class OrdersController extends Controller {
 
                 //Order Insert
                 $order = new Orders();
+                $order->change_status = true;
                 $order->user_id = $cart_detail['user_id'];
                 $order->ordered_by = $cart_detail['ordered_by'];
                 $order->items_total_amount = Orders::calcItemsTotal($cart_items);
