@@ -34,6 +34,18 @@ use Yii;
  */
 class Orders extends \yii\db\ActiveRecord {
 
+    public $dispatch_track_id;
+    public $dispatch_courier_comapny;
+    public $dispatch_comment;
+    public $dispatch_date;
+    public $deliver_to;
+    public $deliver_phone;
+    public $deliver_address;
+    public $deliver_date;
+    public $cancel_comment;
+    public $cancel_date;
+    public $change_status = false;
+
     /**
      * @inheritdoc
      */
@@ -47,7 +59,7 @@ class Orders extends \yii\db\ActiveRecord {
     public function rules() {
         return [
                 [['user_id','invoice_no', 'order_status_id', 'ordered_by', 'items_total_amount', 'total_amount'], 'required'],
-                [['invoice_date'], 'safe'],
+                [['invoice_date', 'dispatch_track_id', 'dispatch_courier_comapny', 'dispatch_comment', 'dispatch_date', 'deliver_to', 'deliver_phone', 'deliver_address', 'deliver_date', 'cancel_comment', 'cancel_date'], 'safe'],
                 [['user_id', 'order_status_id', 'ordered_by', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
                 [['items_total_amount', 'tax_percentage', 'tax_amount', 'total_amount'], 'number'],
                 [['payment_status'], 'string'],
@@ -135,11 +147,10 @@ class Orders extends \yii\db\ActiveRecord {
             $this->invoice_date = date("Y-m-d H:m:i");
             $this->order_status_id = OrderStatus::OR_NEW;
             $this->total_amount = $this->items_total_amount; // Tax calculation is not done. 
-            $this->payment_status = 'P';
         }
         return parent::beforeSave($insert);
     }
-    
+
     public function afterSave($insert, $changedAttributes) {
         if ($insert) {
             InternalCodes::increaseInternalCode("O");
@@ -148,15 +159,42 @@ class Orders extends \yii\db\ActiveRecord {
             $neworder->order_id = $this->order_id;
             $neworder->order_status_id = $this->order_status_id;
             $neworder->save(false);
- 
+        }
+
+        if ($this->change_status) {
+            $this->insertOrderTrack();
         }
         return parent::afterSave($insert, $changedAttributes);
     }
-    
+
+    public function insertOrderTrack() {
+        $data = [];
+        if ($this->order_status_id == OrderStatus::OR_DISPATCHED) {
+            $data['dispatch_track_id'] = $this->dispatch_track_id;
+            $data['dispatch_courier_comapny'] = $this->dispatch_courier_comapny;
+            $data['dispatch_comment'] = $this->dispatch_comment;
+        } else if ($this->order_status_id == OrderStatus::OR_DELEVERED) {
+            $data['deliver_to'] = $this->deliver_to;
+            $data['deliver_phone'] = $this->deliver_phone;
+            $data['deliver_address'] = $this->deliver_address;
+            $data['deliver_date'] = $this->deliver_date;
+        } else if ($this->order_status_id == OrderStatus::OR_CANCELED) {
+            $data['cancel_date'] = $this->cancel_date;
+            $data['cancel_comment'] = $this->cancel_comment;
+        }
+
+        $order_track = new OrderTrack();
+        $order_track->order_id = $this->order_id;
+        $order_track->order_status_id = $this->order_status_id;
+        if (!empty($data))
+            $order_track->value = json_encode($data, true);
+        $order_track->save(false);
+    }
+
     public static function calcItemsTotal($order_items) {
         $items_total_amount = 0;
-        if(!empty($order_items)){
-            foreach($order_items as $value) {
+        if (!empty($order_items)) {
+            foreach ($order_items as $value) {
                 $items_total_amount += $value['total'];
             }
         }

@@ -26,17 +26,6 @@ class OrderTrack extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public $dispatch_track_id;
-    public $dispatch_courier_comapny;
-    public $dispatch_comment;
-    public $dispatch_date;
-    public $deliver_to;
-    public $deliver_phone;
-    public $deliver_address;
-    public $deliver_date;
-    public $cancel_comment;
-    public $cancel_date;
-    
     public static function tableName()
     {
         return '{{%order_track}}';
@@ -48,7 +37,7 @@ class OrderTrack extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id','dispatch_track_id', 'dispatch_courier_comapny','dispatch_comment', 'dispatch_date','deliver_to', 'deliver_phone','deliver_address', 'deliver_date','cancel_comment', 'cancel_date'], 'safe'],
+            [['order_id'], 'safe'],
             [[ 'order_status_id'], 'required'],
             [['dispatch_track_id', 'dispatch_courier_comapny', 'dispatch_comment'], 'required', 'on' => 'createadmin', 'when' => function ($model) {
                     return ($model->order_status_id == '4');

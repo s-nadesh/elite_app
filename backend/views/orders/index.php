@@ -51,35 +51,35 @@ $dispatch = ArrayHelper::map(OrderStatus::find()->where('status=:id and status_p
                                 'dataProvider' => $dataProvider,
                                 'filterModel' => $searchModel,
                                 'columns' => [
-                                    ['class' => 'yii\grid\SerialColumn'],
-                                    [
+                                        ['class' => 'yii\grid\SerialColumn'],
+                                        [
                                         'header' => 'Invoice No',
                                         'attribute' => 'invoice_no',
                                         'contentOptions' => ['style' => 'width:150px; white-space: normal;'],
                                     ],
-                                    [
+                                        [
                                         'header' => 'Invoice Date',
                                         'attribute' => 'invoice_date',
                                         'contentOptions' => ['style' => 'width:150px; white-space: normal;'],
                                     ],
-                                    [
+                                        [
                                         'header' => 'User',
                                         'attribute' => 'user',
                                         'value' => 'user.name',
                                         'contentOptions' => ['style' => 'width:150px; white-space: normal;'],
                                     ],
-                                    [
+                                        [
                                         'header' => 'Ordered By',
                                         'attribute' => 'ordered_by',
                                         'value' => 'user.name',
                                         'contentOptions' => ['style' => 'width:150px; white-space: normal;'],
                                     ],
-                                    [
+                                        [
                                         'header' => 'Total Amount',
                                         'attribute' => 'total_amount',
                                         'contentOptions' => ['style' => 'width:150px; white-space: normal;'],
                                     ],
-                                    [
+                                        [
                                         'header' => 'Status',
                                         'attribute' => 'order_status_id',
                                         'filter' => false,
@@ -112,7 +112,7 @@ $dispatch = ArrayHelper::map(OrderStatus::find()->where('status=:id and status_p
                                         },
 // 'filter' => Html::activeDropDownlist($searchModel, 'order_status_id', ["6"=>"Cancel","1"=>"New Order","2" => 'In Progress',"3"=>"Completed", "4" => "Dispatch", "5" => "Delivered"], ['class' => 'form-control', 'id' => null, 'prompt' => 'All']),
                                     ],
-                                    [
+                                        [
                                         'class' => 'yii\grid\ActionColumn',
                                         'template' => '{view}&nbsp;&nbsp;&nbsp;{update}&nbsp;&nbsp;{delete}&nbsp;&nbsp;{status}',
                                         'buttons' => [
@@ -138,9 +138,9 @@ $dispatch = ArrayHelper::map(OrderStatus::find()->where('status=:id and status_p
                                                 }
                                             },
                                             'status' => function ($url, $model) {
-                                                $url = "javascript:void(0)";
-//                                                return Html::a('<span title="View Order Information" class="fa-cc-diners-club"></span>', $url, ['data-toggle' => 'modal', 'id' => 'modelButton', 'data-target' => '#myModal', 'data-id' => $model->order_id]);
-                                               return  Html::button('Create List', ['id' => 'modelButton', 'value' => \yii\helpers\Url::to(['orders/status', 'id' => $model->order_id]), 'class' => 'btn btn-success']) ;
+                                                $url = Url::toRoute('orders/status?id=' . $model->order_id);
+                                                return Html::a('<span class="glyphicon glyphicon-edit"></span>', ['#'], ['class' => 'modelButton', 'title' => 'Change status', 'data-url' => $url]
+                                                );
                                             },
                                         ],
                                     ],
@@ -156,24 +156,25 @@ $dispatch = ArrayHelper::map(OrderStatus::find()->where('status=:id and status_p
 </aside>
 <?php
 Modal::begin([
-            'header' => '<h4>Status</h4>',
-            'id'     => 'model',
-            'size'   => 'model-lg',
-    ]);
-    
-    echo "<div id='modelContent'></div>";
-    
-    Modal::end();
-    ?>
+    'header' => '<h4>Change Status</h4>',
+    'id' => 'changeStatus',
+    'size' => 'model-lg',
+]);
+
+echo "<div id='changeStatusContent'></div>";
+
+Modal::end();
+?>
 <?php
 $script = <<< JS
-           jQuery(document).ready(function () { 
- $('#modelButton').click(function(){
-        $('.modal').modal('show')
-            .find('#modelContent')
-            .load($(this).attr('value'));
-    });
-             });
+        jQuery(document).ready(function () { 
+            $('.modelButton').click(function(e){
+                e.preventDefault();
+                $('#changeStatus').modal('show')
+                    .find('#changeStatusContent')
+                    .load($(this).data('url'));
+            });
+        });
 JS;
 $this->registerJs($script, View::POS_END);
 ?>

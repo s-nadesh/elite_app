@@ -42,7 +42,7 @@ class ThemeAsset extends AssetBundle {
         'js/plugins/iCheck/icheck.min.js',
         'js/AdminLTE/app.js',
 //        'js/AdminLTE/dashboard.js',
-        'js/AdminLTE/demo.js',
+//        'js/AdminLTE/demo.js', // Layout change option not need.
     ];
     public $depends = [
         'backend\assets\AppAsset',
