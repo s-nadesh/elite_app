@@ -139,42 +139,40 @@ class OrdersController extends Controller {
         }
     }
 
-    public function actionStatus($id)
-     {
-         $temp_data = array();
+    public function actionStatus($id) {
+        $temp_data = array();
         $model = $this->findModel($id);
-         $tmodel = new OrderTrack();
+        $tmodel = new OrderTrack();
         if (Yii::$app->request->post()) {
             $model->load(Yii::$app->request->post());
             $tmodel->load(Yii::$app->request->post());
-            if($model->order_status_id==4){
-             $temp_data['dispatch_track_id'] = $_POST ['OrderTrack'] ['dispatch_track_id'];
-             $temp_data['dispatch_courier_comapny'] = $_POST ['OrderTrack'] ['dispatch_courier_comapny'];
-             $temp_data['dispatch_comment'] = $_POST ['OrderTrack'] ['dispatch_comment'];
-            }elseif($model->order_status_id==5) {
-             $temp_data['deliver_to'] = $_POST ['OrderTrack'] ['deliver_to'];
-             $temp_data['deliver_phone'] = $_POST ['OrderTrack'] ['deliver_phone'];
-             $temp_data['deliver_address'] = $_POST ['OrderTrack'] ['deliver_address'];
-            }elseif ($model->order_status_id==6) {
-                  $temp_data['cancel_comment'] = $_POST ['OrderTrack'] ['cancel_comment'];
+            if ($model->order_status_id == 4) {
+                $temp_data['dispatch_track_id'] = $_POST ['OrderTrack'] ['dispatch_track_id'];
+                $temp_data['dispatch_courier_comapny'] = $_POST ['OrderTrack'] ['dispatch_courier_comapny'];
+                $temp_data['dispatch_comment'] = $_POST ['OrderTrack'] ['dispatch_comment'];
+            } elseif ($model->order_status_id == 5) {
+                $temp_data['deliver_to'] = $_POST ['OrderTrack'] ['deliver_to'];
+                $temp_data['deliver_phone'] = $_POST ['OrderTrack'] ['deliver_phone'];
+                $temp_data['deliver_address'] = $_POST ['OrderTrack'] ['deliver_address'];
+            } elseif ($model->order_status_id == 6) {
+                $temp_data['cancel_comment'] = $_POST ['OrderTrack'] ['cancel_comment'];
             }
-             if($model->save()){
-                 
-                 if(isset($tmodel)){
-                 $tmodel->order_status_id=$model->order_status_id;
-                 $tmodel->order_id=$model->order_id;
-                  $tmodel->value=json_encode($temp_data,true);
-                 $tmodel->created_by=$model->created_by;
-                 $tmodel->save();
-                 }
-                  Yii::$app->getSession()->setFlash('success', 'Order added successfully');
-                  return $this->redirect(['index']);
-                
-             } 
+            if ($model->save()) {
+
+                if (isset($tmodel)) {
+                    $tmodel->order_status_id = $model->order_status_id;
+                    $tmodel->order_id = $model->order_id;
+                    $tmodel->value = json_encode($temp_data, true);
+                    $tmodel->created_by = $model->created_by;
+                    $tmodel->save();
+                }
+                Yii::$app->getSession()->setFlash('success', 'Order added successfully');
+                return $this->redirect(['index']);
+            }
         } else {
             return $this->renderAjax('status', [
-                'model' => $model,
-                'tmodel'=>$tmodel,
+                        'model' => $model,
+                        'tmodel' => $tmodel,
             ]);
         }
     }
@@ -241,11 +239,6 @@ class OrdersController extends Controller {
             $orderbilling_model->load(Yii::$app->request->post());
 
             if ($model->validate()) {
-                if ($orderbilling_model->paid_amount != '') {
-                    $different = $model->total_amount - $orderbilling_model->paid_amount;
-                    $model->total_amount = $different;
-                }
-//                   print_r($model->total_amount);exit;
                 $model->save();
                 $orderbilling_model->order_id = $model->order_id;
                 if ($orderbilling_model->validate()) {
