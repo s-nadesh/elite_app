@@ -14,19 +14,19 @@ $this->params['breadcrumbs'][] = 'Update';
     <section class="content-header">
     <h1><?= Html::encode($this->title) ?></h1>
 </section>
-    <div class="col-md-12">
-        <div class="box box-primary">
+    <section class="content">
+                    <div class="row">
     <?= $this->render('_form', [
        'model' => $model,
                 'orderby'=>$orderby,
                 'users'=>$users,
-                'categories' => $categories,
-                'sub_categories' => $sub_categories,
-                'products'=>$products,
-                'orderbilling_model'=>$orderbilling_model,
+                'orderbilling_model' => $orderbilling_model,
+                'paid_amount' => $paid_amount,
+                'pending_amount'=>$pending_amount,
+                'tmodel' => $tmodel,
     ]) ?>
 
 
-        </div>
-    </div>
+</div>
+</section>
 </aside>

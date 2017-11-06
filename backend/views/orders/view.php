@@ -239,7 +239,7 @@ $this->params['breadcrumbs'][] = ['label' => 'Orders', 'url' => ['index#tab_' . 
                                 <th>Id</th>
                                 <th>Date Time</th>
                                 <th>Received Amount</th>
-                                <th>Created By</th>
+                                <!--<th>Created By</th>-->
 
                             </tr>
                         </thead>
@@ -256,7 +256,7 @@ $this->params['breadcrumbs'][] = ['label' => 'Orders', 'url' => ['index#tab_' . 
                                     <td><?php echo $i ?></td>
                                     <td><?php echo $info->created_at ?></td>
                                     <td><?php echo $info->paid_amount ?></td>
-                                    <td><?php echo $user_exists->name ?></td>
+                                    <td><?php // echo $user_exists->name ?></td>
 
                                 </tr>
                                 <?php

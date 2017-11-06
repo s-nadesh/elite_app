@@ -225,38 +225,63 @@ class OrdersController extends Controller {
      * @return mixed
      */
     public function actionUpdate($id) {
+         $temp_data = array();
         $model = $this->findModel($id);
+        
         $orderbilling_model = new OrderBillings();
+        $tmodel = new OrderTrack();
+        $tmodel->scenario = 'createadmin';
         $orderby = ArrayHelper::map(Users::find()->where('user_type_id=:id', ['id' => UserTypes::SE_USER_TYPE])->all(), 'user_id', 'name');
         $users = ArrayHelper::map(Users::find()->where('user_type_id=:id or user_type_id=:id1', ['id' => UserTypes::CU_USER_TYPE, 'id1' => UserTypes::DE_USER_TYPE])->all(), 'user_id', 'name');
-        $categories = ArrayHelper::map(Categories::find()->where('status=:id', ['id' => 1])->all(), 'category_id', 'category_name');
-        $sub_categories = ArrayHelper::map(SubCategories::find()->where('status=:id', ['id' => 1])->all(), 'subcat_id', 'subcat_name');
-        $products = ArrayHelper::map(Products::find()->where('status=:id', ['id' => 1])->all(), 'product_id', 'product_name');
-
+        $paid_amount = OrderBillings::paidAmount($id);
+        $pending_amount = OrderBillings::pendingAmount($model->total_amount, $paid_amount);
         if (Yii::$app->request->post()) {
 
-            $model->load(Yii::$app->request->post());
-            $orderbilling_model->load(Yii::$app->request->post());
-
-            if ($model->validate()) {
-                $model->save();
+            if ($orderbilling_model->load(Yii::$app->request->post())) {
                 $orderbilling_model->order_id = $model->order_id;
                 if ($orderbilling_model->validate()) {
                     $orderbilling_model->save();
+                    Yii::$app->getSession()->setFlash('success', 'Paid Amount added successfully');
+                    return $this->redirect(['orders/index']);
+                }
+            } elseif ($model->load(Yii::$app->request->post())) {
+                
+                if ($model->validate()) {
+                    $model->save();
+                    
+                    if ($tmodel->load(Yii::$app->request->post())) {
+                        if ($model->order_status_id == 4) {
+                            $temp_data['dispatch_track_id'] = $_POST ['OrderTrack'] ['dispatch_track_id'];
+                            $temp_data['dispatch_courier_comapny'] = $_POST ['OrderTrack'] ['dispatch_courier_comapny'];
+                            $temp_data['dispatch_comment'] = $_POST ['OrderTrack'] ['dispatch_comment'];
+                        } elseif ($model->order_status_id == 5) {
+                            $temp_data['deliver_to'] = $_POST ['OrderTrack'] ['deliver_to'];
+                            $temp_data['deliver_phone'] = $_POST ['OrderTrack'] ['deliver_phone'];
+                            $temp_data['deliver_address'] = $_POST ['OrderTrack'] ['deliver_address'];
+                        } elseif ($model->order_status_id == 6) {
+                            $temp_data['cancel_comment'] = $_POST ['OrderTrack'] ['cancel_comment'];
+                        }
+                        $tmodel->order_status_id = $model->order_status_id;
+                        $tmodel->order_id = $model->order_id;
+                        $tmodel->value = json_encode($temp_data, true);
+                        $tmodel->created_by = $model->created_by;
+                        $tmodel->save();
+                    }
+                    
+                    Yii::$app->getSession()->setFlash('success', 'updated successfully');
                     return $this->redirect(['index']);
                 }
             }
-        } else {
-            return $this->render('update', [
-                        'model' => $model,
-                        'orderby' => $orderby,
-                        'users' => $users,
-                        'categories' => $categories,
-                        'sub_categories' => $sub_categories,
-                        'products' => $products,
-                        'orderbilling_model' => $orderbilling_model,
-            ]);
         }
+        return $this->render('update', [
+                    'model' => $model,
+                    'orderby' => $orderby,
+                    'users' => $users,
+                    'orderbilling_model' => $orderbilling_model,
+                    'paid_amount' => $paid_amount,
+                    'pending_amount' => $pending_amount,
+                    'tmodel' => $tmodel,
+        ]);
     }
 
     /**

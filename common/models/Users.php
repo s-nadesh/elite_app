@@ -124,6 +124,16 @@ class Users extends ActiveRecord {
                 ->one();
         return $user;
     }
-
+ public static function getUsername($name) {
+    
+        $user = self::find()
+                ->select('name')
+                ->andWhere([
+                    'user_id' => $name,
+                    'status' => 1,
+                ])
+                ->one();
+        return $user;
+    }
 
 }

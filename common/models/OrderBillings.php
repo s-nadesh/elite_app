@@ -35,7 +35,7 @@ class OrderBillings extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id'], 'required'],
+            [['order_id','paid_amount'], 'required'],
             [['order_id', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
             [['paid_amount'], 'number'],
             [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Orders::className(), 'targetAttribute' => ['order_id' => 'order_id']],
@@ -75,5 +75,21 @@ class OrderBillings extends \yii\db\ActiveRecord
     public static function find()
     {
         return new OrderBillingsQuery(get_called_class());
+    }
+    
+    public static function paidAmount($id) {
+        $paid = self::find()
+                ->andWhere([
+                    'order_id' => $id,
+                    'status' => 1,
+                ])
+                ->sum('paid_amount');
+        return $paid;
+    }
+     public static function pendingAmount($total,$paid_amount) {
+         
+       $pending=$total-$paid_amount;
+       
+        return $pending;
     }
 }

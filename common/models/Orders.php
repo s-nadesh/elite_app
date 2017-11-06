@@ -46,7 +46,7 @@ class Orders extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-                [['user_id', 'order_status_id', 'ordered_by', 'items_total_amount', 'total_amount'], 'required'],
+                [['user_id','invoice_no', 'order_status_id', 'ordered_by', 'items_total_amount', 'total_amount'], 'required'],
                 [['invoice_date'], 'safe'],
                 [['user_id', 'order_status_id', 'ordered_by', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
                 [['items_total_amount', 'tax_percentage', 'tax_amount', 'total_amount'], 'number'],
