@@ -114,7 +114,7 @@ $dispatch = ArrayHelper::map(OrderStatus::find()->where('status=:id and status_p
                                     ],
                                         [
                                         'class' => 'yii\grid\ActionColumn',
-                                        'template' => '{view}&nbsp;&nbsp;&nbsp;{update}&nbsp;&nbsp;{delete}&nbsp;&nbsp;{status}',
+                                        'template' => '{view}&nbsp;&nbsp;&nbsp;{update}&nbsp;&nbsp;{delete}&nbsp;&nbsp;{status}&nbsp;&nbsp;{billing}',
                                         'buttons' => [
                                             'update' => function ($url, $model) {
                                                 if ($model->order_status_id != 3 && $model->order_status_id != 6) {
@@ -142,6 +142,11 @@ $dispatch = ArrayHelper::map(OrderStatus::find()->where('status=:id and status_p
                                                 return Html::a('<span class="glyphicon glyphicon-edit"></span>', ['#'], ['class' => 'modelButton', 'title' => 'Change status', 'data-url' => $url]
                                                 );
                                             },
+                                                     'billing' => function ($url, $model) {
+                                                $url = Url::toRoute('orders/billing?id=' . $model->order_id);
+                                                return Html::a('<span class="glyphicon glyphicon-usd"></span>', ['#'], ['class' => 'bmodelButton', 'title' => 'Update Payment', 'data-url' => $url]
+                                                );
+                                            },
                                         ],
                                     ],
                                 ],
@@ -166,15 +171,36 @@ echo "<div id='changeStatusContent'></div>";
 Modal::end();
 ?>
 <?php
+Modal::begin([
+    'header' => '<h4>Update Payment</h4>',
+    'id' => 'changePayment',
+    'size' => 'model-lg',
+]);
+
+echo "<div id='changePaymentContent'></div>";
+
+Modal::end();
+?>
+<?php
 $script = <<< JS
         jQuery(document).ready(function () { 
+        
             $('.modelButton').click(function(e){
                 e.preventDefault();
                 $('#changeStatus').modal('show')
                     .find('#changeStatusContent')
                     .load($(this).data('url'));
             });
+        
+         $('.bmodelButton').click(function(e){
+                e.preventDefault();
+                $('#changePayment').modal('show')
+                    .find('#changePaymentContent')
+                    .load($(this).data('url'));
+            });
+        
         });
+        
 JS;
 $this->registerJs($script, View::POS_END);
 ?>

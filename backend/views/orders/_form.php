@@ -35,247 +35,239 @@ $form = ActiveForm::begin([
 );
 ?>
 <div class="col-md-12">
-<div class="box box-primary">
+    <div class="box box-primary">
 
-    <div class="box-header">
-        <h3 class="box-title">Order Details</h3>
-    </div><!-- /.box-header -->
-    <!-- form start -->
-    <div class="box-body">
-        <div class="form-group">
-            <label class="col-sm-2 control-label valueleft">Invoice Date</label>
-            <div class="col-sm-5 valueright">
-           <?php echo $model->invoice_date;?>
-         </div>
-        </div>
-        <?php  $get_username = Users::getUsername($model->user_id);
-      ?>
-        <div class="form-group">
-            <label class="col-sm-2 control-label valueleft">Customer/Dealer</label>
-            <div class="col-sm-5 valueright"><?php echo $get_username['name']; ?></div>
-        </div>
-         <?php  $get_orderby = Users::getUsername($model->ordered_by); ?>
-
-        <div class="form-group">
-            <label class="col-sm-2 control-label valueleft">Sales Executive</label>
-            <div class="col-sm-5 valueright"><?php echo $get_orderby['name']; ?></div>
-        </div>
-
-             <div class="box">
-            <div class="box-header">
-                <h3 class="box-title">Order Details</h3>
-
+        <div class="box-header">
+            <h3 class="box-title">Order Details</h3>
+        </div><!-- /.box-header -->
+        <!-- form start -->
+        <div class="box-body">
+            <div class="form-group">
+                <label class="col-sm-2 control-label valueleft">Invoice Date</label>
+                <div class="col-sm-5 valueright">
+                    <?php echo $model->invoice_date; ?>
+                </div>
             </div>
-            <div class="box-body table-responsive no-padding">
-                
-                <table class="table table-hover" id="table1">
-                    <tr>
-                        <th>Serial No</th>
-                        <th>Category</th>
-                        <th>Sub Category</th>
-                        <th>Product</th>
-                        <th>Quantity</th>
-                        <th>Price Per Unit</th>
-                        <th>Total Amount</th>
-                        <?php if ($model->isNewRecord) { ?>
-                            <th>Actions</th>
-                        <?php } ?>
-                    </tr>
-                    <tbody id="mytbody">
-                        <?php
-                        if (!$model->isNewRecord) {
-                            $i = 1;
-                            foreach ($model->orderItems as $info):
+            <?php $get_username = Users::getUsername($model->user_id);
+            ?>
+            <div class="form-group">
+                <label class="col-sm-2 control-label valueleft">Customer/Dealer</label>
+                <div class="col-sm-5 valueright"><?php echo $get_username['name']; ?></div>
+            </div>
+            <?php $get_orderby = Users::getUsername($model->ordered_by); ?>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label valueleft">Sales Executive</label>
+                <div class="col-sm-5 valueright"><?php echo $get_orderby['name']; ?></div>
+            </div>
+
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Order Details</h3>
+
+                </div>
+                <div class="box-body table-responsive no-padding">
+
+                    <table class="table table-hover" id="table1">
+                        <tr>
+                            <th>Serial No</th>
+                            <th>Category</th>
+                            <th>Sub Category</th>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Price Per Unit</th>
+                            <th>Total Amount</th>
+                            <?php if ($model->isNewRecord) { ?>
+                                <th>Actions</th>
+                            <?php } ?>
+                        </tr>
+                        <tbody id="mytbody">
+                            <?php
+                            if (!$model->isNewRecord) {
+                                $i = 1;
+                                foreach ($model->orderItems as $info):
+                                    ?>
+                                    <tr>
+                                        <td><?php echo $i ?></td>
+                                        <td><?php echo $info->category->category_name ?></td>
+                                        <td><?php echo $info->subcat->subcat_name ?></td>
+                                        <td><?php echo $info->product->product_name ?></td>
+                                        <td><?php echo $info->product->stock ?></td>
+                                        <td><?php echo $info->product->price_per_unit ?></td>
+                                        <td><?php echo $info->total ?></td>
+                                    </tr>
+                                    <?php
+                                    $i++;
+                                endforeach;
                                 ?>
-                                <tr>
-                                    <td><?php echo $i ?></td>
-                                    <td><?php echo $info->category->category_name ?></td>
-                                    <td><?php echo $info->subcat->subcat_name ?></td>
-                                    <td><?php echo $info->product->product_name ?></td>
-                                    <td><?php echo $info->product->stock ?></td>
-                                    <td><?php echo $info->product->price_per_unit ?></td>
-                                    <td><?php echo $info->total ?></td>
-                                </tr>
-                                <?php
-                                $i++;
-                            endforeach;
-                            ?>
-                        <?php } ?>
-                    </tbody>
-                </table>
+                            <?php } ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="col-md-6">
-    <div class="box box-primary">
-        <div class="box-header">
-            <h3 class="box-title">Change Order Status</h3>
-        </div><!-- /.box-header -->
-        <!-- form start -->
-        <form role="form">
-            <div class="box-body">
-                <div class="form-group">
-            <label class="col-sm-4 control-label valueleft">Invoice Number</label>
-            <div class="col-sm-6 valueright">
-                <?= $form->field($model, 'invoice_no')->textInput(['maxlength' => true])->label(false) ?>
-            </div>
-        </div>
-                <div class="form-group">
-                    <label class="col-sm-4 control-label valueleft">Status</label>
-                    <div class="col-sm-6 valueright">
-                        <?php if ((!$model->isNewRecord) && ($model->order_status_id == "1")) { ?>
-                            <?= $form->field($model, 'order_status_id')->dropDownList($new_order, ['prompt' => '--Select Option--'])->label(false); ?>
-                        <?php } elseif ((!$model->isNewRecord) && ($model->order_status_id == "2")) { ?>
-                            <?= $form->field($model, 'order_status_id')->dropDownList($inprogress, ['prompt' => '--Select Option--'])->label(false); ?>
-                        <?php } elseif ((!$model->isNewRecord) && ($model->order_status_id == "4")) { ?>    
-                            <?= $form->field($model, 'order_status_id')->dropDownList($dispatch, ['prompt' => '--Select Option--'])->label(false); ?>
-                        <?php } elseif ((!$model->isNewRecord) && ($model->order_status_id == "5")) { ?>    
-                            <div class="col-sm-6 valueright"><?php echo 'Delivered'; ?></div>
-                        <?php } ?>
+    <div class="col-md-6">
+        <div class="box box-primary">
+            <div class="box-header">
+                <h3 class="box-title">Change Order Status</h3>
+            </div><!-- /.box-header -->
+            <!-- form start -->
+            <form role="form">
+                <div class="box-body">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label valueleft">Invoice Number</label>
+                        <div class="col-sm-6 valueright">
+                            <?= $form->field($model, 'invoice_no')->textInput(['maxlength' => true])->label(false) ?>
+                        </div>
                     </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label valueleft">Status</label>
+                        <div class="col-sm-6 valueright">
+                            <?php if ((!$model->isNewRecord) && ($model->order_status_id == "1")) { ?>
+                                <?= $form->field($model, 'order_status_id')->dropDownList($new_order, ['prompt' => '--Select Option--'])->label(false); ?>
+                            <?php } elseif ((!$model->isNewRecord) && ($model->order_status_id == "2")) { ?>
+                                <?= $form->field($model, 'order_status_id')->dropDownList($inprogress, ['prompt' => '--Select Option--'])->label(false); ?>
+                            <?php } elseif ((!$model->isNewRecord) && ($model->order_status_id == "4")) { ?>    
+                                <?= $form->field($model, 'order_status_id')->dropDownList($dispatch, ['prompt' => '--Select Option--'])->label(false); ?>
+                            <?php } elseif ((!$model->isNewRecord) && ($model->order_status_id == "5")) { ?>    
+                                <div class="col-sm-6 valueright"><?php echo 'Delivered'; ?></div>
+                            <?php } ?>
+                        </div>
+                    </div>
+                    <div class="clearfix"> </div>  
+
+                    <div class="change_status_fields" id="status_<?php echo OrderStatus::OR_CANCELED ?>">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label valueleft">Reason for Cancel order</label>
+                            <div class="col-sm-6 valueright">
+                                <?= $form->field($model, 'cancel_comment')->textarea()->label(false) ?>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="change_status_fields" id="status_<?php echo OrderStatus::OR_DISPATCHED ?>">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label valueleft">Tracking Id</label>
+                            <div class="col-sm-6 valueright">
+                                <?= $form->field($model, 'dispatch_track_id')->textInput()->label(false) ?>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label valueleft">Courier Company Name</label>
+                            <div class="col-sm-6 valueright">
+                                <?= $form->field($model, 'dispatch_courier_comapny')->textInput()->label(false) ?>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label valueleft">Comments</label>
+                            <div class="col-sm-6 valueright">
+                                <?= $form->field($model, 'dispatch_comment')->textarea()->label(false) ?>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="change_status_fields" id="status_<?php echo OrderStatus::OR_DELEVERED ?>">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label valueleft">Delivered To</label>
+                            <div class="col-sm-6 valueright">
+                                <?= $form->field($model, 'deliver_to')->textInput()->label(false) ?>
+                            </div>
+                        </div> 
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label valueleft">Mobile Number</label>
+                            <div class="col-sm-6 valueright">
+                                <?= $form->field($model, 'deliver_phone')->textInput()->label(false); ?>
+                            </div> 
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label valueleft">Address</label>
+                            <div class="col-sm-6 valueright">
+                                <?= $form->field($model, 'deliver_address')->textarea()->label(false) ?>
+                            </div> 
+                        </div>
+                    </div>
+
+                </div><!-- /.box-body -->
+
+                <div class="box-footer">
+                    <?= Html::submitButton($model->isNewRecord ? 'Place order' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
                 </div>
-                <div class="clearfix"> </div>  
+            </form>
+        </div><!-- /.box -->
+        <?php ActiveForm::end(); ?>
 
-                <div class="status6" id="delivered_box">
 
+    </div>
+
+    <div class="col-md-6">
+        <div class="box box-primary">
+            <div class="box-header">
+                <h3 class="box-title">Change Order Status</h3>
+            </div><!-- /.box-header -->
+            <!-- form start -->
+            <?php
+            $form = ActiveForm::begin([
+                        'id' => 'active-form',
+                        'options' => [
+                            'class' => 'form-horizontal',
+                        ],
+                        'fieldConfig' => [
+                            'template' => "{label}<div class=\"\">{input}<b style='color: #000;'>{hint}</b><div class=\"errorMessage\">{error}</div></div>",
+                            'labelOptions' => ['class' => 'control-label'],
+                        ],
+                            ]
+            );
+            ?>
+            <form role="form">
+                <div class="box-body">
                     <div class="form-group">
-                        <label class="col-sm-4 control-label valueleft">Reason for Cancel order</label>
+                        <label class="col-sm-4 control-label valueleft">Total Amount</label>
                         <div class="col-sm-6 valueright">
-                            <?= $form->field($tmodel, 'cancel_comment')->textarea()->label(false) ?>
+                            <?php echo $model->total_amount; ?>
                         </div>
                     </div>
-                </div>
-
-
-                <div class="status4" id="delivered_box">
-
+                    <div class="clearfix"> </div>
                     <div class="form-group">
-                        <label class="col-sm-4 control-label valueleft">Tracking Id</label>
+                        <label class="col-sm-4 control-label valueleft">Paid Amount</label>
                         <div class="col-sm-6 valueright">
-                            <?= $form->field($tmodel, 'dispatch_track_id')->textInput()->label(false) ?>
+                            <?php echo $paid_amount; ?>
+                        </div>
+                    </div>
+                    <div class="clearfix"> </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label valueleft">Pending Amount</label>
+                        <div class="col-sm-6 valueright pendingamt">
+                            <?php echo $pending_amount; ?>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label valueleft">Courier Company Name</label>
-                        <div class="col-sm-6 valueright">
-                            <?= $form->field($tmodel, 'dispatch_courier_comapny')->textInput()->label(false) ?>
-                        </div>
-                    </div>
+                    <div class="clearfix"> </div>
 
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label valueleft">Comments</label>
-                        <div class="col-sm-6 valueright">
-                            <?= $form->field($tmodel, 'dispatch_comment')->textarea()->label(false) ?>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="status5" id="delivered_box">
-
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label valueleft">Delivered To</label>
-                        <div class="col-sm-6 valueright">
-                            <?= $form->field($tmodel, 'deliver_to')->textInput()->label(false) ?>
+                    <div id="error_receivedamount">            
+                        <div class="alert alert-danger alert-dismissable">                          
                         </div>
                     </div> 
-
                     <div class="form-group">
-                        <label class="col-sm-4 control-label valueleft">Mobile Number</label>
+                        <label class="col-sm-4 control-label valueleft">Current Received Amount</label>
                         <div class="col-sm-6 valueright">
-                            <?= $form->field($tmodel, 'deliver_phone')->textInput()->label(false); ?>
-                        </div> 
+                            <?= $form->field($model, 'order_id')->hiddenInput()->label(false); ?>
+                            <?= $form->field($orderbilling_model, 'paid_amount')->textInput(['maxlength' => true])->label(false) ?>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label valueleft">Address</label>
-                        <div class="col-sm-6 valueright">
-                            <?= $form->field($tmodel, 'deliver_address')->textarea()->label(false) ?>
-                        </div> 
-                    </div>
+                </div><!-- /.box-body -->
+                <div class="clearfix"> </div>  
+
+                <div class="box-footer">
+                    <?= Html::submitButton($orderbilling_model->isNewRecord ? 'Update Amount' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
                 </div>
+            </form>
+        </div><!-- /.box -->
 
-            </div><!-- /.box-body -->
-
-            <div class="box-footer">
-                <?= Html::submitButton($model->isNewRecord ? 'Place order' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-            </div>
-        </form>
-    </div><!-- /.box -->
-<?php ActiveForm::end(); ?>
-
-
-</div>
-    
-<div class="col-md-6">
-    <div class="box box-primary">
-        <div class="box-header">
-            <h3 class="box-title">Change Order Status</h3>
-        </div><!-- /.box-header -->
-        <!-- form start -->
-        <?php
-$form = ActiveForm::begin([
-            'id' => 'active-form',
-            'options' => [
-                'class' => 'form-horizontal',
-            ],
-            'fieldConfig' => [
-                'template' => "{label}<div class=\"\">{input}<b style='color: #000;'>{hint}</b><div class=\"errorMessage\">{error}</div></div>",
-                'labelOptions' => ['class' => 'control-label'],
-            ],
-                ]
-);
-?>
-        <form role="form">
-            <div class="box-body">
-                <div class="form-group">
-                    <label class="col-sm-4 control-label valueleft">Total Amount</label>
-                    <div class="col-sm-6 valueright">
-                        <?php echo $model->total_amount; ?>
-                    </div>
-                </div>
-                <div class="clearfix"> </div>
-                <div class="form-group">
-                    <label class="col-sm-4 control-label valueleft">Paid Amount</label>
-                    <div class="col-sm-6 valueright">
-                        <?php echo $paid_amount; ?>
-                    </div>
-                </div>
-                <div class="clearfix"> </div>
-                <div class="form-group">
-                    <label class="col-sm-4 control-label valueleft">Pending Amount</label>
-                    <div class="col-sm-6 valueright pendingamt">
-                        <?php echo $pending_amount; ?>
-                    </div>
-                </div>
-
-                <div class="clearfix"> </div>
-                
-                <div id="error_receivedamount">            
-                    <div class="alert alert-danger alert-dismissable">                          
-                    </div>
-                </div> 
-                <div class="form-group">
-                    <label class="col-sm-4 control-label valueleft">Current Received Amount</label>
-                    <div class="col-sm-6 valueright">
-                        <?= $form->field($model, 'order_id')->hiddenInput()->label(false);?>
-                        <?= $form->field($orderbilling_model, 'paid_amount')->textInput(['maxlength' => true])->label(false) ?>
-                    </div>
-                </div>
-
-            </div><!-- /.box-body -->
-            <div class="clearfix"> </div>  
-
-            <div class="box-footer">
-                <?= Html::submitButton($orderbilling_model->isNewRecord ? 'Update Amount' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-            </div>
-        </form>
-    </div><!-- /.box -->
-
-<?php ActiveForm::end(); ?>
-</div>
+        <?php ActiveForm::end(); ?>
+    </div>
 </div>
 
 
@@ -365,32 +357,12 @@ $script = <<< JS
                 
    //Change Status----
    
-         $(".status6").hide();
-          $(".status4").hide();
-          $(".status5").hide();
-                
-     $(document.body).on('change', '#orders-order_status_id', function() {
-                
-          $(".status6").hide();
-          $(".status4").hide();
-          $(".status5").hide();
-                
-        var statid = $(this).val(); 
-        
-         if(statid == 6){ 
-            $(".status6").show();
-           } 
-        
-         if(statid == 4){  
-            $(".status4").show();
-           } 
-        
-         if(statid == 5){  
-            $(".status5").show();
-           } 
-        
-       });
-        
+         $(".change_status_fields").hide();
+        $(document.body).on('change', '#orders-order_status_id', function() {
+            $(".change_status_fields").hide();
+            var statid = $(this).val(); 
+            $("#status_"+statid).show();
+          });
        
          });
 JS;

@@ -21,6 +21,7 @@ use Yii;
  */
 class OrderBillings extends \yii\db\ActiveRecord
 {
+     const OR_STATUS = 1;
     /**
      * @inheritdoc
      */
@@ -72,11 +73,15 @@ class OrderBillings extends \yii\db\ActiveRecord
      * @inheritdoc
      * @return OrderBillingsQuery the active query used by this AR class.
      */
+    public function afterSave($insert, $changedAttributes) {
+        $this->checkOrderTotal();
+        return parent::afterSave($insert, $changedAttributes);
+    }
     public static function find()
     {
         return new OrderBillingsQuery(get_called_class());
     }
-    
+         
     public static function paidAmount($id) {
         $paid = self::find()
                 ->andWhere([
@@ -92,4 +97,22 @@ class OrderBillings extends \yii\db\ActiveRecord
        
         return $pending;
     }
+     public function insertOrderBilling($model,$orderbilling_model) {
+        $order_billing = new OrderBillings();
+        $order_billing->order_id = $model->order_id;
+        $order_billing->paid_amount = $orderbilling_model->paid_amount;
+        $order_billing->status =  OrderBillings::OR_STATUS;
+        $order_billing->created_by =  $model->ordered_by;
+        $order_billing->save(false);
+     }
+     
+     public function checkOrderTotal() {
+       $paid_amount= OrderBillings::paidAmount($this->order_id);
+       $diff = $this->order->total_amount - $paid_amount;
+       if($diff == 0 && $this->order->order_status_id == OrderStatus::OR_DELEVERED){
+           $this->order->order_status_id=OrderStatus::OR_COMPLETED;
+           $this->order->save(false);
+       }
+    }
+
 }
