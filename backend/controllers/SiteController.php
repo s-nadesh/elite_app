@@ -33,12 +33,6 @@ class SiteController extends Controller {
                     ],
                 ],
             ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-//                    'logout' => ['post'],
-                ],
-            ],
         ];
     }
 
@@ -58,6 +52,7 @@ class SiteController extends Controller {
      *
      * @return string
      */
+    /*n*/
     public function actionIndex() {
         return $this->render('index');
     }
@@ -67,6 +62,7 @@ class SiteController extends Controller {
      *
      * @return string
      */
+    /*n*/
     public function actionLogin() {
         $this->layout = "@app/views/layouts/login";
         if (!Yii::$app->user->isGuest) {
@@ -88,23 +84,25 @@ class SiteController extends Controller {
      *
      * @return string
      */
+    /*n*/
     public function actionChangepassword() {
         $model = Logins::findOne(Yii::$app->user->getId());
         $model->scenario = 'changepassword';
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             $model->password_hash = Yii::$app->getSecurity()->generatePasswordHash($model->new_pass);
             $model->save();
-            Yii::$app->getSession()->setFlash('success', 'Changed the password successfully!!!');
-            $this->redirect(array('/site/index'));
+            Yii::$app->getSession()->setFlash('success', 'Password changed successfully!!!');
+            return $this->redirect(['/site/index']);
         }
         return $this->render('changepassword', [
                     'model' => $model,
         ]);
     }
 
+    /*n*/
     public function actionLogout() {
         Yii::$app->user->logout();
-        $this->redirect(array('/site/login'));
+        $this->redirect(['/site/login']);
     }
 
 }

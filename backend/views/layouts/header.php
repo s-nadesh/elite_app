@@ -3,8 +3,7 @@
 use yii\helpers\Html;
 ?>
 <header class="header">
-    <!--<a href="index.html" class="logo">-->
-        <?php echo Html::a('Elite', ['/site/index'],['class'=>'logo']); ?>
+    <?php echo Html::a('Elite', ['/site/index'], ['class' => 'logo']); ?>
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top" role="navigation">
         <!-- Sidebar toggle button-->
@@ -32,18 +31,18 @@ use yii\helpers\Html;
                             </p>
                         </li>
                         <!-- Menu Body -->
-                        <li class="user-body">
-                            <div class="col-xs-4 text-center">
-                                <?php echo Html::a('Change Password', ['/site/changepassword']); ?>
+<!--                        <li class="user-body">
+                            <div class="col-xs-12 text-center">
+                                <?php // echo Html::a('Change Password', ['/site/changepassword']); ?>
                             </div>
-                        </li>
+                        </li>-->
                         <!-- Menu Footer-->
                         <li class="user-footer">
                             <div class="pull-left">
-                                <a href="#" class="btn btn-default btn-flat">Profile</a>
+                                <?php echo Html::a('Change Password', ['/site/changepassword'], ['class'=> 'btn btn-default btn-flat']); ?>
                             </div>
                             <div class="pull-right">
-                                <?= Html::a('Sign out', ['/site/logout'],['class' => 'btn btn-default btn-flat']); ?>
+                                <?= Html::a('Sign out', ['/site/logout'], ['class' => 'btn btn-default btn-flat']); ?>
                             </div>
                         </li>
                     </ul>

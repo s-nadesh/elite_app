@@ -26,7 +26,7 @@ use yii\web\View;
 
     <div class="footer">
         <?= Html::submitButton('Sign in', ['class' => 'btn bg-olive btn-block', 'name' => 'login-button']) ?>
-        <p><a href="#">I forgot my password</a></p>
+        <!--<p><a href="#">I forgot my password</a></p>-->
     </div>
     <?php ActiveForm::end(); ?>
 </div>
