@@ -118,136 +118,92 @@ $this->title = "Order id : " . $model->order_id;
 
                 <?php $order_track = OrderTrack::find()->where('status=:sid and order_id=:id ', ['sid' => 1, 'id' => $model->order_id])->orderBy(['created_at' => SORT_DESC])->all();
                 ?>
-                <?php foreach ($order_track as $info): ?>
-                    <?php
-                    if ($info->order_status_id == OrderStatus::OR_CANCELED) {
-                        $responseArray = json_decode($info->value, true);
-                        ?>
-                        <div class="box">
-                            <div class="box-header">
-                                <h3 class="box-title">Canceled Information</h3>
-                            </div>
+                <div class="box">
 
-                            <div class="box-body no-padding">
-                                <label class="col-sm-2 control-label">Comments</label>
-                                <div class="col-sm-5"><?php echo $responseArray; ?></div>
-                            </div>       
 
-                        </div>&nbsp;
-                    <?php } ?>   
+                    <div class="box-header">
 
-                    <?php
-                    if ($info->order_status_id == OrderStatus::OR_DISPATCHED) {
-                        $responseArray = json_decode($info->value, true);
-                        ?>
-                        <div class="box">
-                            <div class="box-header">
-                                <h3 class="box-title">Dispatch Information</h3>
+                        <h3 class="box-title">Order Details</h3>
 
-                            </div>
-                            <div class="box-body table-responsive no-padding">
-                                <table class="table table-hover">
-                                    <tr>
-                                        <th>Track Id</th>
-                                        <th>Date</th>
-                                        <th>Courier Company Name</th>
-                                        <th>Comments</th>
-                                    </tr>
-                                    <?php if ($responseArray['dispatch_track_id'] != NULL) { ?>
+                    </div>
+                    <div class="box-body table-responsive no-padding">
+                        <table class="table table-hover" id="table1">
+                            <tr>
+                                <th>Index</th>
+                                <th>Order Track</th>
+                                <th>Date Time</th>
+                                <th>Value</th>
+
+                            </tr>
+                            <tbody id="mytbody">
+                                <?php
+                                    $i = 1;
+                                    foreach ($order_track as $info):
+                                        $responseArray = json_decode($info->value, true);
+                                        ?>
                                         <tr>
-                                            <td><?php echo $responseArray['dispatch_track_id'] ?></td>
-                                            <td><?php echo $info->created_at ?></td>
-                                            <td><?php echo $responseArray['dispatch_courier_comapny'] ?></td>
-                                            <td><?php echo $responseArray['dispatch_comment'] ?></td>
+                                            <td><?php echo $i ?></td>
+                                            <td><?php echo $info->orderStatusname->status_name ?></td>
+                                            <td><?php echo date('Y-m-d H:i:s', $info->created_at); ?></td>
+                                            <td><?php
+                                                if ($info->order_status_id == OrderStatus::OR_DISPATCHED) {
+                                                    echo 'Track Id - ' . $responseArray['dispatch_track_id'] . '</br> ';
+                                                    echo 'Courier Company - ' . $responseArray['dispatch_courier_comapny'] . '</br> ';
+                                                    echo 'Comments - ' . $responseArray['dispatch_comment'];
+                                                } elseif ($info->order_status_id == OrderStatus::OR_DELEVERED) {
+                                                    echo 'Delivered To - ' . $responseArray['deliver_to'] . '</br> ';
+                                                    echo 'Phone - ' . $responseArray['deliver_phone'] . '</br> ';
+                                                    echo 'Address - ' . $responseArray['deliver_address'];
+                                                } elseif ($info->order_status_id == OrderStatus::OR_CANCELED) {
+                                                    echo 'Reason for cancelled - ' . $responseArray['cancel_comment'];
+                                                } else {
+                                                    echo '-';
+                                                }
+                                                ?></td>
                                         </tr>
-                                    <?php } else { ?>
-                                        <tr>
-                                            <td><?php echo 'No Results' ?></td>
-                                        </tr>
-                                    <?php } ?>
-                                </table>
-                            </div>
-                            <!--/.box-body--> 
-                        </div>
-                    <?php } ?>   
-                    <!--/.box--> 
-                    <div class="box">
-                        <?php
-                        if ($info->order_status_id == OrderStatus::OR_DELEVERED) {
-                            $responseArray = json_decode($info->value, true);
-                            ?>
-
-                            <div class="box">
-                                <div class="box-header">
-                                    <h3 class="box-title">Delivered Information</h3>
-
-                                </div>
-                                <!--/.box-header--> 
-                                <div class="box-body table-responsive no-padding">
-                                    <table class="table table-hover">
-                                        <tr>
-                                            <th>Received By</th>
-                                            <th>Date</th>
-                                            <th>Mobile No</th>
-                                            <th>Address</th>
-
-                                        </tr>
-                                        <?php if ($responseArray['deliver_to'] != NULL) { ?>
-                                            <tr>
-                                                <td><?php echo $responseArray['deliver_to'] ?></td>
-                                                <td><?php echo $info->created_at ?></td>
-                                                <td><?php echo $responseArray['deliver_phone'] ?></td>
-                                                <td><?php echo $responseArray['deliver_address'] ?></td>
-
-                                            </tr>
-                                        <?php } else { ?>
-                                            <tr>
-                                                <td><?php echo 'No Results' ?></td>
-                                            </tr>
-                                        <?php } ?>
-
-                                    </table>
-                                </div>
-                                <!-- /.box-body -->
-                            </div>
-                        <?php } ?>  
-                        <!-- /.box -->
-                    <?php endforeach; ?>
-
-
-                    <div class="box">
-
-                        <div class="box-header">
-                            <h3 class="box-title">Payment Details</h3>
-                        </div>
-                        <div class="box-body no-padding">
-                            <?=
-                            GridView::widget([
-                                'dataProvider' => $dataProvider,
-//                              'filterModel' => $searchModel,
-                                'columns' => [
-                                    ['class' => 'yii\grid\SerialColumn'],
-                                    'paid_amount',
-                                    [
-                                        'attribute' => 'ordered_by',
-                                        'value' => function ($model, $key, $index, $column) {
-                                            return $model->order->orderedBy->name;
-                                        },
-                                    ],
-                                    [
-                                        'attribute' => 'created_at',
-                                        'filter' => false,
-                                        'format' => ['date', 'php:Y-m-d H:i:s'],
-                                    ],
-                                ],
-                            ]);
-                            ?>
-                        </div>
-                        <!-- /.box-body -->
+                                        <?php
+                                        $i++;
+                                    endforeach;
+                                    ?>
+                            </tbody>
+                        </table>
                     </div>
 
+                </div>&nbsp;
+
+                <div class="box">
+
+                    <div class="box-header">
+                        <h3 class="box-title">Payment Details</h3>
+                    </div>
+                    <div class="box-body no-padding">
+                        <?=
+                        GridView::widget([
+                            'dataProvider' => $dataProvider,
+//                              'filterModel' => $searchModel,
+                            'columns' => [
+                                ['class' => 'yii\grid\SerialColumn'],
+                                'paid_amount',
+                                [
+                                    'attribute' => 'ordered_by',
+                                    'value' => function ($model, $key, $index, $column) {
+                                        return $model->order->orderedBy->name;
+                                    },
+                                ],
+                                [
+                                    'attribute' => 'created_at',
+                                    'filter' => false,
+                                    'format' => ['date', 'php:Y-m-d H:i:s'],
+                                ],
+                            ],
+                        ]);
+                        ?>
+                    </div>
+                    <!-- /.box-body -->
                 </div>
+
             </div>
         </div>
     </div>
+</div>
 </aside>

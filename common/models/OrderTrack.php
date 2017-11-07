@@ -81,6 +81,10 @@ class OrderTrack extends \yii\db\ActiveRecord
     {
         return $this->hasOne(OrderStatus::className(), ['order_status_id' => 'order_status_id']);
     }
+     public function getOrderStatusname()
+    {
+        return $this->hasOne(OrderStatus::className(), ['status_position_id' => 'order_status_id']);
+    }
 
     /**
      * @inheritdoc
