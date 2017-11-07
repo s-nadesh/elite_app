@@ -1,8 +1,8 @@
 <?php
 
-use common\models\OrderBillings;
 use common\models\OrderItems;
 use common\models\Orders;
+use common\models\OrderStatus;
 use common\models\OrderTrack;
 use yii\grid\GridView;
 use yii\helpers\Html;
@@ -13,17 +13,6 @@ use yii\web\View;
 /* @var $model ElOrder */
 
 $this->title = "Order id : " . $model->order_id;
-$sche_info = Orders::find()->Where(['order_id' => $model->order_id])->one();
-if ($sche_info->order_status_id == 5 || $sche_info->order_status_id == 4) {
-    $sche_info->order_status_id = 2;
-}
-if ($sche_info->order_status_id == 0) {
-    $sche_info->order_status_id = 4;
-}
-
-
-$this->params['breadcrumbs'][] = ['label' => 'Orders', 'url' => ['index#tab_' . $sche_info->order_status_id]];
-//$this->params['breadcrumbs'][] = $this->title;
 ?>
 <aside class="right-side">
     <section class="content-header">
@@ -39,7 +28,7 @@ $this->params['breadcrumbs'][] = ['label' => 'Orders', 'url' => ['index#tab_' . 
                         <h3 class="box-title pull-right">
                             <?php
                             $url = Url::toRoute('orders/update?id=' . $model->order_id);
-                            if ($model->order_status_id != 6 && $model->order_status_id != 3) {
+                            if ($model->order_status_id != OrderStatus::OR_CANCELED && $model->order_status_id != OrderStatus::OR_COMPLETED) {
                                 echo Html::a('<span title="Edit" class="glyphicon glyphicon-pencil"></span>', $url);
                             }
                             ?>
@@ -58,17 +47,17 @@ $this->params['breadcrumbs'][] = ['label' => 'Orders', 'url' => ['index#tab_' . 
                         <div class="col-sm-4"><b>Status</b></div>
 
                         <?php
-                        if ($model->order_status_id == 6) {
+                        if ($model->order_status_id == OrderStatus::OR_CANCELED) {
                             $model->order_status_id = '<span class="label label-danger">Cancelled</span>';
-                        } else if ($model->order_status_id == 1) {
+                        } else if ($model->order_status_id == OrderStatus::OR_NEW) {
                             $model->order_status_id = '<span class="label label-info">New Order</span>';
-                        } else if ($model->order_status_id == 2) {
+                        } else if ($model->order_status_id == OrderStatus::OR_INPROGRESS) {
                             $model->order_status_id = '<span class="label label-warning">InProgress</span>';
-                        } else if ($model->order_status_id == 3) {
+                        } else if ($model->order_status_id == OrderStatus::OR_COMPLETED) {
                             $model->order_status_id = '<span class="label label-success">Completed</span>';
-                        } else if ($model->order_status_id == 4) {
+                        } else if ($model->order_status_id == OrderStatus::OR_DISPATCHED) {
                             $model->order_status_id = '<span class="label label-default">Dispatched</span>';
-                        } else if ($model->order_status_id == 5) {
+                        } else if ($model->order_status_id == OrderStatus::OR_DELEVERED) {
                             $model->order_status_id = '<span class="label label-success">Delivered</span>';
                         }
                         ?>
@@ -78,9 +67,9 @@ $this->params['breadcrumbs'][] = ['label' => 'Orders', 'url' => ['index#tab_' . 
                 </div>
 
 
-<?php
-$order_items = OrderItems::find()->where('status=:sid and order_id=:id', ['sid' => 1, 'id' => $model->order_id])->orderBy(['created_at' => SORT_DESC])->all();
-?>
+                <?php
+                $order_items = OrderItems::find()->where('status=:sid and order_id=:id', ['sid' => 1, 'id' => $model->order_id])->orderBy(['created_at' => SORT_DESC])->all();
+                ?>
                 <div class="box">
 
 
@@ -120,28 +109,111 @@ $order_items = OrderItems::find()->where('status=:sid and order_id=:id', ['sid' 
                                         $i++;
                                     endforeach;
                                     ?>
-<?php } ?>
+                                <?php } ?>
                             </tbody>
                         </table>
                     </div>
 
                 </div>&nbsp;
-                       
+
+                <?php $order_track = OrderTrack::find()->where('status=:sid and order_id=:id ', ['sid' => 1, 'id' => $model->order_id])->orderBy(['created_at' => SORT_DESC])->all();
+                ?>
+                <?php foreach ($order_track as $info): ?>
+                    <?php
+                    if ($info->order_status_id == OrderStatus::OR_CANCELED) {
+                        $responseArray = json_decode($info->value, true);
+                        ?>
+                        <div class="box">
+                            <div class="box-header">
+                                <h3 class="box-title">Canceled Information</h3>
+                            </div>
+
+                            <div class="box-body no-padding">
+                                <label class="col-sm-2 control-label">Comments</label>
+                                <div class="col-sm-5"><?php echo $responseArray; ?></div>
+                            </div>       
+
+                        </div>&nbsp;
+                    <?php } ?>   
+
+                    <?php
+                    if ($info->order_status_id == OrderStatus::OR_DISPATCHED) {
+                        $responseArray = json_decode($info->value, true);
+                        ?>
+                        <div class="box">
+                            <div class="box-header">
+                                <h3 class="box-title">Dispatch Information</h3>
+
+                            </div>
+                            <div class="box-body table-responsive no-padding">
+                                <table class="table table-hover">
+                                    <tr>
+                                        <th>Track Id</th>
+                                        <th>Date</th>
+                                        <th>Courier Company Name</th>
+                                        <th>Comments</th>
+                                    </tr>
+                                    <?php if ($responseArray['dispatch_track_id'] != NULL) { ?>
+                                        <tr>
+                                            <td><?php echo $responseArray['dispatch_track_id'] ?></td>
+                                            <td><?php echo $info->created_at ?></td>
+                                            <td><?php echo $responseArray['dispatch_courier_comapny'] ?></td>
+                                            <td><?php echo $responseArray['dispatch_comment'] ?></td>
+                                        </tr>
+                                    <?php } else { ?>
+                                        <tr>
+                                            <td><?php echo 'No Results' ?></td>
+                                        </tr>
+                                    <?php } ?>
+                                </table>
+                            </div>
+                            <!--/.box-body--> 
+                        </div>
+                    <?php } ?>   
                     <!--/.box--> 
                     <div class="box">
-    
+                        <?php
+                        if ($info->order_status_id == OrderStatus::OR_DELEVERED) {
+                            $responseArray = json_decode($info->value, true);
+                            ?>
+
                             <div class="box">
                                 <div class="box-header">
-                                    <h3 class="box-title">Delivered Infomation</h3>
+                                    <h3 class="box-title">Delivered Information</h3>
 
                                 </div>
                                 <!--/.box-header--> 
                                 <div class="box-body table-responsive no-padding">
-                                   
+                                    <table class="table table-hover">
+                                        <tr>
+                                            <th>Received By</th>
+                                            <th>Date</th>
+                                            <th>Mobile No</th>
+                                            <th>Address</th>
+
+                                        </tr>
+                                        <?php if ($responseArray['deliver_to'] != NULL) { ?>
+                                            <tr>
+                                                <td><?php echo $responseArray['deliver_to'] ?></td>
+                                                <td><?php echo $info->created_at ?></td>
+                                                <td><?php echo $responseArray['deliver_phone'] ?></td>
+                                                <td><?php echo $responseArray['deliver_address'] ?></td>
+
+                                            </tr>
+                                        <?php } else { ?>
+                                            <tr>
+                                                <td><?php echo 'No Results' ?></td>
+                                            </tr>
+                                        <?php } ?>
+
+                                    </table>
                                 </div>
                                 <!-- /.box-body -->
                             </div>
+                        <?php } ?>  
                         <!-- /.box -->
+                    <?php endforeach; ?>
+
 
                     <div class="box">
 

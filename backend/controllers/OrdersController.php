@@ -10,6 +10,7 @@ use common\models\OrderItems;
 use common\models\Orders;
 use common\models\OrdersSearch;
 use common\models\OrderTrack;
+use common\models\OrderTrackSearch;
 use common\models\Products;
 use common\models\SubCategories;
 use common\models\Users;
@@ -77,11 +78,15 @@ class OrdersController extends Controller {
      */
     public function actionView($id) {
         $searchModel = new OrderBillingsSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams,$id);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $id);
+        $searchModel1 = new OrderTrackSearch();
+        $dataProvider1 = $searchModel1->search(Yii::$app->request->queryParams, $id);
         return $this->render('view', [
                     'model' => $this->findModel($id),
                     'searchModel' => $searchModel,
                     'dataProvider' => $dataProvider,
+                    'searchModel1' => $searchModel1,
+                    'dataProvider1' => $dataProvider1,
         ]);
     }
 
