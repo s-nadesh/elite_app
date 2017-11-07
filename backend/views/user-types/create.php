@@ -10,9 +10,11 @@ $this->params['breadcrumbs'][] = ['label' => 'User Types', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="col-md-12">
-    <?=
-    $this->render('_form', [
-        'model' => $model,
-    ])
-    ?>
+    <div class="box box-primary">
+        <?=
+        $this->render('_form', [
+            'model' => $model,
+        ])
+        ?>
+    </div>
 </div>

@@ -35,10 +35,8 @@ $login->isNewRecord ? $this->title = 'Create Login Details' : $this->title = 'Up
             <?= $login->isNewRecord ? $form->field($login, 'password_hash')->passwordInput(['maxlength' => true])->label('Password<span class="required-label"></span>') : $form->field($login, 'password_hash')->passwordInput(['value' => ""]) ?>
 
             <div class="box-footer">
-                <div class="form-group">
-                    <div class="col-sm-0 col-sm-offset-2">
-                        <?= Html::submitButton($login->isNewRecord ? 'Create' : 'Update', ['class' => $login->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-                    </div>
+                <div class="col-sm-0 col-sm-offset-2">
+                    <?= Html::submitButton($login->isNewRecord ? 'Create' : 'Update', ['class' => $login->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
                 </div>
             </div>
             <?php ActiveForm::end(); ?>

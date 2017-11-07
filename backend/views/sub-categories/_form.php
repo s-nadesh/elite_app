@@ -32,16 +32,14 @@ use yii\widgets\ActiveForm;
         $model->status = true;
     }
     ?>
-<?= $form->field($model, 'status')->checkbox(['label' => ('Active')])->label('Status') ?>
+    <?= $form->field($model, 'status')->checkbox(['label' => ('Active')])->label('Status') ?>
 
     <div class="box-footer">
-        <div class="form-group">
-            <div class="col-sm-0 col-sm-offset-2">
-<?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-            </div>
+        <div class="col-sm-0 col-sm-offset-2">
+            <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
         </div>
     </div>
 
-<?php ActiveForm::end(); ?>
+    <?php ActiveForm::end(); ?>
 
 </div>
