@@ -35,11 +35,11 @@ class OrdersController extends Controller {
             'access' => [
                 'class' => AccessControl::className(),
                 'rules' => [
-                    [
+                        [
                         'actions' => [''],
                         'allow' => true,
                     ],
-                    [
+                        [
                         'actions' => ['index', 'create', 'status', 'billing', 'update', 'view', 'delete', 'getsubcategorylist', 'getproductlist', 'placeorder'],
                         'allow' => true,
                         'roles' => ['@'],
@@ -59,15 +59,14 @@ class OrdersController extends Controller {
      * Lists all Orders models.
      * @return mixed
      */
+    /*n*/
     public function actionIndex() {
-        $model = new Orders();
         $searchModel = new OrdersSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
                     'searchModel' => $searchModel,
                     'dataProvider' => $dataProvider,
-                    'model' => $model,
         ]);
     }
 

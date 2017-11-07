@@ -95,7 +95,7 @@ class Orders extends \yii\db\ActiveRecord {
             'order_id' => 'Order ID',
             'invoice_no' => 'Invoice No',
             'invoice_date' => 'Invoice Date',
-            'user_id' => 'User ID',
+            'user_id' => 'User',
             'order_status_id' => 'Order Status',
             'ordered_by' => 'Ordered By',
             'items_total_amount' => 'Items Total Amount',

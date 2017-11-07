@@ -13,6 +13,7 @@ use common\models\Orders;
 class OrdersSearch extends Orders {
 
     public $user;
+    public $ordered_by_name;
     public $started_at;
     public $ended_at;
 
@@ -21,10 +22,10 @@ class OrdersSearch extends Orders {
      */
     public function rules() {
         return [
-            [['user', 'started_at', 'ended_at'], 'safe'],
-            [['order_id', 'user_id', 'order_status_id', 'ordered_by', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
-            [['invoice_no', 'invoice_date', 'payment_status', 'signature'], 'safe'],
-            [['items_total_amount', 'tax_percentage', 'tax_amount', 'total_amount'], 'number'],
+                [['user', 'ordered_by_name', 'started_at', 'ended_at'], 'safe'],
+                [['order_id', 'user_id', 'order_status_id', 'ordered_by', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
+                [['invoice_no', 'invoice_date', 'payment_status', 'signature'], 'safe'],
+                [['items_total_amount', 'tax_percentage', 'tax_amount', 'total_amount'], 'number'],
         ];
     }
 
@@ -44,38 +45,52 @@ class OrdersSearch extends Orders {
      * @return ActiveDataProvider
      */
     public function search($params) {
-        $datamod = array();
-        $search_vals = [];
-        $datamod = $_GET;
-        $this->load($params);
-
+        // create ActiveQuery
         $query = Orders::find();
-        if ($this->started_at != "") {
-            if ($this->ended_at == "") {
-                $this->ended_at = date('m/d/Y');
-            }
+        $query->joinWith(['user us', 'orderedBy se']);
 
-            $query->where('DATE_FORMAT(el_orders.created_at ,"%Y-%m-%d") >= "' . Orders::dateformat($this->started_at) . '" AND DATE_FORMAT(el_orders.created_at,"%Y-%m-%d") <= "' . Orders::dateformat($this->ended_at) . '"');
-            $datamod['OrdersSearch']['started_at'] = Orders::dateformat($this->started_at);
-            $datamod['OrdersSearch']['ended_at'] = Orders::dateformat($this->ended_at);
-        }
-        $query->andWhere('el_orders.deleted_at=0');
+//        if ($this->started_at != "") {
+//            if ($this->ended_at == "") {
+//                $this->ended_at = date('m/d/Y');
+//            }
+//
+//            $query->where('DATE_FORMAT(el_orders.created_at ,"%Y-%m-%d") >= "' . Orders::dateformat($this->started_at) . '" AND DATE_FORMAT(el_orders.created_at,"%Y-%m-%d") <= "' . Orders::dateformat($this->ended_at) . '"');
+//            $datamod['OrdersSearch']['started_at'] = Orders::dateformat($this->started_at);
+//            $datamod['OrdersSearch']['ended_at'] = Orders::dateformat($this->ended_at);
+//        }
+//        $query->andWhere('el_orders.deleted_at=0');
 
-//echo $query->createCommand()->getRawSql();exit();
-        $query->joinWith(['user']);
-
-
+        
         // add conditions that should always apply here
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
 
-        $this->load($params);
+        // Important: here is how we set up the sorting
+        // The key is the attribute name on our "TourSearch" instance
+        $dataProvider->sort->attributes['user'] = [
+            // The tables are the ones our relation are configured to
+            // in my case they are prefixed with "tbl_"
+            'asc' => ['us.name' => SORT_ASC],
+            'desc' => ['us.name' => SORT_DESC],
+        ];
+        // Lets do the same with country now
+        $dataProvider->sort->attributes['ordered_by_name'] = [
+            'asc' => ['se.name' => SORT_ASC],
+            'desc' => ['se.name' => SORT_DESC],
+        ];
+
+        $this->load($params);      
+        
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
             return $dataProvider;
+        }
+        
+        if($this->started_at && $this->ended_at){
+            $query->andFilterWhere(['between', 'invoice_date', $this->started_at, $this->ended_at]);
         }
 
         // grid filtering conditions
@@ -98,8 +113,8 @@ class OrdersSearch extends Orders {
         ]);
         $query->andFilterWhere(['like', 'invoice_no', $this->invoice_no])
                 ->andFilterWhere(['like', 'payment_status', $this->payment_status])
-                ->andFilterWhere(['like', 'el_users.name', $this->user])
-                ->andFilterWhere(['like', 'signature', $this->signature]);
+                ->andFilterWhere(['like', 'us.name', $this->user])
+                ->andFilterWhere(['like', 'se.name', $this->ordered_by_name]);
 
         return $dataProvider;
     }
