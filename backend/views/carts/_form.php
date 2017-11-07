@@ -104,7 +104,21 @@ $this->registerJs(
     </div>
 </div>
 <div class="box-footer">
-    <?= Html::submitButton($model->isNewRecord ? 'Add to cart' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+    <?= Html::submitButton($model->isNewRecord ? 'Add to cart' : 'Update', ['id'=>'submitButton','class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
 </div>
 <?php ActiveForm::end(); ?>
 <?php Pjax::end() ?>
+<?php
+$script = <<< JS
+           jQuery(document).ready(function () { 
+        $('body').on('keyup','#carts-qty',function (e) {
+                 var quantity = $(this).val();
+                 var price = $("#carts-product_price").val();
+                 var total_value = quantity * price;
+                  $('#carts-total_amount').val(total_value);
+             });
+        
+         });
+JS;
+$this->registerJs($script, View::POS_END);
+?>

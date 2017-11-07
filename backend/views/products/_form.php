@@ -1,24 +1,33 @@
 <?php
 
 use common\models\Products;
-use common\models\SubCategories;
-use yii\helpers\ArrayHelper;
+use kartik\depdrop\DepDrop;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\web\View;
 use yii\widgets\ActiveForm;
+use yii\widgets\Pjax;
 
 /* @var $this View */
 /* @var $model Products */
 /* @var $form ActiveForm */
 ?>
 
-<div class="box-body">
+<?php
+$this->registerJs(
+        '$("#new_product").on("pjax:end", function() {
+            $.pjax.reload({container:"#products"});  //Reload GridView
+        });'
+);
+?>
 
+<?php Pjax::begin(['id' => 'new_product']) ?>
     <?php
     $form = ActiveForm::begin([
                 'id' => 'active-form',
                 'options' => [
                     'class' => 'form-horizontal',
+                    'data-pjax' => true,
                 ],
                 'fieldConfig' => [
                     'template' => "{label}<div class=\"col-sm-5\">{input}<b style='color: #000;'>{hint}</b><div class=\"errorMessage\">{error}</div></div>",
@@ -27,11 +36,30 @@ use yii\widgets\ActiveForm;
                     ]
     );
     ?>
-
+<div class="box-body">
+    <div class="products-form">
     <?= $form->field($model, 'category_id')->dropDownList($categories, ['prompt' => '--Select Type--'])->label('Category Type<span class="required-label"></span>'); ?>
 
-    <?= $form->field($model, 'subcat_id')->dropDownList(ArrayHelper::map(SubCategories::find()->andWhere(' status=1')->all(), 'subcat_id', 'subcat_name'), ['prompt' => '--Select Subcategory--'])->label('Sub Category Type<span class="required-label"></span>'); ?>
-
+<?php
+                //Set selected value after validation.
+                $data = [];
+                if ($model->subcat_id) {
+                    $data = [
+                        $model->subcat_id => $model->subcat->subcat_name
+                    ];
+                }
+                ?>
+                <?=
+                $form->field($model, 'subcat_id')->widget(DepDrop::classname(), [
+                    'data' => $data,
+                    'pluginOptions' => [
+                        'initialize' => true,
+                        'depends' => ['products-category_id'],
+                        'placeholder' => '--Select--',
+                        'url' => Url::to(['/sub-categories/getsubcategories'])
+                    ]
+                ]);
+                ?>
     <?= $form->field($model, 'product_name')->textInput(['maxlength' => true])->label('Product Name<span class="required-label"></span>'); ?>
 
     <?= $form->field($model, 'min_reorder')->textInput() ?>
@@ -54,8 +82,10 @@ use yii\widgets\ActiveForm;
         </div>
     </div>
     <?php ActiveForm::end(); ?>
+        <?php Pjax::end() ?>
 
 </div>
+    </div>
 
 <?php
 /* For Subcategory dropdown list */

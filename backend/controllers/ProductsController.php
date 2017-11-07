@@ -29,11 +29,11 @@ class ProductsController extends Controller {
             'access' => [
                 'class' => AccessControl::className(),
                 'rules' => [
-                        [
+                    [
                         'actions' => [''],
                         'allow' => true,
                     ],
-                        [
+                    [
                         'actions' => ['index', 'create', 'update', 'view', 'delete', 'getsubcatlist', 'getproduct', 'getproducts', 'stocklog'],
                         'allow' => true,
                         'roles' => ['@'],
@@ -109,7 +109,7 @@ class ProductsController extends Controller {
 
     public function actionCreate() {
         $model = new Products();
-        $categories = ArrayHelper::map(Categories::find()->where('status=:id', ['id' => 1])->all(), 'category_id', 'category_name');
+        $categories = Categories::getCategories();
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index']);
         } else {
@@ -164,7 +164,7 @@ class ProductsController extends Controller {
                 } else {
                     $quantity = $model->stock;
                 }
-                $model->stock = $quantity;                
+                $model->stock = $quantity;
                 $model->save();
                 $stock->adjust_to = $model->stock;
                 $stock->save();
