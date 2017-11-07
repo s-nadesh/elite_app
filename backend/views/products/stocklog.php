@@ -98,7 +98,11 @@ $this->params['breadcrumbs'][] = "Stock Log";
 //                                'filter' => Html::activeDropDownlist($searchModel, 'createUserName', ArrayHelper::map(Users::find()->where('status=:id', ['id' => 1])->all(), 'user_id', 'name'), ['class' => 'form-control', 'id' => null, 'prompt' => 'All']),
 //                                'format' => 'raw',
 //                            ],
-                        'created_at:datetime',
+                        [
+                            'attribute' => 'created_at',
+                            'filter' => false,
+                            'format' => ['date', 'php:Y-m-d H:i:s'],
+                        ],
                     ],
                 ]);
                 ?>

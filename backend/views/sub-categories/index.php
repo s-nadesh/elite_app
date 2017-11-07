@@ -56,7 +56,11 @@ $this->params['breadcrumbs'][] = $this->title;
                                         }
                                     },
                                     'format' => 'raw'],
-                                'created_at:datetime',
+                                    [
+                                    'attribute' => 'created_at',
+                                    'filter' => false,
+                                    'format' => ['date', 'php:Y-m-d H:i:s'],
+                                ],
                                 // 'updated_at',
                                 // 'created_by',
                                 // 'updated_by',
