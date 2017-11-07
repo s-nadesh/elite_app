@@ -62,18 +62,18 @@ $dispatch = ArrayHelper::map(OrderStatus::find()->where('status=:id and status_p
                                         'attribute' => 'invoice_date',
                                         'contentOptions' => ['style' => 'width:150px; white-space: normal;'],
                                     ],
-                                        [
-                                        'header' => 'User',
-                                        'attribute' => 'user',
-                                        'value' => 'user.name',
-                                        'contentOptions' => ['style' => 'width:150px; white-space: normal;'],
-                                    ],
-                                        [
-                                        'header' => 'Ordered By',
-                                        'attribute' => 'ordered_by',
-                                        'value' => 'user.name',
-                                        'contentOptions' => ['style' => 'width:150px; white-space: normal;'],
-                                    ],
+                                         [
+                                            'attribute' => 'user_id',
+                                            'value' => function ($model, $key, $index, $column) {
+                                                return $model->user->name;
+                                            },
+                                        ],
+                                            [
+                                            'attribute' => 'ordered_by',
+                                            'value' => function ($model, $key, $index, $column) {
+                                                return $model->orderedBy->name;
+                                            },
+                                        ],
                                         [
                                         'header' => 'Total Amount',
                                         'attribute' => 'total_amount',

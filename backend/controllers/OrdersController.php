@@ -5,6 +5,7 @@ namespace backend\controllers;
 use common\models\Carts;
 use common\models\Categories;
 use common\models\OrderBillings;
+use common\models\OrderBillingsSearch;
 use common\models\OrderItems;
 use common\models\Orders;
 use common\models\OrdersSearch;
@@ -33,12 +34,12 @@ class OrdersController extends Controller {
             'access' => [
                 'class' => AccessControl::className(),
                 'rules' => [
-                        [
+                    [
                         'actions' => [''],
                         'allow' => true,
                     ],
-                        [
-                        'actions' => ['index', 'create', 'status','billing', 'update', 'view', 'delete', 'getsubcategorylist', 'getproductlist', 'placeorder'],
+                    [
+                        'actions' => ['index', 'create', 'status', 'billing', 'update', 'view', 'delete', 'getsubcategorylist', 'getproductlist', 'placeorder'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -75,8 +76,12 @@ class OrdersController extends Controller {
      * @return mixed
      */
     public function actionView($id) {
+        $searchModel = new OrderBillingsSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams,$id);
         return $this->render('view', [
                     'model' => $this->findModel($id),
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
         ]);
     }
 
@@ -155,6 +160,7 @@ class OrdersController extends Controller {
             ]);
         }
     }
+
     public function actionBilling($id) {
         $model = $this->findModel($id);
         $orderbilling_model = new OrderBillings();
@@ -164,7 +170,7 @@ class OrdersController extends Controller {
             $model->load(Yii::$app->request->post());
             $orderbilling_model->load(Yii::$app->request->post());
             if ($model->save()) {
-                OrderBillings::insertOrderBilling($model,$orderbilling_model);
+                OrderBillings::insertOrderBilling($model, $orderbilling_model);
                 Yii::$app->getSession()->setFlash('success', 'Payment updated successfully');
                 return $this->redirect(['index']);
             }
@@ -244,10 +250,10 @@ class OrdersController extends Controller {
                     return $this->redirect(['orders/index']);
                 }
             } elseif ($model->load(Yii::$app->request->post())) {
-                 $model->change_status = true;
+                $model->change_status = true;
                 if ($model->validate()) {
                     $model->save();
-                    
+
                     Yii::$app->getSession()->setFlash('success', 'updated successfully');
                     return $this->redirect(['index']);
                 }
