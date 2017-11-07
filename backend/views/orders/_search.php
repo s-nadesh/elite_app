@@ -36,7 +36,7 @@ $status_name = OrderStatus::prepareOrderStatus();
                 <div class="col-lg-3 col-md-3">
                     <div class="form-group">
                         <?php
-                        echo $form->field($model, 'order_status_id')->dropdownList($status_name, ['class' => 'form-control', 'id' => null, 'prompt' => 'All']);
+                        echo $form->field($model, 'order_status_id')->dropdownList($status_name, ['class' => 'form-control', 'prompt' => 'All']);
                         ?>                  
                     </div>
                 </div>  

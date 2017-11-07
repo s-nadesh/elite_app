@@ -27,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-md-12">
             <div class="box box-primary">
                 <div class="box-body">
-                    <?php echo $this->render('_search', ['model' => $searchModel]);  ?>
+                    <?php echo $this->render('_search', ['model' => $searchModel]); ?>
 
                     <?=
                     GridView::widget([

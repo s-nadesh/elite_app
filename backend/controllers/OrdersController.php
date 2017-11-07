@@ -10,7 +10,6 @@ use common\models\OrderItems;
 use common\models\Orders;
 use common\models\OrdersSearch;
 use common\models\OrderTrack;
-use common\models\OrderTrackSearch;
 use common\models\Products;
 use common\models\SubCategories;
 use common\models\Users;
@@ -59,7 +58,7 @@ class OrdersController extends Controller {
      * Lists all Orders models.
      * @return mixed
      */
-    /*n*/
+    /* n */
     public function actionIndex() {
         $searchModel = new OrdersSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
@@ -78,14 +77,15 @@ class OrdersController extends Controller {
     public function actionView($id) {
         $searchModel = new OrderBillingsSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $id);
-       
+
         return $this->render('view', [
                     'model' => $this->findModel($id),
                     'searchModel' => $searchModel,
                     'dataProvider' => $dataProvider,
-                            ]);
+        ]);
     }
 
+    /*NOT NEED*/
     public function actionGetsubcategorylist() {
         if (Yii::$app->request->isAjax) {
             $cat_id = $_POST['id'];
@@ -117,6 +117,7 @@ class OrdersController extends Controller {
         }
     }
 
+    /*NOT NEED*/
     public function actionGetproductlist() {
         if (Yii::$app->request->isAjax) {
             $subcat_id = $_POST['id'];
@@ -165,13 +166,14 @@ class OrdersController extends Controller {
     public function actionBilling($id) {
         $model = $this->findModel($id);
         $orderbilling_model = new OrderBillings();
-        $paid_amount = OrderBillings::paidAmount($id);
+        $paid_amount = $model->orderBillingsSum;
         $pending_amount = OrderBillings::pendingAmount($model->total_amount, $paid_amount);
         if (Yii::$app->request->post()) {
-            $model->load(Yii::$app->request->post());
+//            $model->load(Yii::$app->request->post());
             $orderbilling_model->load(Yii::$app->request->post());
-            if ($model->save()) {
-                OrderBillings::insertOrderBilling($model, $orderbilling_model);
+            $orderbilling_model->order_id = $model->order_id;
+            if ($orderbilling_model->save()) {
+//                OrderBillings::insertOrderBilling($model, $orderbilling_model); // NOT NEED
                 Yii::$app->getSession()->setFlash('success', 'Payment updated successfully');
                 return $this->redirect(['index']);
             }

@@ -47,41 +47,26 @@ class OrdersSearch extends Orders {
     public function search($params) {
         // create ActiveQuery
         $query = Orders::find();
-        $query->joinWith(['user us', 'orderedBy se']);
+        $query->joinWith(['user us', 'orderedBy se']); //JOIN with alias
 
-//        if ($this->started_at != "") {
-//            if ($this->ended_at == "") {
-//                $this->ended_at = date('m/d/Y');
-//            }
-//
-//            $query->where('DATE_FORMAT(el_orders.created_at ,"%Y-%m-%d") >= "' . Orders::dateformat($this->started_at) . '" AND DATE_FORMAT(el_orders.created_at,"%Y-%m-%d") <= "' . Orders::dateformat($this->ended_at) . '"');
-//            $datamod['OrdersSearch']['started_at'] = Orders::dateformat($this->started_at);
-//            $datamod['OrdersSearch']['ended_at'] = Orders::dateformat($this->ended_at);
-//        }
-//        $query->andWhere('el_orders.deleted_at=0');
-
-        
         // add conditions that should always apply here
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
 
         // Important: here is how we set up the sorting
-        // The key is the attribute name on our "TourSearch" instance
+        // The key is the attribute name on our "OrdersSearch" instance
         $dataProvider->sort->attributes['user'] = [
             // The tables are the ones our relation are configured to
-            // in my case they are prefixed with "tbl_"
             'asc' => ['us.name' => SORT_ASC],
             'desc' => ['us.name' => SORT_DESC],
         ];
-        // Lets do the same with country now
         $dataProvider->sort->attributes['ordered_by_name'] = [
             'asc' => ['se.name' => SORT_ASC],
             'desc' => ['se.name' => SORT_DESC],
         ];
 
         $this->load($params);      
-        
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails

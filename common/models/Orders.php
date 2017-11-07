@@ -119,6 +119,10 @@ class Orders extends \yii\db\ActiveRecord {
     public function getOrderBillings() {
         return $this->hasMany(OrderBillings::className(), ['order_id' => 'order_id']);
     }
+    
+    public function getOrderBillingsSum() {
+        return $this->hasMany(OrderBillings::className(), ['order_id' => 'order_id'])->sum('paid_amount');
+    }
 
     /**
      * @return \yii\db\ActiveQuery
