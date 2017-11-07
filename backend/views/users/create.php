@@ -10,19 +10,14 @@ $this->title = 'Create Users';
 $this->params['breadcrumbs'][] = ['label' => 'Users', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<aside class="right-side">
-    <section class="content-header">
-        <h1><?= Html::encode($this->title) ?></h1>
-    </section>
-    <div class="col-md-12">
-        <div class="box box-primary">
-            <?=
-            $this->render('_form', [
-                'model' => $model,
+<div class="col-md-12">
+    <div class="box box-primary">
+        <?=
+        $this->render('_form', [
+            'model' => $model,
 //                'model1' => $model1,
-                'items' => $items,
-            ])
-            ?>
-        </div>
+            'items' => $items,
+        ])
+        ?>
     </div>
-</aside>
+</div>
