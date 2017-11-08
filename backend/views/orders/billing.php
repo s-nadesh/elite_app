@@ -79,17 +79,6 @@ use yii\widgets\ActiveForm;
 <?php
 $script = <<< JS
     jQuery(document).ready(function () { 
-        
-        
-//        $('#billingmodal').submit(function(e) {
-//        var pending_amount={$pending_amount};
-//         var paid_amount  = $('#orderbillings-paid_amount').val();
-//        if(paid_amount > pending_amount){
-//               e.preventDefault();
-//             $('#changePaymentContent').modal('show');
-//        }
-//        });
-        
         //Display error received amount is more than pending amount------
               
                  $("#error_receivedamount").hide();
@@ -106,10 +95,19 @@ $script = <<< JS
                  setTimeout(function() {
                         $('#error_receivedamount').fadeOut('veryslow');
                            }, 7000);
-                      
                  }
                 
                  });
+        
+         $('body').on('click','#billingmodal',function (e) {
+         var pending = {$pending_amount};
+        var paid_amount  = $('#orderbillings-paid_amount').val();   
+          if(paid_amount > pending){
+         $('#changePaymentContent').modal('show');
+         e.preventDefault();
+        }
+        });
+         
     });
 JS;
 $this->registerJs($script, View::POS_END);

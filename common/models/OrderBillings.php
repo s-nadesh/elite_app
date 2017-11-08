@@ -40,22 +40,12 @@ class OrderBillings extends \yii\db\ActiveRecord
             [['order_id', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
             [['paid_amount'], 'number'],
             [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Orders::className(), 'targetAttribute' => ['order_id' => 'order_id']],
-//             ['paid_amount', 'amountCheck'],
         ];
     }
 
     /**
      * @inheritdoc
      */
-    
-    public function amountCheck($attribute, $params) {
-         $pending_amount = OrderBillings::pendingAmount($this->order->total_amount, $this->paid_amount);
-          if (!empty($this->paid_amount)) {
-            if ($this->paid_amount > $pending_amount)
-                $this->addError($attribute, "paid amount is greater than pending amount");
-        }
-    }
-    
     public function attributeLabels()
     {
         return [
