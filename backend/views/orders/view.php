@@ -14,11 +14,7 @@ use yii\web\View;
 
 $this->title = "Order id : " . $model->order_id;
 ?>
-<aside class="right-side">
-    <section class="content-header">
 
-        <h1>Order Information</h1>
-    </section>
     <div class="col-md-12">
         <div class="box box-primary">
             <div class="box-body">
@@ -206,4 +202,3 @@ $this->title = "Order id : " . $model->order_id;
         </div>
     </div>
 </div>
-</aside>

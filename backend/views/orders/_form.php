@@ -204,7 +204,7 @@ $form = ActiveForm::begin([
     <div class="col-md-6">
         <div class="box box-primary">
             <div class="box-header">
-                <h3 class="box-title">Change Order Status</h3>
+                <h3 class="box-title">Update Payment</h3>
             </div><!-- /.box-header -->
             <!-- form start -->
             <?php
@@ -279,6 +279,7 @@ $productlistcallback = Yii::$app->urlManager->createUrl(['orders/getproductlist'
 
 $script = <<< JS
            jQuery(document).ready(function () { 
+        
         
     //Get subcategory list------
         

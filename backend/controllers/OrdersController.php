@@ -169,14 +169,19 @@ class OrdersController extends Controller {
         $paid_amount = $model->orderBillingsSum;
         $pending_amount = OrderBillings::pendingAmount($model->total_amount, $paid_amount);
         if (Yii::$app->request->post()) {
-//            $model->load(Yii::$app->request->post());
             $orderbilling_model->load(Yii::$app->request->post());
             $orderbilling_model->order_id = $model->order_id;
-            if ($orderbilling_model->save()) {
-//                OrderBillings::insertOrderBilling($model, $orderbilling_model); // NOT NEED
+            if ($orderbilling_model->validate()) {
+                $orderbilling_model->save();
                 Yii::$app->getSession()->setFlash('success', 'Payment updated successfully');
                 return $this->redirect(['index']);
             }
+//            else{
+//                $var =   "<script>$(document).ready(function(){
+//             $('#changePaymentContent').modal('show')
+//          });</script>";
+//               echo $var;
+//            }
         } else {
             return $this->renderAjax('billing', [
                         'model' => $model,
@@ -247,7 +252,7 @@ class OrdersController extends Controller {
 
             if ($orderbilling_model->load(Yii::$app->request->post())) {
                 $orderbilling_model->order_id = $model->order_id;
-                if ($orderbilling_model->validate()) {
+                if ($orderbilling_model->validate() && ($orderbilling_model->paid_amount <= $pending_amount) ) {
                     $orderbilling_model->save();
                     Yii::$app->getSession()->setFlash('success', 'Paid Amount added successfully');
                     return $this->redirect(['orders/index']);

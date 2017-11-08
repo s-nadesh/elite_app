@@ -51,14 +51,14 @@ use yii\widgets\ActiveForm;
 
             <div class="clearfix"> </div>
 
-           
+
             <div class="form-group">
                 <label class="col-sm-4 control-label valueleft">Current Received Amount</label>
                 <div class="col-sm-6 valueright">
                     <?= $form->field($orderbilling_model, 'paid_amount')->textInput(['maxlength' => true])->label(false) ?>
                 </div>
             </div>
-             <div id="error_receivedamount">            
+            <div id="error_receivedamount">            
                 <div class="alert alert-danger alert-dismissable">                          
                 </div>
             </div> 
@@ -67,7 +67,7 @@ use yii\widgets\ActiveForm;
         <div class="clearfix"> </div>  
 
         <div class="box-footer">
-            <?= Html::submitButton($orderbilling_model->isNewRecord ? 'Update Amount' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+            <?= Html::submitButton($orderbilling_model->isNewRecord ? 'Update Amount' : 'Update', ['id' => 'billingmodal', 'class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
         </div>
     </form>
 
@@ -79,6 +79,17 @@ use yii\widgets\ActiveForm;
 <?php
 $script = <<< JS
     jQuery(document).ready(function () { 
+        
+        
+//        $('#billingmodal').submit(function(e) {
+//        var pending_amount={$pending_amount};
+//         var paid_amount  = $('#orderbillings-paid_amount').val();
+//        if(paid_amount > pending_amount){
+//               e.preventDefault();
+//             $('#changePaymentContent').modal('show');
+//        }
+//        });
+        
         //Display error received amount is more than pending amount------
               
                  $("#error_receivedamount").hide();

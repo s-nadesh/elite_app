@@ -10,11 +10,7 @@ $this->params['breadcrumbs'][] = ['label' => 'Orders', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->order_id, 'url' => ['view', 'id' => $model->order_id]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
-<aside class="right-side">
-    <section class="content-header">
-    <h1><?= Html::encode($this->title) ?></h1>
-</section>
-    <section class="content">
+
                     <div class="row">
     <?= $this->render('_form', [
        'model' => $model,
@@ -28,5 +24,4 @@ $this->params['breadcrumbs'][] = 'Update';
 
 
 </div>
-</section>
-</aside>
+

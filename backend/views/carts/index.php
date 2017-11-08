@@ -15,10 +15,7 @@ use yii\widgets\Pjax;
 $this->title = 'Carts';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<aside class="right-side">
-    <section class="content-header">
-        <h1><?= Html::encode($this->title) ?></h1>
-    </section>
+
     <section class="content">
         <div class="services-index">
             <div class="row">
@@ -105,4 +102,3 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
     </section>
-</aside>
