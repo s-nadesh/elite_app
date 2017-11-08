@@ -76,7 +76,8 @@ $this->registerJs(
 
     <div class="box-footer">
         <div class="col-sm-0 col-sm-offset-2">
-            <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+            <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>&nbsp;&nbsp;
+            <?= Html::a('Cancel', ['index'], ['class' => 'btn btn-danger']) ?>
         </div>
     </div>
     <?php ActiveForm::end(); ?>

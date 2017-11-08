@@ -155,7 +155,6 @@ class ProductsController extends Controller {
 
     public function actionStocklog($id) {
         $model = $this->findModel($id);
-        $stock = StockLog::find()->where(['product_id' => $model->product_id])->one();
         $stock = new StockLog();
         if ($stock->load(Yii::$app->request->post())) {
             $stock->adjust_from = $model->stock;

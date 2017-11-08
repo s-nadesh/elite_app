@@ -70,7 +70,7 @@ class StockLog extends ActiveRecord {
      */
     public function rules() {
         return [
-//            [['product_id', 'adjust_datetime', 'adjust_from', 'adjust_to', 'adjust_quantity'], 'required'],
+                [['adjust_quantity'], 'required'],
                 [['product_id', 'adjust_datetime', 'adjust_from', 'adjust_to', 'adjust_quantity', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
                 [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Products::className(), 'targetAttribute' => ['product_id' => 'product_id']],
         ];
@@ -93,7 +93,7 @@ class StockLog extends ActiveRecord {
             'created_by' => 'Created By',
             'updated_by' => 'Updated By',
             'deleted_at' => 'Deleted At',
-            'createUserName' =>'Created By',
+            'createUserName' => 'Created By',
             'updateUserName' => 'Updated By',
         ];
     }

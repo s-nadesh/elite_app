@@ -56,7 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                                 ['class' => 'yii\grid\ActionColumn',
                                 'header' => 'Action',
-                                'template' => '{update}&nbsp;&nbsp;{delete}&nbsp;&nbsp;{login}',
+                                'template' => '{update}&nbsp;&nbsp;{login}',
                                 'buttons' => [
                                     'login' => function($url, $model) {
                                         $url = Url::toRoute('users/login?id=' . $model->user_id);

@@ -56,7 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                             ['class' => 'yii\grid\ActionColumn',
                                 'header' => 'Action',
-                                'template' => '{update}&nbsp;&nbsp;{stock}&nbsp;&nbsp;{delete}',
+                                'template' => '{update}&nbsp;&nbsp;{stock}',
                                 'buttons' => [
                                     'stock' => function ($url, $model) {
                                         $url = Url::toRoute('products/stocklog?id=' . $model->product_id);

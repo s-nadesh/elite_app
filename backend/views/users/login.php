@@ -11,6 +11,8 @@ use yii\widgets\ActiveForm;
 /* @var $model Users */
 /* @var $form ActiveForm */
 $login->isNewRecord ? $this->title = 'Create Login Details' : $this->title = 'Update Login Details';
+$this->params['breadcrumbs'][] = ['label' => 'Users', 'url' => ['index']];
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="col-md-12">
     <div class="box box-primary">
@@ -36,7 +38,8 @@ $login->isNewRecord ? $this->title = 'Create Login Details' : $this->title = 'Up
 
             <div class="box-footer">
                 <div class="col-sm-0 col-sm-offset-2">
-                    <?= Html::submitButton($login->isNewRecord ? 'Create' : 'Update', ['class' => $login->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+                    <?= Html::submitButton($login->isNewRecord ? 'Create' : 'Update', ['class' => $login->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>&nbsp;&nbsp;
+                    <?= Html::a('Cancel', ['index'], ['class' => 'btn btn-danger']) ?>
                 </div>
             </div>
             <?php ActiveForm::end(); ?>

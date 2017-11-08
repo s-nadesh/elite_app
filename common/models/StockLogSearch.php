@@ -10,23 +10,21 @@ use common\models\StockLog;
 /**
  * StockLogSearch represents the model behind the search form about `common\models\StockLog`.
  */
-class StockLogSearch extends StockLog
-{
+class StockLogSearch extends StockLog {
+
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
-            [['stocklog_id', 'product_id', 'adjust_datetime', 'adjust_from', 'adjust_to', 'adjust_quantity', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
+                [['stocklog_id', 'product_id', 'adjust_datetime', 'adjust_from', 'adjust_to', 'adjust_quantity', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
         ];
     }
 
     /**
      * @inheritdoc
      */
-    public function scenarios()
-    {
+    public function scenarios() {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
@@ -38,16 +36,16 @@ class StockLogSearch extends StockLog
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
-    {
+    public function search($params) {
         $query = StockLog::find();
-
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
-
+        if ($params['id']) {
+            $query->andWhere(['product_id' => $params['id']]);
+        }
         $this->load($params);
 
         if (!$this->validate()) {
@@ -74,4 +72,5 @@ class StockLogSearch extends StockLog
 
         return $dataProvider;
     }
+
 }

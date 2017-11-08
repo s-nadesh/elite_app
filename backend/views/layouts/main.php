@@ -6,6 +6,7 @@ use backend\assets\ThemeAsset;
 use common\widgets\Alert;
 use yii\helpers\Html;
 use yii\web\View;
+use yii\widgets\Breadcrumbs;
 
 ThemeAsset::register($this);
 ?>
@@ -34,6 +35,15 @@ ThemeAsset::register($this);
                     <h1>
                         <?= Html::encode($this->title) ?>
                     </h1>
+                    <?=
+                    Breadcrumbs::widget([
+                        'homeLink' => [
+                            'label' => Yii::t('yii', 'Dashboard'),
+                            'url' => Yii::$app->homeUrl,
+                        ],
+                        'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+                    ])
+                    ?>
                 </section>
                 <!-- Main content -->
                 <section class="content">

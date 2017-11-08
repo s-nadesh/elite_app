@@ -5,12 +5,11 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model backend\models\Users */
 
-$this->title = 'Update Users: ' . $model->user_id;
+$this->title = 'Update Users';
 $this->params['breadcrumbs'][] = ['label' => 'Users', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->user_id]];
-$this->params['breadcrumbs'][] = 'Update';
+//$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->user_id]];
+$this->params['breadcrumbs'][] = $this->title;
 ?>
-<?php $this->params['breadcrumbs'][] = $this->title; ?>
 <div class="col-md-12">
     <div class="box box-primary">
 
