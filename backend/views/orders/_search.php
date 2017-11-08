@@ -1,14 +1,12 @@
 <?php
 
-use common\models\DlStudentSearch;
 use common\models\OrderStatus;
-use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\web\View;
 use yii\widgets\ActiveForm;
 
 /* @var $this View */
-/* @var $model DlStudentSearch */
+/* @var $model OrderStatus */
 /* @var $form ActiveForm */
 ?>
 <?php
@@ -56,7 +54,6 @@ $status_name = OrderStatus::prepareOrderStatus();
 ActiveForm::end();
 ?>
 <?php
-/* For Subcategory dropdown list */
 $script = <<< JS
     jQuery(document).ready(function () { 
         var today = new Date();

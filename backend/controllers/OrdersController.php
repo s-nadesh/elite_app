@@ -74,9 +74,11 @@ class OrdersController extends Controller {
      * @param integer $id
      * @return mixed
      */
+    /* n */
     public function actionView($id) {
         $searchModel = new OrderBillingsSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $id);
+        $order_billing_search = ['OrderBillingsSearch' => ['order_id' => $id]];
+        $dataProvider = $searchModel->search($order_billing_search);
 
         return $this->render('view', [
                     'model' => $this->findModel($id),
@@ -85,7 +87,8 @@ class OrdersController extends Controller {
         ]);
     }
 
-    /*NOT NEED*/
+    /* NOT NEED */
+
     public function actionGetsubcategorylist() {
         if (Yii::$app->request->isAjax) {
             $cat_id = $_POST['id'];
@@ -117,7 +120,8 @@ class OrdersController extends Controller {
         }
     }
 
-    /*NOT NEED*/
+    /* NOT NEED */
+
     public function actionGetproductlist() {
         if (Yii::$app->request->isAjax) {
             $subcat_id = $_POST['id'];

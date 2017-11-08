@@ -10,24 +10,22 @@ use common\models\OrderBillings;
 /**
  * OrderBillingsSearch represents the model behind the search form about `common\models\OrderBillings`.
  */
-class OrderBillingsSearch extends OrderBillings
-{
+class OrderBillingsSearch extends OrderBillings {
+
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
-            [['billing_id', 'order_id', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
-            [['paid_amount'], 'number'],
+                [['billing_id', 'order_id', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
+                [['paid_amount'], 'number'],
         ];
     }
 
     /**
      * @inheritdoc
      */
-    public function scenarios()
-    {
+    public function scenarios() {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
@@ -39,13 +37,10 @@ class OrderBillingsSearch extends OrderBillings
      *
      * @return ActiveDataProvider
      */
-    public function search($params,$id)
-    {
-        $this->load($params);
+    public function search($params) {
         $query = OrderBillings::find();
 
         // add conditions that should always apply here
-        $query->andWhere('order_id='.$id);
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
@@ -76,4 +71,5 @@ class OrderBillingsSearch extends OrderBillings
 
         return $dataProvider;
     }
+
 }
