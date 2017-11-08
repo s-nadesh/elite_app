@@ -17,7 +17,7 @@ $view = "View All <i class='fa fa-arrow-circle-right'></i>";
             <div class="inner">
                 <?php $users = Users::find()->count(); ?>
                 <h3>
-                    <?php echo $users; ?>
+                    <?= $users; ?>
                 </h3>
                 <p>
                     Users
