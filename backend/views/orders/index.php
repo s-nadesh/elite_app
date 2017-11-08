@@ -1,5 +1,6 @@
 <?php
 
+use common\models\Orders;
 use common\models\OrdersSearch;
 use common\models\OrderStatus;
 use yii\bootstrap\Modal;
@@ -66,6 +67,16 @@ $this->params['breadcrumbs'][] = $this->title;
                                     },
                                 ],
                                 'visibleButtons' => [
+                                    'status' => function($model, $key, $index) {
+                                        if ($model->order_status_id != OrderStatus::OR_COMPLETED && $model->order_status_id != OrderStatus::OR_CANCELED && $model->order_status_id != OrderStatus::OR_DELEVERED) {
+                                            return true;
+                                        }
+                                    },
+                                    'billing' => function($model, $key, $index) {
+                                        if ($model->payment_status != Orders::OR_PAYMENT_C) {
+                                            return true;
+                                        }
+                                    },
                                     'update' => function($model, $key, $index) {
                                         if ($model->order_status_id != OrderStatus::OR_COMPLETED && $model->order_status_id != OrderStatus::OR_CANCELED) {
                                             return true;

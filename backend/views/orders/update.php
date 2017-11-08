@@ -11,17 +11,13 @@ $this->params['breadcrumbs'][] = ['label' => $model->order_id, 'url' => ['view',
 $this->params['breadcrumbs'][] = 'Update';
 ?>
 
-                    <div class="row">
-    <?= $this->render('_form', [
-       'model' => $model,
-                'orderby'=>$orderby,
-                'users'=>$users,
-                'orderbilling_model' => $orderbilling_model,
-                'paid_amount' => $paid_amount,
-                'pending_amount'=>$pending_amount,
-                'tmodel' => $tmodel,
-    ]) ?>
-
-
+<div class="row">
+    <?=
+    $this->render('_form', [
+        'model' => $model,
+        'orderbilling_model' => $orderbilling_model,
+        'paid_amount' => $paid_amount,
+        'pending_amount' => $pending_amount,
+    ])
+    ?>
 </div>
-

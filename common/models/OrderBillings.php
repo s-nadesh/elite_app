@@ -19,27 +19,26 @@ use Yii;
  *
  * @property Orders $order
  */
-class OrderBillings extends \yii\db\ActiveRecord
-{
-     const OR_STATUS = 1;
+class OrderBillings extends \yii\db\ActiveRecord {
+
+    const OR_STATUS = 1;
+
     /**
      * @inheritdoc
      */
-    public static function tableName()
-    {
+    public static function tableName() {
         return '{{%order_billings}}';
     }
 
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
-     
+    public function rules() {
+
         return [
-            [['order_id','paid_amount'], 'required'],
-            [['order_id', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
-            [['paid_amount'], 'number'],
+                [['order_id', 'paid_amount'], 'required'],
+                [['order_id', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
+                [['paid_amount'], 'number'],
 //             ['paid_amount', 'amountCheck'],
             [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Orders::className(), 'targetAttribute' => ['order_id' => 'order_id']],
         ];
@@ -48,7 +47,6 @@ class OrderBillings extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    
 //    public function amountCheck($attribute, $params) {
 ////           print_r($this->order->total_amount);exit;
 //         $pending_amount = OrderBillings::pendingAmount($this->order->total_amount, $this->paid_amount);
@@ -56,9 +54,8 @@ class OrderBillings extends \yii\db\ActiveRecord
 //                $this->addError($attribute, "paid amount is greater than pending amount");
 //        }
 //    }
-    
-    public function attributeLabels()
-    {
+
+    public function attributeLabels() {
         return [
             'billing_id' => 'Billing ID',
             'order_id' => 'Order ID',
@@ -75,8 +72,7 @@ class OrderBillings extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getOrder()
-    {
+    public function getOrder() {
         return $this->hasOne(Orders::className(), ['order_id' => 'order_id']);
     }
 
@@ -88,11 +84,11 @@ class OrderBillings extends \yii\db\ActiveRecord
         $this->checkOrderTotal();
         return parent::afterSave($insert, $changedAttributes);
     }
-    public static function find()
-    {
+
+    public static function find() {
         return new OrderBillingsQuery(get_called_class());
     }
-         
+
     public static function paidAmount($id) {
         $paid = self::find()
                 ->andWhere([
@@ -102,28 +98,26 @@ class OrderBillings extends \yii\db\ActiveRecord
                 ->sum('paid_amount');
         return $paid;
     }
-     public static function pendingAmount($total,$paid_amount) {
-         
-       $pending=$total-$paid_amount;
-       
+
+    public static function pendingAmount($total, $paid_amount) {
+
+        $pending = $total - $paid_amount;
+
         return $pending;
     }
-     public function insertOrderBilling($model,$orderbilling_model) {
-        $order_billing = new OrderBillings();
-        $order_billing->order_id = $model->order_id;
-        $order_billing->paid_amount = $orderbilling_model->paid_amount;
-        $order_billing->status =  OrderBillings::OR_STATUS;
-        $order_billing->created_by =  $model->ordered_by;
-        $order_billing->save(false);
-     }
-     
-     public function checkOrderTotal() {
-       $paid_amount= OrderBillings::paidAmount($this->order_id);
-       $diff = $this->order->total_amount - $paid_amount;
-       if($diff == 0 && $this->order->order_status_id == OrderStatus::OR_DELEVERED){
-           $this->order->order_status_id=OrderStatus::OR_COMPLETED;
-           $this->order->save(false);
-       }
+
+    public function checkOrderTotal() {
+        $paid_amount = $this->order->getOrderBillingsSum();
+        $diff = $this->order->total_amount - $paid_amount;
+        if ($diff == 0) {
+            $this->order->payment_status = Orders::OR_PAYMENT_C;
+            if ($this->order->order_status_id == OrderStatus::OR_DELEVERED) {
+                $this->order->order_status_id = OrderStatus::OR_COMPLETED;
+            }
+        } else {
+            $this->order->payment_status = Orders::OR_PAYMENT_PC;
+        }
+        $this->order->save(false);
     }
 
 }

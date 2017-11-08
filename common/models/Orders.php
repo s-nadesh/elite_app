@@ -34,6 +34,10 @@ use yii\db\ActiveRecord;
  * @property Users $user
  */
 class Orders extends ActiveRecord {
+    
+    const OR_PAYMENT_P = 'P';
+    const OR_PAYMENT_PC = 'PC';
+    const OR_PAYMENT_C = 'C';
 
     public $dispatch_track_id;
     public $dispatch_courier_comapny;
