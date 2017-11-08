@@ -68,6 +68,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         'qty',
                                             [
                                             'attribute' => 'product_price',
+                                            'footer' => '<span class="pull-right">Grand Total</span>',
                                             'value' => function ($model, $key, $index, $column) {
                                                 return $model->product->price_per_unit;
                                             },

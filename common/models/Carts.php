@@ -141,7 +141,7 @@ class Carts extends ActiveRecord {
         foreach ($provider as $model) {
             $total += ($model->product->price_per_unit * $model->qty);
         }
-        return $total;
+        return '<b>'.$total.'</b>';
     }
 
 }
