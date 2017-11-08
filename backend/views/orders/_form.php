@@ -214,10 +214,7 @@ $order_status = OrderStatus::prepareOrderStatus($model->order_status_id);
 
             <div class="clearfix"> </div>
 
-            <div id="error_receivedamount">            
-                <div class="alert alert-danger alert-dismissable">                          
-                </div>
-            </div> 
+           
             <div class="form-group">
                 <label class="col-sm-4 control-label valueleft">Current Received Amount</label>
                 <div class="col-sm-6 valueright">
@@ -247,82 +244,6 @@ $productlistcallback = Yii::$app->urlManager->createUrl(['orders/getproductlist'
 $script = <<< JS
            jQuery(document).ready(function () { 
         
-        
-    //Get subcategory list------
-        
-            var categoryid  = $('#orderitems-category_id').val();
-   
-            $('#orderitems-category_id').on('change', function() {
-            var categoryid     = $(this).val(); 
-            if(categoryid!=""){  
-            subcategorylist(categoryid);  
-            } 
-            });
-              function subcategorylist(categoryid){
-               $.ajax({
-                 url  : "{$subcategorycallback}",
-                type : "POST",                   
-                data: {
-                  id: categoryid,                       
-                },
-                success: function(data) {
-                  $("#orderitems-subcat_id").html(data);
-                  if(data!=""){         
-                    $('#orderitems-subcat_id').val();
-                            }
-                        }
-                  });  
-               }
-            
-   
-      //Display error received amount is more than pending amount------
-              
-                 $("#error_receivedamount").hide();
-                
-                 $('#orderbillings-paid_amount').keyup(function(){ 
-                 if(parseFloat($(this).val()) > parseFloat($(".pendingamt").html())){
-                
-                 var msg = "Attention! Received amount is more than pending amount. Please check it"
-                
-                 $("#error_receivedamount .alert.alert-danger").text(msg);
-                
-                 $("#error_receivedamount").show(); 
-                
-                 setTimeout(function() {
-                        $('#error_receivedamount').fadeOut('veryslow');
-                           }, 7000);
-                      
-                 }
-                
-                 });
-                
-     //Get Product list----
-                
-                var subcatid  = $('#orderitems-subcat_id').val();
-              
-                $('#orderitems-subcat_id').on('change', function() {
-                
-                         var subcatid  = $(this).val(); 
-                         if(subcatid!=""){  
-                              get_productlist(subcatid);  
-                        } 
-                        });
-            function get_productlist(subcatid){
-            $.ajax({
-                url  : "{$productlistcallback}",
-                type : "POST",                   
-                data: {
-                  id: subcatid,                     
-                },
-                success: function(data) {
-                  $("#orderitems-product_id").html(data);
-                  if(data != ""){         
-                    $('#orderitems-product_id').val();
-                  }
-                }
-           });  
-        }
-                
    //Change Status----
    
          $(".change_status_fields").hide();

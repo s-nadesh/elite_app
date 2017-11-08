@@ -99,7 +99,7 @@ $script = <<< JS
                 
                  });
         
-         $('body').on('click','#billingmodal',function (e) {
+         $('body').on('keyup','#billingmodal',function (e) {
          var pending = {$pending_amount};
         var paid_amount  = $('#orderbillings-paid_amount').val();   
           if(paid_amount > pending){

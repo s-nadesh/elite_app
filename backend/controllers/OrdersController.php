@@ -114,7 +114,8 @@ class OrdersController extends Controller {
         if (Yii::$app->request->post()) {
             $orderbilling_model->load(Yii::$app->request->post());
             $orderbilling_model->order_id = $model->order_id;
-            if ($orderbilling_model->save()) {
+            if ($orderbilling_model->validate()) {
+                 $orderbilling_model->save();
                 Yii::$app->getSession()->setFlash('success', 'Payment updated successfully');
                 return $this->redirect(['index']);
             }
@@ -148,7 +149,8 @@ class OrdersController extends Controller {
         if (Yii::$app->request->post()) {
             if ($orderbilling_model->load(Yii::$app->request->post())) {
                 $orderbilling_model->order_id = $model->order_id;
-                if ($orderbilling_model->paid_amount <= $pending_amount && $orderbilling_model->save()) {
+                if ($orderbilling_model->validate()) {
+                    $orderbilling_model->save();
                     Yii::$app->getSession()->setFlash('success', 'Paid Amount added successfully');
                     return $this->redirect(['orders/update?id='.$model->order_id]);
                 }
@@ -261,107 +263,5 @@ class OrdersController extends Controller {
             return $this->redirect(['carts/index']);
         }
     }
-    
-    
-    /* NOT NEED */
-
-    public function actionGetsubcategorylist() {
-        if (Yii::$app->request->isAjax) {
-            $cat_id = $_POST['id'];
-            print_r($cat_id);
-            exit;
-            if ($cat_id != 0) {
-                $subcatlists = SubCategories::find()->andWhere([
-                            'category_id' => $cat_id,
-                            'status' => 1,
-                        ])->all();
-                $subcategory_list = ArrayHelper::map($subcatlists, "subcat_id", function($model, $defaultValue) {
-                            return $model->subcat_name;
-                        });
-
-
-                if (!empty($subcategory_list)) {
-                    $slist = "<option value=''>--Select Subcategory--</option>";
-                    foreach ($subcategory_list as $key => $sinfo) {
-
-                        $slist .= "<option value='" . $key . "'>" . $sinfo . "</option>";
-                    }
-                } else {
-                    $slist = "<option value=''>No Records</option>";
-                }
-
-                echo $slist;
-                exit;
-            }
-        }
-    }
-
-    /* NOT NEED */
-
-    public function actionGetproductlist() {
-        if (Yii::$app->request->isAjax) {
-            $subcat_id = $_POST['id'];
-            if ($subcat_id != 0) {
-                $productlists = Products::find()->andWhere([
-                            'subcat_id' => $subcat_id,
-                            'status' => 1,
-                        ])->all();
-                $getproduct_list = ArrayHelper::map($productlists, "product_id", function($model, $defaultValue) {
-                            return $model->product_name;
-                        });
-
-                if (!empty($getproduct_list)) {
-                    $slist = "<option value=''>--Select Product--</option>";
-                    foreach ($getproduct_list as $key => $sinfo) {
-
-                        $slist .= "<option value='" . $key . "'>" . $sinfo . "</option>";
-                    }
-                } else {
-                    $slist = "<option value=''>No Records</option>";
-                }
-
-                echo $slist;
-                exit;
-            }
-        }
-    }
-    
-    /* NOT NEED */
-    public function actionCreate() {
-        $model = new Orders();
-        $odritem_model = new OrderItems();
-        $orderbilling_model = new OrderBillings();
-        $orderby = ArrayHelper::map(Users::find()->where('user_type_id=:id', ['id' => UserTypes::SE_USER_TYPE])->all(), 'user_id', 'name');
-        $users = ArrayHelper::map(Users::find()->where('user_type_id=:id or user_type_id=:id1', ['id' => UserTypes::CU_USER_TYPE, 'id1' => UserTypes::DE_USER_TYPE])->all(), 'user_id', 'name');
-        $categories = ArrayHelper::map(Categories::find()->where('status=:id', ['id' => 1])->all(), 'category_id', 'category_name');
-        $sub_categories = ArrayHelper::map(SubCategories::find()->where('status=:id', ['id' => 1])->all(), 'subcat_id', 'subcat_name');
-        $products = ArrayHelper::map(Products::find()->where('status=:id', ['id' => 1])->all(), 'product_id', 'product_name');
-
-
-        if (Yii::$app->request->post()) {
-            $model->load(Yii::$app->request->post());
-            $odritem_model->load(Yii::$app->request->post());
-            $orderbilling_model->load(Yii::$app->request->post());
-
-            if ($model->validate() && $odritem_model->validate() && $orderbilling_model->validate()) {
-                $model->save();
-                $odritem_model->save();
-                $orderbilling_model->save();
-                
-            }
-            return $this->redirect(['view', 'id' => $model->order_id]);
-        } else {
-            return $this->render('create', [
-                        'model' => $model,
-                        'odritem_model' => $odritem_model,
-                        'orderby' => $orderby,
-                        'users' => $users,
-                        'categories' => $categories,
-                        'sub_categories' => $sub_categories,
-                        'products' => $products,
-                        'orderbilling_model' => $orderbilling_model,
-            ]);
-        }
-    }
-
+            
 }
