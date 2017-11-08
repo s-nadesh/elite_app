@@ -53,7 +53,7 @@ $view = "View All <i class='fa fa-arrow-circle-right'></i>";
             <div class="inner">
                 <?php $orders = Orders::find()->count(); ?>
                 <h3>
-                    <?php echo $orders; ?>
+                    <?= $orders; ?>
                 </h3>
                 <p>
                     Orders
