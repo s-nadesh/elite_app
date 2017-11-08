@@ -39,8 +39,8 @@ class OrderBillings extends \yii\db\ActiveRecord
         return [
             [['order_id','paid_amount'], 'required'],
             [['order_id', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
-//            [['paid_amount'], 'number'],
-             ['paid_amount', 'amountCheck'],
+            [['paid_amount'], 'number'],
+//             ['paid_amount', 'amountCheck'],
             [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Orders::className(), 'targetAttribute' => ['order_id' => 'order_id']],
         ];
     }
