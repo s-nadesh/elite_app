@@ -60,7 +60,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'buttons' => [
                                     'stock' => function ($url, $model) {
                                         $url = Url::toRoute('products/stocklog?id=' . $model->product_id);
-                                        return Html::a('<span title="Stock Log" class="fa-building-o"></span>', $url);
+                                        return Html::a('<span title="Stock Log" class="glyphicon glyphicon-plus-sign"></span>', $url);
                                     },
                                 ],
                             ],
