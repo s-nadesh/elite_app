@@ -7,8 +7,7 @@ use yii\helpers\Html;
 
 $this->title = 'Update Orders: ' . $model->invoice_no;
 $this->params['breadcrumbs'][] = ['label' => 'Orders', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->order_id, 'url' => ['view', 'id' => $model->order_id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="row">
