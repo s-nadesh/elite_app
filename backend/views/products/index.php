@@ -8,7 +8,7 @@ use yii\grid\GridView;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
-use yii\web\View;
+//use yii\web\View;
 
 /* @var $this View */
 /* @var $searchModel ProductsSearch */
