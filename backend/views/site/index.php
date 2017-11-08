@@ -1,5 +1,6 @@
 <?php
 
+use common\models\Orders;
 use common\models\Products;
 use common\models\Users;
 use yii\helpers\Html;
@@ -44,6 +45,24 @@ $view = "View All <i class='fa fa-arrow-circle-right'></i>";
                 <i class="ion-bag"></i>
             </div>
             <?php echo Html::a($view, ['/products'], ["class" => 'small-box-footer']); ?>
+        </div>
+    </div><!-- ./col -->
+    <div class="col-lg-3 col-xs-6">
+        <!-- small box -->
+        <div class="small-box bg-red">
+            <div class="inner">
+                <?php $orders = Orders::find()->count(); ?>
+                <h3>
+                    <?php echo $orders; ?>
+                </h3>
+                <p>
+                    Orders
+                </p>
+            </div>
+            <div class="icon">
+                <i class="ion-android-menu"></i>
+            </div>
+            <?php echo Html::a($view, ['/orders'], ["class" => 'small-box-footer']); ?>
         </div>
     </div><!-- ./col -->
 </div>
