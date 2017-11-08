@@ -14,6 +14,7 @@ use yii\web\View;
 /* @var $searchModel ProductsSearch */
 /* @var $dataProvider ActiveDataProvider */
 
+
 $this->title = 'Products';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
