@@ -1,9 +1,6 @@
 <?php
 
-use common\models\OrderItems;
-use common\models\Orders;
 use common\models\OrderStatus;
-use common\models\OrderTrack;
 use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -13,6 +10,7 @@ use yii\web\View;
 /* @var $model ElOrder */
 
 $this->title = "Order View";
+
 ?>
 <div class="row">
     <div class="col-md-12">
@@ -62,9 +60,7 @@ $this->title = "Order View";
                     </div>
                 </div>
 
-                <?php
-                $order_items = OrderItems::find()->where('status=:sid and order_id=:id', ['sid' => 1, 'id' => $model->order_id])->orderBy(['created_at' => SORT_DESC])->all();
-                ?>
+              
                 <div class="row">
                     <div class="col-xs-12 ">
                         <p class="lead">Order Items</p>
@@ -83,15 +79,14 @@ $this->title = "Order View";
                                 </thead>
                                 <tbody id="mytbody">
                                     <?php
-                                    if (!$model->isNewRecord) {
                                         $i = 1;
-                                        foreach ($order_items as $info):
+                                        foreach ($model->orderItems as $info):
                                             ?>
                                             <tr>
                                                 <td><?php echo $i ?></td>
-                                                <td><?php echo $info->category_name ?></td>
-                                                <td><?php echo $info->subcat_name ?></td>
-                                                <td><?php echo $info->product_name ?></td>
+                                                <td><?php echo $info->category->category_name ?></td>
+                                                <td><?php echo $info->subcat->subcat_name ?></td>
+                                                <td><?php echo $info->product->product_name ?></td>
                                                 <td><?php echo $info->quantity ?></td>
                                                 <td><?php echo $info->price ?></td>
                                                 <td><?php echo $info->total ?></td>
@@ -100,15 +95,12 @@ $this->title = "Order View";
                                             $i++;
                                         endforeach;
                                         ?>
-                                    <?php } ?>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
 
-                <?php $order_track = OrderTrack::find()->where('status=:sid and order_id=:id ', ['sid' => 1, 'id' => $model->order_id])->orderBy(['created_at' => SORT_DESC])->all();
-                ?>
                 <div class="row">
                     <div class="col-xs-12 ">
                         <p class="lead">Order Track</p>
@@ -126,7 +118,7 @@ $this->title = "Order View";
                                 <tbody id="mytbody">
                                     <?php
                                     $i = 1;
-                                    foreach ($order_track as $info):
+                                    foreach ($model->orderTrack as $info):
                                         $responseArray = json_decode($info->value, true);
                                         ?>
                                         <tr>

@@ -216,6 +216,7 @@ class OrdersController extends Controller {
                 $model->save();
                 $odritem_model->save();
                 $orderbilling_model->save();
+                
             }
             return $this->redirect(['view', 'id' => $model->order_id]);
         } else {
@@ -251,10 +252,9 @@ class OrdersController extends Controller {
 
             if ($orderbilling_model->load(Yii::$app->request->post())) {
                 $orderbilling_model->order_id = $model->order_id;
-                if ($orderbilling_model->paid_amount <= $pending_amount && $orderbilling_model->validate()) {
-                    $orderbilling_model->save();
+                if ($orderbilling_model->paid_amount <= $pending_amount && $orderbilling_model->save()) {
                     Yii::$app->getSession()->setFlash('success', 'Paid Amount added successfully');
-                    return $this->redirect(['orders/index']);
+                    return $this->redirect(['orders/update?id='.$model->order_id]);
                 }
             } elseif ($model->load(Yii::$app->request->post())) {
                 $model->change_status = true;
@@ -348,6 +348,14 @@ class OrdersController extends Controller {
                         $order_item->order_id = $order->order_id;
                         $order_item->load($cart_item, '');
                         $order_item->save(false);
+                        
+                    }
+                     foreach ($order->orderItems as $item) {
+                         $stock=Products::getStock($item->product_id);
+                         $diff=$stock ['stock']-$item->quantity;
+                         $stock->stock=$diff;
+                        $stock->save(false);
+                        
                     }
                     Carts::clearCart(); // Pending
                     Yii::$app->session->setFlash('success', "Order placed successfully");

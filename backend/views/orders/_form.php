@@ -12,12 +12,7 @@ use yii\widgets\ActiveForm;
 /* @var $this View */
 /* @var $model Orders */
 /* @var $form ActiveForm */
-$new_order = ArrayHelper::map(OrderStatus::find()->where('status=:id and status_position_id!=:id1', ['id' => 1, 'id1' => 3])->all(), 'status_position_id', 'status_name');
-
-$inprogress = ArrayHelper::map(OrderStatus::find()->where('status=:id and status_position_id!=:id1 and status_position_id!=:id2', ['id' => 1, 'id1' => 3, 'id2' => 1])->all(), 'status_position_id', 'status_name');
-
-
-$dispatch = ArrayHelper::map(OrderStatus::find()->where('status=:id and status_position_id=:id1 or status_position_id=:id2', ['id' => 1, 'id1' => 4, 'id2' => 5])->all(), 'status_position_id', 'status_name');
+$order_status = OrderStatus::prepareOrderStatus($model->order_status_id);
 ?>
 
 
@@ -125,15 +120,8 @@ $form = ActiveForm::begin([
                     <div class="form-group">
                         <label class="col-sm-4 control-label valueleft">Status</label>
                         <div class="col-sm-6 valueright">
-                            <?php if ((!$model->isNewRecord) && ($model->order_status_id == "1")) { ?>
-                                <?= $form->field($model, 'order_status_id')->dropDownList($new_order, ['prompt' => '--Select Option--'])->label(false); ?>
-                            <?php } elseif ((!$model->isNewRecord) && ($model->order_status_id == "2")) { ?>
-                                <?= $form->field($model, 'order_status_id')->dropDownList($inprogress, ['prompt' => '--Select Option--'])->label(false); ?>
-                            <?php } elseif ((!$model->isNewRecord) && ($model->order_status_id == "4")) { ?>    
-                                <?= $form->field($model, 'order_status_id')->dropDownList($dispatch, ['prompt' => '--Select Option--'])->label(false); ?>
-                            <?php } elseif ((!$model->isNewRecord) && ($model->order_status_id == "5")) { ?>    
-                                <div class="col-sm-6 valueright"><?php echo 'Delivered'; ?></div>
-                            <?php } ?>
+        <?= $form->field($model, 'order_status_id')->dropDownList($order_status, ['prompt' => '--Select--'])->label(false); ?>
+
                         </div>
                     </div>
                     <div class="clearfix"> </div>  

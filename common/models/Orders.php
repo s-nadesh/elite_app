@@ -2,7 +2,8 @@
 
 namespace common\models;
 
-use Yii;
+use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "{{%orders}}".
@@ -32,7 +33,7 @@ use Yii;
  * @property Users $orderedBy
  * @property Users $user
  */
-class Orders extends \yii\db\ActiveRecord {
+class Orders extends ActiveRecord {
 
     public $dispatch_track_id;
     public $dispatch_courier_comapny;
@@ -114,7 +115,7 @@ class Orders extends \yii\db\ActiveRecord {
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getOrderBillings() {
         return $this->hasMany(OrderBillings::className(), ['order_id' => 'order_id']);
@@ -125,28 +126,31 @@ class Orders extends \yii\db\ActiveRecord {
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getOrderItems() {
         return $this->hasMany(OrderItems::className(), ['order_id' => 'order_id']);
     }
+    public function getOrderTrack() {
+        return $this->hasMany(OrderTrack::className(), ['order_id' => 'order_id']);
+    }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getOrderStatus() {
         return $this->hasOne(OrderStatus::className(), ['order_status_id' => 'order_status_id']);
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getOrderedBy() {
         return $this->hasOne(Users::className(), ['user_id' => 'ordered_by']);
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getUser() {
         return $this->hasOne(Users::className(), ['user_id' => 'user_id']);

@@ -101,6 +101,15 @@ class Products extends ActiveRecord {
         return new ProductsQuery(get_called_class());
     }
     
+    public static function getStock($id) {
+        $quanty = self::find()
+                ->andWhere([
+                    'product_id' => $id,
+                    'status' => 1,
+                ])
+                ->one();
+        return $quanty;
+    }
     public static function getProducts($category_id, $subcat_id, $map = true) {
         $products = self::find()
                 ->category($category_id)
