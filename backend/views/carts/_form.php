@@ -22,7 +22,11 @@ $this->registerJs(
 ?>
 
 <?php Pjax::begin(['id' => 'new_cart']) ?>
-<?php $form = ActiveForm::begin(['options' => ['data-pjax' => true]]); ?>
+<?php $form = ActiveForm::begin([
+    'validateOnChange' => false,
+    'validateOnBlur' => false,
+    'options' => ['data-pjax' => true]
+    ]); ?>
 <div class="box-body">
     <div class="carts-form">
         <div class="row">
@@ -52,7 +56,7 @@ $this->registerJs(
                 $form->field($model, 'subcat_id')->widget(DepDrop::classname(), [
                     'data' => $data,
                     'pluginOptions' => [
-                        'initialize' => true,
+//                        'initialize' => true,
                         'depends' => ['carts-category_id'],
                         'placeholder' => '--Select--',
                         'url' => Url::to(['/sub-categories/getsubcategories'])
