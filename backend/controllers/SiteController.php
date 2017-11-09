@@ -4,9 +4,9 @@ namespace backend\controllers;
 
 use common\models\LoginForm;
 use common\models\Logins;
+use common\models\ProductsSearch;
 use Yii;
 use yii\filters\AccessControl;
-use yii\filters\VerbFilter;
 use yii\web\Controller;
 
 /**
@@ -52,9 +52,14 @@ class SiteController extends Controller {
      *
      * @return string
      */
-    /*n*/
+    /* n */
     public function actionIndex() {
-        return $this->render('index');
+        $searchModel = new ProductsSearch();
+        $dataProvider = $searchModel->dashboardSearch(Yii::$app->request->queryParams);
+        return $this->render('index', [
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
+        ]);
     }
 
     /**
@@ -62,7 +67,7 @@ class SiteController extends Controller {
      *
      * @return string
      */
-    /*n*/
+    /* n */
     public function actionLogin() {
         $this->layout = "@app/views/layouts/login";
         if (!Yii::$app->user->isGuest) {
@@ -84,7 +89,7 @@ class SiteController extends Controller {
      *
      * @return string
      */
-    /*n*/
+    /* n */
     public function actionChangepassword() {
         $model = Logins::findOne(Yii::$app->user->getId());
         $model->scenario = 'changepassword';
@@ -99,7 +104,8 @@ class SiteController extends Controller {
         ]);
     }
 
-    /*n*/
+    /* n */
+
     public function actionLogout() {
         Yii::$app->user->logout();
         $this->redirect(['/site/login']);
