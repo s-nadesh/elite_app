@@ -53,7 +53,8 @@ return [
             'rules' => [
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'api/v1/users'],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'api/v1/usertypes'],
-                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/v1/categories']
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/v1/categories'],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/v1/subCategories']
             ],
         ],
     ],
