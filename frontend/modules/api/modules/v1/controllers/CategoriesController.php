@@ -19,7 +19,7 @@ class CategoriesController extends ActiveController {
         //Authenticator - It is used to login the user by using header (Authorization Bearer Token).
         $behaviors['authenticator'] = [
             'class' => HttpBearerAuth::className(),
-            'only' => ['displaycategory'],
+            'only' => ['index'],
         ];
         $behaviors['contentNegotiator'] = [
             'class' => ContentNegotiator::className(),
@@ -30,10 +30,10 @@ class CategoriesController extends ActiveController {
         //Access - After Login, Role wise access 
         $behaviors['access'] = [
             'class' => AccessControl::className(),
-            'only' => ['displaycategory'],
+            'only' => ['index'],
             'rules' => [
                 [
-                    'actions' => ['displaycategory'],
+                    'actions' => ['index'],
                     'allow' => true,
                     'roles' => ['@'],
                 ],
@@ -42,7 +42,13 @@ class CategoriesController extends ActiveController {
         return $behaviors;
     }
 
-    public function actionDisplaycategory() {
+    public function actions() {
+        $actions = parent::actions();
+        unset($actions['index']);
+        return $actions;
+    }
+    
+    public function actionIndex() {
         $categories = Categories::find()
                 ->select('category_id, category_name')
                 ->status()
