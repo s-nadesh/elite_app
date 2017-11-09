@@ -15,6 +15,8 @@ use yii\web\Controller;
 class SiteController extends Controller {
     
     public $nadesh;
+    public $vicky; 
+    public $pandey;
 
     /**
      * @inheritdoc
