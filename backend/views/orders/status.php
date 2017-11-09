@@ -23,14 +23,14 @@ $form = ActiveForm::begin([
 );
 ?>
 <?php if($model->order_status_id==OrderStatus::OR_DISPATCHED){?>
-<div class="col-sm-4"><b>Invoice Date</b></div>
+<div class="col-sm-4"><b>Invoice No</b></div>
                         <div class="col-sm-8">
-                            <?php echo $model->invoice_date; ?>
+                            <?php echo $model->invoice_no; ?>
                         </div>&nbsp;
 
 <?php  }else{ ?>
 <div class="form-group">
-    <label class="col-sm-4 control-label valueleft">Order Status</label>
+    <label class="col-sm-4 control-label valueleft">Invoice No</label>
     <div class="col-sm-6 valueright">
                     <?= $form->field($model, 'invoice_no')->textInput(['maxlength' => true])->label(false) ?>
     </div>
