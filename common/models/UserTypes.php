@@ -24,23 +24,13 @@ use yii\db\ActiveRecord;
  *
  * @property Users[] $users
  */
-class UserTypes extends ActiveRecord {
+class UserTypes extends RActiveRecord {
 
     const AD_USER_TYPE = 1;
     const CU_USER_TYPE = 2;
     const DE_USER_TYPE = 3;
     const SE_USER_TYPE = 4;
     const BE_USER_TYPE = 5;
-
-    /**
-     * @inheritdoc
-     */
-    public function behaviors() {
-        return [
-            BlameableBehavior::className(),
-            TimestampBehavior::className(),
-        ];
-    }
 
     public static function tableName() {
         return '{{%user_types}}';

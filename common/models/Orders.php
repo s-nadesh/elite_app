@@ -3,7 +3,6 @@
 namespace common\models;
 
 use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "{{%orders}}".
@@ -33,7 +32,7 @@ use yii\db\ActiveRecord;
  * @property Users $orderedBy
  * @property Users $user
  */
-class Orders extends ActiveRecord {
+class Orders extends RActiveRecord {
     
     const OR_PAYMENT_P = 'P';
     const OR_PAYMENT_PC = 'PC';

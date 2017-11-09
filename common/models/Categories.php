@@ -2,10 +2,7 @@
 
 namespace common\models;
 
-use yii\behaviors\BlameableBehavior;
-use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -22,17 +19,7 @@ use yii\helpers\ArrayHelper;
  *
  * @property SubCategories[] $subCategories
  */
-class Categories extends ActiveRecord {
-
-    /**
-     * @inheritdoc
-     */
-    public function behaviors() {
-        return [
-            BlameableBehavior::className(),
-            TimestampBehavior::className(),
-        ];
-    }
+class Categories extends RActiveRecord {
 
     public static function tableName() {
         return '{{%categories}}';

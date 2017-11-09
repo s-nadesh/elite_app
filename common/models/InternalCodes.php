@@ -2,8 +2,6 @@
 
 namespace common\models;
 
-use Yii;
-
 /**
  * This is the model class for table "{{%internal_codes}}".
  *
@@ -19,7 +17,7 @@ use Yii;
  * @property integer $updated_by
  * @property integer $deleted_at
  */
-class InternalCodes extends \yii\db\ActiveRecord {
+class InternalCodes extends RActiveRecord {
 
     /**
      * @inheritdoc

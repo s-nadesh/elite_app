@@ -8,7 +8,7 @@ use common\models\UserTypes;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "{{%users}}".
@@ -29,17 +29,7 @@ use yii\db\ActiveRecord;
  * @property Logins[] $logins
  * @property UserTypes $userType
  */
-class Users extends ActiveRecord {
-
-    /**
-     * @inheritdoc
-     */
-    public function behaviors() {
-        return [
-            BlameableBehavior::className(),
-            TimestampBehavior::className(),
-        ];
-    }
+class Users extends RActiveRecord {
 
     public static function tableName() {
         return '{{%users}}';
@@ -110,7 +100,7 @@ class Users extends ActiveRecord {
                 ->active()
                 ->all();
         if ($map) {
-            return \yii\helpers\ArrayHelper::map($users, 'user_id', 'name');
+            return ArrayHelper::map($users, 'user_id', 'name');
         } else {
             return $users;
         }

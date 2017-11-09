@@ -2,10 +2,8 @@
 
 namespace common\models;
 
-use yii\behaviors\BlameableBehavior;
-use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "{{%products}}".
@@ -27,17 +25,7 @@ use yii\db\ActiveRecord;
  * @property Categories $category
  * @property SubCategories $subcat
  */
-class Products extends ActiveRecord {
-
-    /**
-     * @inheritdoc
-     */
-    public function behaviors() {
-        return [
-            BlameableBehavior::className(),
-            TimestampBehavior::className(),
-        ];
-    }
+class Products extends RActiveRecord {
 
     public static function tableName() {
         return '{{%products}}';
@@ -118,7 +106,7 @@ class Products extends ActiveRecord {
                 ->active()
                 ->all();
         if ($map) {
-            return \yii\helpers\ArrayHelper::map($products, 'product_id', 'product_name');
+            return ArrayHelper::map($products, 'product_id', 'product_name');
         } else {
             return $products;
         }

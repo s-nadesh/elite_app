@@ -2,7 +2,7 @@
 
 namespace common\models;
 
-use Yii;
+use yii\db\ActiveQuery;
 
 /**
  * This is the model class for table "{{%order_items}}".
@@ -30,38 +30,35 @@ use Yii;
  * @property Products $product
  * @property SubCategories $subcat
  */
-class OrderItems extends \yii\db\ActiveRecord
-{
+class OrderItems extends RActiveRecord {
+
     /**
      * @inheritdoc
      */
-    public static function tableName()
-    {
+    public static function tableName() {
         return '{{%order_items}}';
     }
 
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
-            [['order_id', 'category_id', 'subcat_id', 'product_id', 'category_name', 'subcat_name', 'product_name', 'quantity', 'price', 'total'], 'required'],
-            [['order_id', 'category_id', 'subcat_id', 'product_id', 'quantity', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
-            [['price', 'total'], 'number'],
-            [['category_name', 'subcat_name', 'product_name'], 'string', 'max' => 20],
-            [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Categories::className(), 'targetAttribute' => ['category_id' => 'category_id']],
-            [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Orders::className(), 'targetAttribute' => ['order_id' => 'order_id']],
-            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Products::className(), 'targetAttribute' => ['product_id' => 'product_id']],
-            [['subcat_id'], 'exist', 'skipOnError' => true, 'targetClass' => SubCategories::className(), 'targetAttribute' => ['subcat_id' => 'subcat_id']],
+                [['order_id', 'category_id', 'subcat_id', 'product_id', 'category_name', 'subcat_name', 'product_name', 'quantity', 'price', 'total'], 'required'],
+                [['order_id', 'category_id', 'subcat_id', 'product_id', 'quantity', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
+                [['price', 'total'], 'number'],
+                [['category_name', 'subcat_name', 'product_name'], 'string', 'max' => 20],
+                [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Categories::className(), 'targetAttribute' => ['category_id' => 'category_id']],
+                [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Orders::className(), 'targetAttribute' => ['order_id' => 'order_id']],
+                [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Products::className(), 'targetAttribute' => ['product_id' => 'product_id']],
+                [['subcat_id'], 'exist', 'skipOnError' => true, 'targetClass' => SubCategories::className(), 'targetAttribute' => ['subcat_id' => 'subcat_id']],
         ];
     }
 
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'item_id' => 'Item ID',
             'order_id' => 'Order ID',
@@ -84,34 +81,30 @@ class OrderItems extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getCategory()
-    {
+    public function getCategory() {
         return $this->hasOne(Categories::className(), ['category_id' => 'category_id']);
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getOrder()
-    {
+    public function getOrder() {
         return $this->hasOne(Orders::className(), ['order_id' => 'order_id']);
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getProduct()
-    {
+    public function getProduct() {
         return $this->hasOne(Products::className(), ['product_id' => 'product_id']);
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
-    public function getSubcat()
-    {
+    public function getSubcat() {
         return $this->hasOne(SubCategories::className(), ['subcat_id' => 'subcat_id']);
     }
 
@@ -119,8 +112,8 @@ class OrderItems extends \yii\db\ActiveRecord
      * @inheritdoc
      * @return OrderItemsQuery the active query used by this AR class.
      */
-    public static function find()
-    {
+    public static function find() {
         return new OrderItemsQuery(get_called_class());
     }
+
 }

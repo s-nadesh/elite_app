@@ -2,7 +2,8 @@
 
 namespace common\models;
 
-use Yii;
+use yii\db\ActiveQuery;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "{{%order_status}}".
@@ -19,7 +20,7 @@ use Yii;
  *
  * @property Orders[] $orders
  */
-class OrderStatus extends \yii\db\ActiveRecord {
+class OrderStatus extends RActiveRecord {
 
     const OR_NEW = 1;
     const OR_INPROGRESS = 2;
@@ -65,7 +66,7 @@ class OrderStatus extends \yii\db\ActiveRecord {
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getOrders() {
         return $this->hasMany(Orders::className(), ['order_status_id' => 'order_status_id']);
@@ -98,7 +99,7 @@ class OrderStatus extends \yii\db\ActiveRecord {
         }
         $status = $status->all();
         
-        $order_status = \yii\helpers\ArrayHelper::map($status, 'order_status_id', 'status_name');
+        $order_status = ArrayHelper::map($status, 'order_status_id', 'status_name');
         $unwanted_status = self::getUnwantedstatus($current_status);
         $result = array_diff_key($order_status, $unwanted_status);
         return $result;

@@ -2,10 +2,7 @@
 
 namespace common\models;
 
-use yii\behaviors\BlameableBehavior;
-use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "{{%stock_log}}".
@@ -25,17 +22,7 @@ use yii\db\ActiveRecord;
  *
  * @property Products $product
  */
-class StockLog extends ActiveRecord {
-
-    /**
-     * @inheritdoc
-     */
-    public function behaviors() {
-        return [
-            BlameableBehavior::className(),
-            TimestampBehavior::className(),
-        ];
-    }
+class StockLog extends RActiveRecord {
 
     public function getCreateUser() {
         return $this->hasOne(Users::className(), ['user_id' => 'created_by']);

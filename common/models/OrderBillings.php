@@ -2,7 +2,7 @@
 
 namespace common\models;
 
-use Yii;
+use yii\db\ActiveQuery;
 
 /**
  * This is the model class for table "{{%order_billings}}".
@@ -19,7 +19,7 @@ use Yii;
  *
  * @property Orders $order
  */
-class OrderBillings extends \yii\db\ActiveRecord {
+class OrderBillings extends RActiveRecord {
 
     const OR_STATUS = 1;
 
@@ -71,7 +71,7 @@ class OrderBillings extends \yii\db\ActiveRecord {
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getOrder() {
         return $this->hasOne(Orders::className(), ['order_id' => 'order_id']);

@@ -4,7 +4,6 @@ namespace common\models;
 
 use Yii;
 use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "{{%carts}}".
@@ -26,7 +25,7 @@ use yii\db\ActiveRecord;
  * @property Products $product
  * @property Users $user
  */
-class Carts extends ActiveRecord {
+class Carts extends RActiveRecord {
 
     public $category_id;
     public $subcat_id;

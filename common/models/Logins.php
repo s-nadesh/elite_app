@@ -3,11 +3,7 @@
 namespace common\models;
 
 use Yii;
-use yii\behaviors\BlameableBehavior;
-use yii\behaviors\TimestampBehavior;
-use yii\base\NotSupportedException;
 use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
 /**
@@ -29,7 +25,7 @@ use yii\web\IdentityInterface;
  *
  * @property Users $user
  */
-class Logins extends ActiveRecord implements IdentityInterface {
+class Logins extends RActiveRecord implements IdentityInterface {
 
     const STATUS_ACTIVE = 1;
     const FRONT_LOGIN = 1;
@@ -41,13 +37,6 @@ class Logins extends ActiveRecord implements IdentityInterface {
     public $old_pass;
     public $new_pass;
     public $confirm_pass;
-
-    public function behaviors() {
-        return [
-            BlameableBehavior::className(),
-            TimestampBehavior::className(),
-        ];
-    }
 
     public static function tableName() {
         return '{{%logins}}';
