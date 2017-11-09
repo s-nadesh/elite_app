@@ -3,6 +3,7 @@
 use common\models\Orders;
 use common\models\Products;
 use common\models\Users;
+use yii\grid\GridView;
 use yii\helpers\Html;
 
 $this->title = "Dashboard";
@@ -65,4 +66,27 @@ $view = "View All <i class='fa fa-arrow-circle-right'></i>";
             <?php echo Html::a($view, ['/orders'], ["class" => 'small-box-footer']); ?>
         </div>
     </div><!-- ./col -->
+</div>
+<div class="col-md-12">
+    <div class="box box-primary">
+        <div class="box-header">
+            <h3 class="box-title">Reorder Products List</h3>
+        </div><!-- /.box-header -->
+        <div class="box-body">
+            <?=
+            GridView::widget([
+                'dataProvider' => $dataProvider,
+//                'filterModel' => $searchModel,
+                'columns' => [
+                        ['class' => 'yii\grid\SerialColumn'],
+                    'category.category_name',
+                    'subcat.subcat_name',
+                    'product_name',
+                    'min_reorder',
+                    'stock',
+                ],
+            ]);
+            ?>
+        </div>
+    </div>
 </div>
