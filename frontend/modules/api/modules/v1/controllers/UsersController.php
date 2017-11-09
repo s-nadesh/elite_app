@@ -19,7 +19,7 @@ class UsersController extends ActiveController {
         //Authenticator - It is used to login the user by using header (Authorization Bearer Token).
         $behaviors['authenticator'] = [
             'class' => HttpBearerAuth::className(),
-            'only' => ['listbyusertype'],
+            'only' => ['listbyusertype','adduser'],
         ];
         $behaviors['contentNegotiator'] = [
             'class' => ContentNegotiator::className(),
@@ -30,10 +30,10 @@ class UsersController extends ActiveController {
         //Access - After Login, Role wise access 
         $behaviors['access'] = [
             'class' => AccessControl::className(),
-            'only' => ['listbyusertype'],
+            'only' => ['listbyusertype','adduser'],
             'rules' => [
                     [
-                    'actions' => ['listbyusertype'],
+                    'actions' => ['listbyusertype','adduser'],
                     'allow' => true,
                     'roles' => ['@'],
                 ],
@@ -42,6 +42,27 @@ class UsersController extends ActiveController {
         return $behaviors;
     }
 
+    public function actionAdduser() {
+         $model = new Users();
+         $post = Yii::$app->request->getBodyParams();
+        if (!empty($post)) {
+           $model->load(Yii::$app->request->getBodyParams());
+           print_r($model);exit;
+                $model->save();
+            
+            return [
+            'success' => true,
+            'message' => 'Success',
+            'data' => $model->user_id
+        ];
+            
+        }else {
+            return [
+                'success' => true,
+                'message' => 'Invalid request'
+            ];
+        }
+    }
     public function actionListbyusertype() {
         $post = Yii::$app->request->getBodyParams();
         if (!empty($post)) {
