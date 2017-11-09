@@ -46,6 +46,8 @@ class SiteController extends Controller {
             ],
         ];
     }
+    
+    public $test;
 
     /**
      * Displays homepage.
