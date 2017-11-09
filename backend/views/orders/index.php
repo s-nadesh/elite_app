@@ -53,7 +53,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                                 [
                                 'class' => 'yii\grid\ActionColumn',
-                                'template' => '{view}&nbsp;&nbsp;{update}&nbsp;&nbsp;{status}&nbsp;&nbsp;{billing}',
+                                'template' => '{view}&nbsp;&nbsp;{status}&nbsp;&nbsp;{billing}',
                                 'buttons' => [
                                     'status' => function ($url, $model) {
                                         $url = Url::toRoute('orders/status?id=' . $model->order_id);
@@ -77,11 +77,11 @@ $this->params['breadcrumbs'][] = $this->title;
                                             return true;
                                         }
                                     },
-                                    'update' => function($model, $key, $index) {
-                                        if ($model->order_status_id != OrderStatus::OR_COMPLETED && $model->order_status_id != OrderStatus::OR_CANCELED) {
-                                            return true;
-                                        }
-                                    },
+//                                    'update' => function($model, $key, $index) {
+//                                        if ($model->order_status_id != OrderStatus::OR_COMPLETED && $model->order_status_id != OrderStatus::OR_CANCELED) {
+//                                            return true;
+//                                        }
+//                                    },
                                 ],
                             ],
                         ],
