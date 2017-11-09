@@ -76,14 +76,18 @@ class OrdersController extends Controller {
      */
     /* n */
     public function actionView($id) {
+        $model = $this->findModel($id);
         $searchModel = new OrderBillingsSearch();
         $order_billing_search = ['OrderBillingsSearch' => ['order_id' => $id]];
         $dataProvider = $searchModel->search($order_billing_search);
-
+        $paid_amount = $model->orderBillingsSum;
+        $pending_amount = OrderBillings::pendingAmount($model->total_amount, $paid_amount);
+     
         return $this->render('view', [
-                    'model' => $this->findModel($id),
+                    'model' => $model,
                     'searchModel' => $searchModel,
                     'dataProvider' => $dataProvider,
+                    'pending_amount' => $pending_amount,
         ]);
     }
 

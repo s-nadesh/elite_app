@@ -34,6 +34,9 @@ $this->title = "Order View";
 
                             <div class="col-sm-4 "><b>Total Amount</b></div>
                             <div  class="col-sm-7"><?php echo $model->total_amount; ?></div>
+                            
+                            <div class="col-sm-4 "><b>Pending Amount</b></div>
+                            <div  class="col-sm-7"><?php echo $pending_amount; ?></div>
 
                             <div class="col-sm-4 "><b>Invoice #</b></div>
                             <div class="col-sm-7"><?php echo $model->invoice_no; ?></div>

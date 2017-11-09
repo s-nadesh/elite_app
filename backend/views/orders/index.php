@@ -73,7 +73,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         }
                                     },
                                     'billing' => function($model, $key, $index) {
-                                        if ($model->payment_status != Orders::OR_PAYMENT_C) {
+                                        if ($model->payment_status != Orders::OR_PAYMENT_C && $model->order_status_id != OrderStatus::OR_CANCELED) {
                                             return true;
                                         }
                                     },

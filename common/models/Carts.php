@@ -71,7 +71,7 @@ class Carts extends ActiveRecord {
             'cart_id' => 'Cart ID',
             'sessionid' => 'Sessionid',
             'user_id' => 'Customer / Dealer',
-            'ordered_by' => 'Sales Executive',
+            'ordered_by' => 'Order fetched by',
             'product_id' => 'Product',
             'qty' => 'Quantity',
             'status' => 'Status',
