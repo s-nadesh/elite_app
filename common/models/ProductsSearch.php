@@ -43,6 +43,7 @@ class ProductsSearch extends Products
     public function search($params)
     {
         $query = Products::find();
+        $query->andWhere(['>=','stock',80]);
 
         // add conditions that should always apply here
 
