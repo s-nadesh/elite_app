@@ -48,6 +48,12 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                             'total_amount',
                                 [
+                                'attribute' => 'pending_amount',
+                                'value' => function($model) {
+                                    return ($model->total_amount - $model->orderBillingsSum);
+                                }
+                            ],
+                                [
                                 'class' => 'backend\components\OrderstatusColumn',
                                 'attribute' => 'order_status_id',
                             ],

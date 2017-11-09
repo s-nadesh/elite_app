@@ -50,6 +50,7 @@ class Orders extends ActiveRecord {
     public $cancel_comment;
     public $cancel_date;
     public $change_status = false;
+    public $pending_amount;
 
     /**
      * @inheritdoc
@@ -64,7 +65,7 @@ class Orders extends ActiveRecord {
     public function rules() {
         return [
                 [['user_id', 'invoice_no', 'order_status_id', 'ordered_by', 'items_total_amount', 'total_amount'], 'required'],
-                [['invoice_date', 'dispatch_track_id', 'dispatch_courier_comapny', 'dispatch_comment', 'dispatch_date', 'deliver_to', 'deliver_phone', 'deliver_address', 'deliver_date', 'cancel_comment', 'cancel_date'], 'safe'],
+                [['invoice_date', 'dispatch_track_id', 'dispatch_courier_comapny', 'dispatch_comment', 'dispatch_date', 'deliver_to', 'deliver_phone', 'deliver_address', 'deliver_date', 'cancel_comment', 'cancel_date', 'pending_amount'], 'safe'],
                 [['user_id', 'order_status_id', 'ordered_by', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
                 [['items_total_amount', 'tax_percentage', 'tax_amount', 'total_amount'], 'number'],
                 [['payment_status'], 'string'],
