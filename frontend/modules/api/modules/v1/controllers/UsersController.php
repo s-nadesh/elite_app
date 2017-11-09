@@ -46,8 +46,7 @@ class UsersController extends ActiveController {
          $model = new Users();
          $post = Yii::$app->request->getBodyParams();
         if (!empty($post)) {
-           $model->load(Yii::$app->request->getBodyParams());
-           print_r($model);exit;
+           $model->load(Yii::$app->request->getBodyParams(), '');
                 $model->save();
             
             return [
@@ -76,7 +75,7 @@ class UsersController extends ActiveController {
                 return [
                     'success' => true,
                     'message' => 'Success',
-                    'data' => $users
+                    'user_id' => $users
                 ];
             } else {
                 return [
