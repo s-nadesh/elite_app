@@ -10,25 +10,23 @@ use common\models\Products;
 /**
  * ProductsSearch represents the model behind the search form about `common\models\Products`.
  */
-class ProductsSearch extends Products
-{
+class ProductsSearch extends Products {
+
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
-            [['product_id', 'category_id', 'subcat_id', 'min_reorder', 'stock', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
-            [['product_name'], 'safe'],
-            [['price_per_unit'], 'number'],
+                [['product_id', 'category_id', 'subcat_id', 'min_reorder', 'stock', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
+                [['product_name'], 'safe'],
+                [['price_per_unit'], 'number'],
         ];
     }
 
     /**
      * @inheritdoc
      */
-    public function scenarios()
-    {
+    public function scenarios() {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
@@ -40,10 +38,8 @@ class ProductsSearch extends Products
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
-    {
+    public function search($params) {
         $query = Products::find();
-        $query->andWhere(['>=','stock',80]);
 
         // add conditions that should always apply here
 
@@ -81,4 +77,36 @@ class ProductsSearch extends Products
 
         return $dataProvider;
     }
+
+    public function dashboardSearch($params) {
+        $query = Products::find()->where(['>=', 'stock', 'min_order']);
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+        ]);
+        $this->load($params);
+
+        if (!$this->validate()) {
+            // uncomment the following line if you do not want to return any records when validation fails
+            // $query->where('0=1');
+            return $dataProvider;
+        }
+
+        $query->andFilterWhere([
+            'product_id' => $this->product_id,
+            'category_id' => $this->category_id,
+            'subcat_id' => $this->subcat_id,
+            'min_reorder' => $this->min_reorder,
+            'stock' => $this->stock,
+            'price_per_unit' => $this->price_per_unit,
+            'status' => $this->status,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+            'created_by' => $this->created_by,
+            'updated_by' => $this->updated_by,
+            'deleted_at' => $this->deleted_at,
+        ]);
+        return $dataProvider;
+    }
+
 }
