@@ -15,7 +15,7 @@ use yii\web\Controller;
 class SiteController extends Controller {
     
     public function test(){
-        return 'prakash arul mani'; 
+        return '1111'; 
     }
 
     /**
