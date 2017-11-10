@@ -14,9 +14,7 @@ use yii\web\Controller;
  */
 class SiteController extends Controller {
         Public $vick;
-        Public $vickyYY; $ajith;
-        Public $nadesh;
-    public $test;
+        public $test;
 
 
     /**
