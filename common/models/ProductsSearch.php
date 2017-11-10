@@ -106,6 +106,8 @@ class ProductsSearch extends Products {
             'updated_by' => $this->updated_by,
             'deleted_at' => $this->deleted_at,
         ]);
+        //Min order reached products.
+        $query->andWhere('stock <= min_reorder');
         return $dataProvider;
     }
 

@@ -43,9 +43,7 @@ class StockLogSearch extends StockLog {
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
-        if ($params['id']) {
-            $query->andWhere(['product_id' => $params['id']]);
-        }
+
         $this->load($params);
 
         if (!$this->validate()) {

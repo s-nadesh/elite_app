@@ -72,39 +72,42 @@ $view = "View All <i class='fa fa-arrow-circle-right'></i>";
         </div>
     </div><!-- ./col -->
 </div>
-<div class="col-md-12">
-    <div class="box box-primary">
-        <div class="box-header">
-            <h3 class="box-title">Reorder Products List</h3>
-        </div><!-- /.box-header -->
-        <div class="box-body">
-            <?=
-            GridView::widget([
-                'dataProvider' => $dataProvider,
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-primary">
+            <div class="box-header">
+                <h3 class="box-title">Reorder Products List</h3>
+            </div><!-- /.box-header -->
+            <div class="box-body">
+                <?=
+                GridView::widget([
+                    'dataProvider' => $dataProvider,
 //                'filterModel' => $searchModel,
-                'columns' => [
-                        ['class' => 'yii\grid\SerialColumn'],
-                    'category.category_name',
-                    'subcat.subcat_name',
-                    'product_name',
-                    'min_reorder',
-                    'stock',
-                        [
-                        'class' => 'yii\grid\ActionColumn',
-                        'template' => '{status}',
-                        'buttons' => [
-                            'status' => function ($url, $model) {
-                                $url = Url::toRoute('products/reorderstock?id=' . $model->product_id);
-                                return Html::a('<span class="glyphicon glyphicon-edit"></span>', ['#'], ['class' => 'modelButton', 'title' => 'Edit Stocklog', 'data-url' => $url]
-                                );
-                            },
+                    'columns' => [
+                            ['class' => 'yii\grid\SerialColumn'],
+                        'category.category_name',
+                        'subcat.subcat_name',
+                        'product_name',
+                        'min_reorder',
+                        'stock',
+                            [
+                            'class' => 'yii\grid\ActionColumn',
+                            'template' => '{status}',
+                            'buttons' => [
+                                'status' => function ($url, $model) {
+                                    $url = Url::toRoute('products/reorderstock?id=' . $model->product_id);
+                                    return Html::a('<span class="glyphicon glyphicon-edit"></span>', ['#'], ['class' => 'modelButton', 'title' => 'Edit Stocklog', 'data-url' => $url]
+                                    );
+                                },
+                            ],
                         ],
                     ],
-                ],
-            ]);
-            ?>
+                ]);
+                ?>
+            </div>
         </div>
-    </div>
+    </div>    
 </div>
 
 <?php
@@ -119,17 +122,14 @@ echo "<div id='changereorderStock'></div>";
 Modal::end();
 
 $script = <<< JS
-        jQuery(document).ready(function () { 
-        
-            $('.modelButton').click(function(e){
-                e.preventDefault();
-                $('#reorderStock').modal('show')
-                    .find('#changereorderStock')
-                    .load($(this).data('url'));
-            });
-        
+    jQuery(document).ready(function () { 
+        $('.modelButton').click(function(e){
+            e.preventDefault();
+            $('#reorderStock').modal('show')
+                .find('#changereorderStock')
+                .load($(this).data('url'));
         });
-        
+    });
 JS;
 $this->registerJs($script, View::POS_END);
 ?>

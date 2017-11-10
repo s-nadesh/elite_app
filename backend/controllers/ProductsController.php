@@ -156,6 +156,9 @@ class ProductsController extends Controller {
     public function actionStocklog($id) {
         $model = $this->findModel($id);
         $stock = new StockLog();
+        $searchModel = new StockLogSearch();
+
+        //After Submit.
         if ($stock->load(Yii::$app->request->post())) {
             $stock->adjust_from = $model->stock;
             if ($stock->adjust_quantity != NULL) {
@@ -170,13 +173,18 @@ class ProductsController extends Controller {
             $stock->save();
             return $this->redirect(['stocklog?id=' . $model->product_id]);
         }
-        $searchModel = new StockLogSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        
+        $queryParams = [];
+        $queryParams['StockLogSearch'] = [
+            'product_id' => $id
+        ];
+        
+        $dataProvider = $searchModel->search($queryParams);
         return $this->render('stocklog', [
-                    'model' => $this->findModel($id),
-                    'stock' => $stock,
+                    'model' => $model,
                     'searchModel' => $searchModel,
                     'dataProvider' => $dataProvider,
+                    'stock' => $stock,
         ]);
     }
 
