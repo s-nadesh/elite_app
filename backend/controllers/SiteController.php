@@ -15,6 +15,9 @@ use yii\filters\AccessControl;
 class SiteController extends Controller {
         Public $vicky
     
+    public $test;
+
+
     /**
      * @inheritdoc
      */
