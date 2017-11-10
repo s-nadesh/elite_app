@@ -14,7 +14,7 @@ use yii\filters\AccessControl;
  */
 class SiteController extends Controller {
         Public $vickyYY;
-    
+        Public $nadesh;
     public $test;
 
 
