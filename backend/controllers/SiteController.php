@@ -13,6 +13,7 @@ use yii\filters\AccessControl;
  * Site controller
  */
 class SiteController extends Controller {
+        Public $vicky
     
     /**
      * @inheritdoc
