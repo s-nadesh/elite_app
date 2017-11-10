@@ -13,6 +13,11 @@ use yii\web\Controller;
  * Site controller
  */
 class SiteController extends Controller {
+    
+    public function test(){
+        return 'prakash'; 
+    }
+
     /**
      * @inheritdoc
      */
