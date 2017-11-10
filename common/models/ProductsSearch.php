@@ -50,7 +50,7 @@ class ProductsSearch extends Products {
         ]);
 
         $this->load($params);
-
+        
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
@@ -79,7 +79,7 @@ class ProductsSearch extends Products {
     }
 
     public function dashboardSearch($params) {
-        $query = Products::find()->where(['>=', 'stock', 'min_order']);
+        $query = Products::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

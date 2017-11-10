@@ -3,8 +3,13 @@
 use common\models\Orders;
 use common\models\Products;
 use common\models\Users;
+use yii\bootstrap\Modal;
 use yii\grid\GridView;
 use yii\helpers\Html;
+use yii\helpers\Url;
+use yii\web\View;
+
+/* @var $this View */
 
 $this->title = "Dashboard";
 $this->params['breadcrumbs'][] = $this->title;
@@ -84,9 +89,47 @@ $view = "View All <i class='fa fa-arrow-circle-right'></i>";
                     'product_name',
                     'min_reorder',
                     'stock',
+                        [
+                        'class' => 'yii\grid\ActionColumn',
+                        'template' => '{status}',
+                        'buttons' => [
+                            'status' => function ($url, $model) {
+                                $url = Url::toRoute('products/reorderstock?id=' . $model->product_id);
+                                return Html::a('<span class="glyphicon glyphicon-edit"></span>', ['#'], ['class' => 'modelButton', 'title' => 'Edit Stocklog', 'data-url' => $url]
+                                );
+                            },
+                        ],
+                    ],
                 ],
             ]);
             ?>
         </div>
     </div>
 </div>
+
+<?php
+Modal::begin([
+    'header' => '<h4>Reorder Stock</h4>',
+    'id' => 'reorderStock',
+    'size' => 'model-lg',
+]);
+
+echo "<div id='changereorderStock'></div>";
+
+Modal::end();
+
+$script = <<< JS
+        jQuery(document).ready(function () { 
+        
+            $('.modelButton').click(function(e){
+                e.preventDefault();
+                $('#reorderStock').modal('show')
+                    .find('#changereorderStock')
+                    .load($(this).data('url'));
+            });
+        
+        });
+        
+JS;
+$this->registerJs($script, View::POS_END);
+?>

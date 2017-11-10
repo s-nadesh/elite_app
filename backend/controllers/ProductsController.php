@@ -34,7 +34,7 @@ class ProductsController extends Controller {
                         'allow' => true,
                     ],
                         [
-                        'actions' => ['index', 'create', 'update', 'view', 'delete', 'getsubcatlist', 'getproduct', 'getproducts', 'stocklog'],
+                        'actions' => ['index', 'create', 'update', 'view', 'delete', 'getsubcatlist', 'getproduct', 'getproducts', 'stocklog', 'reorderstock'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -177,6 +177,31 @@ class ProductsController extends Controller {
                     'stock' => $stock,
                     'searchModel' => $searchModel,
                     'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    public function actionReorderstock($id) {
+        $model = $this->findModel($id);
+        $stock = new StockLog();
+        if ($stock->load(Yii::$app->request->post())) {
+            $stock->adjust_from = $model->stock;
+            if ($stock->adjust_quantity != NULL) {
+                $quantity = $stock->adjust_quantity + $model->stock;
+            } else {
+                $quantity = $model->stock;
+            }
+            $model->stock = $quantity;
+            $model->save();
+            $stock->product_id = $model->product_id;
+            $stock->adjust_to = $model->stock;
+            if ($model->save()) {
+                Yii::$app->getSession()->setFlash('success', 'Stock reordered successfully');
+                return $this->redirect(['site/index']);
+            }
+        }
+        return $this->renderAjax('reorderstock', [
+                    'model' => $this->findModel($id),
+                    'stock' => $stock,
         ]);
     }
 
