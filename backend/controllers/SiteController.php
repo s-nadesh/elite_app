@@ -12,14 +12,7 @@ use yii\web\Controller;
 /**
  * Site controller
  */
-
-pUBLIC NADESH
- 
-      
-pUBLIC NADESH
-
-
-
+class SiteController extends Controller {
     /**
      * @inheritdoc
      */
