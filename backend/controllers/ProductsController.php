@@ -202,7 +202,8 @@ class ProductsController extends Controller {
             $model->save();
             $stock->product_id = $model->product_id;
             $stock->adjust_to = $model->stock;
-            if ($model->save()) {
+            $stock->save();
+            if ($model->save() && $stock->save()) {
                 Yii::$app->getSession()->setFlash('success', 'Stock reordered successfully');
                 return $this->redirect(['site/index']);
             }
