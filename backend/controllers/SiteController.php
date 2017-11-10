@@ -7,13 +7,13 @@ use common\models\Logins;
 use common\models\ProductsSearch;
 use Yii;
 use yii\filters\AccessControl;
-//use yii\web\Controller;
+use yii\web\Controller;
 
 /**
  * Site controller
  */
 class SiteController extends Controller {
-        Public $vickyYY;
+        Public $vicky;
         Public $nadesh;
     public $test;
 
