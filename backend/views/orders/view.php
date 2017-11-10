@@ -1,6 +1,7 @@
 <?php
 
 use common\models\OrderStatus;
+use yii\bootstrap\Modal;
 use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -10,7 +11,8 @@ use yii\web\View;
 /* @var $model ElOrder */
 
 $this->title = "Order View";
-
+$this->params['breadcrumbs'][] = ['label' => 'Orders', 'url' => ['index']];
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="row">
     <div class="col-md-12">
@@ -19,14 +21,7 @@ $this->title = "Order View";
 
                 <div class="row">
                     <div class="col-xs-6 ">
-                        <p class="lead">User Details 
-                            <?php
-                            $url = Url::toRoute('orders/update?id=' . $model->order_id);
-                            if ($model->order_status_id != OrderStatus::OR_CANCELED && $model->order_status_id != OrderStatus::OR_COMPLETED) {
-                                echo Html::a('<span title="Edit" class="glyphicon glyphicon-pencil"></span>', $url);
-                            }
-                            ?>
-                        </p>
+                        <p class="lead">User Details </p>
 
                         <div  class="row">   
                             <div class="col-sm-4 "><b>User name</b></div>
@@ -34,7 +29,7 @@ $this->title = "Order View";
 
                             <div class="col-sm-4 "><b>Total Amount</b></div>
                             <div  class="col-sm-7"><?php echo $model->total_amount; ?></div>
-                            
+
                             <div class="col-sm-4 "><b>Pending Amount</b></div>
                             <div  class="col-sm-7"><?php echo $pending_amount; ?></div>
 
@@ -63,7 +58,6 @@ $this->title = "Order View";
                     </div>
                 </div>
 
-              
                 <div class="row">
                     <div class="col-xs-12 ">
                         <p class="lead">Order Items</p>
@@ -82,22 +76,22 @@ $this->title = "Order View";
                                 </thead>
                                 <tbody id="mytbody">
                                     <?php
-                                        $i = 1;
-                                        foreach ($model->orderItems as $info):
-                                            ?>
-                                            <tr>
-                                                <td><?php echo $i ?></td>
-                                                <td><?php echo $info->category->category_name ?></td>
-                                                <td><?php echo $info->subcat->subcat_name ?></td>
-                                                <td><?php echo $info->product->product_name ?></td>
-                                                <td><?php echo $info->quantity ?></td>
-                                                <td><?php echo $info->price ?></td>
-                                                <td><?php echo $info->total ?></td>
-                                            </tr>
-                                            <?php
-                                            $i++;
-                                        endforeach;
+                                    $i = 1;
+                                    foreach ($model->orderItems as $info):
                                         ?>
+                                        <tr>
+                                            <td><?php echo $i ?></td>
+                                            <td><?php echo $info->category->category_name ?></td>
+                                            <td><?php echo $info->subcat->subcat_name ?></td>
+                                            <td><?php echo $info->product->product_name ?></td>
+                                            <td><?php echo $info->quantity ?></td>
+                                            <td><?php echo $info->price ?></td>
+                                            <td><?php echo $info->total ?></td>
+                                        </tr>
+                                        <?php
+                                        $i++;
+                                    endforeach;
+                                    ?>
                                 </tbody>
                             </table>
                         </div>
@@ -115,7 +109,7 @@ $this->title = "Order View";
                                         <th>Order Track</th>
                                         <th>Date Time</th>
                                         <th>Value</th>
-
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="mytbody">
@@ -142,7 +136,17 @@ $this->title = "Order View";
                                                 } else {
                                                     echo '-';
                                                 }
-                                                ?></td>
+                                                ?>
+                                            </td>
+                                            <td>
+                                                <?php
+                                                if ($info->order_status_id == OrderStatus::OR_CANCELED) {
+                                                    $url = Url::toRoute('orders/edittrack?id=' . $info->order_track_id);
+                                                    echo Html::a('<span class="glyphicon glyphicon-edit"></span>', ['#'], ['class' => 'modelButton', 'title' => 'Edit', 'data-url' => $url]
+                                                    );
+                                                }
+                                                ?>
+                                            </td>
                                         </tr>
                                         <?php
                                         $i++;
@@ -191,3 +195,27 @@ $this->title = "Order View";
         </div>
     </div>
 </div>
+
+<?php
+Modal::begin([
+    'header' => '<h4>Track Detail</h4>',
+    'id' => 'editTrack',
+    'size' => 'model-lg',
+]);
+
+echo "<div id='editTrackContent'></div>";
+
+Modal::end();
+
+$script = <<< JS
+    jQuery(document).ready(function () { 
+        $('.modelButton').click(function(e){
+            e.preventDefault();
+            $('#editTrack').modal('show')
+                .find('#editTrackContent')
+                .load($(this).data('url'));
+        });
+    });
+JS;
+$this->registerJs($script, View::POS_END);
+?>

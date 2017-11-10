@@ -3,21 +3,17 @@
 namespace backend\controllers;
 
 use common\models\Carts;
-use common\models\Categories;
 use common\models\OrderBillings;
 use common\models\OrderBillingsSearch;
 use common\models\OrderItems;
 use common\models\Orders;
 use common\models\OrdersSearch;
+use common\models\OrderStatus;
 use common\models\OrderTrack;
 use common\models\Products;
-use common\models\SubCategories;
-use common\models\Users;
-use common\models\UserTypes;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
-use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
@@ -39,7 +35,7 @@ class OrdersController extends Controller {
                         'allow' => true,
                     ],
                         [
-                        'actions' => ['index', 'create', 'status', 'billing', 'update', 'view', 'delete', 'getsubcategorylist', 'getproductlist', 'placeorder'],
+                        'actions' => ['index', 'create', 'status', 'billing', 'update', 'view', 'delete', 'getsubcategorylist', 'getproductlist', 'placeorder', 'edittrack'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -82,7 +78,7 @@ class OrdersController extends Controller {
         $dataProvider = $searchModel->search($order_billing_search);
         $paid_amount = $model->orderBillingsSum;
         $pending_amount = OrderBillings::pendingAmount($model->total_amount, $paid_amount);
-     
+
         return $this->render('view', [
                     'model' => $model,
                     'searchModel' => $searchModel,
@@ -91,7 +87,8 @@ class OrdersController extends Controller {
         ]);
     }
 
-    /*n*/
+    /* n */
+
     public function actionStatus($id) {
         $model = $this->findModel($id);
         $model->scenario = 'createadmin';
@@ -109,7 +106,8 @@ class OrdersController extends Controller {
         }
     }
 
-    /*n*/
+    /* n */
+
     public function actionBilling($id) {
         $model = $this->findModel($id);
         $orderbilling_model = new OrderBillings();
@@ -119,7 +117,7 @@ class OrdersController extends Controller {
             $orderbilling_model->load(Yii::$app->request->post());
             $orderbilling_model->order_id = $model->order_id;
             if ($orderbilling_model->validate()) {
-                 $orderbilling_model->save();
+                $orderbilling_model->save();
                 Yii::$app->getSession()->setFlash('success', 'Payment updated successfully');
                 return $this->redirect(['index']);
             }
@@ -133,7 +131,31 @@ class OrdersController extends Controller {
         }
     }
 
-    
+    //Cancelled Order Status  - Edit Track
+    public function actionEdittrack($id) {
+        $order_track = OrderTrack::findOne($id);
+        $model = $order_track->order;
+        if (Yii::$app->request->post()) {
+            $post = Yii::$app->request->post();
+            $data = [];
+            if ($order_track->order_status_id == OrderStatus::OR_CANCELED) {
+                $data['cancel_comment'] = $post['Orders']['cancel_comment'];
+            }
+            if (!empty($data))
+                $order_track->value = json_encode($data, true);
+            $order_track->save(false);
+            return $this->redirect(['orders/view?id=' . $model->order_id]);
+        } else {
+            $responseArray = json_decode($order_track->value, true);
+            if ($order_track->order_status_id == OrderStatus::OR_CANCELED) {
+                $model->cancel_comment = $responseArray['cancel_comment'];
+            }
+            return $this->renderAjax('edittrack', [
+                        'model' => $model,
+                        'order_track' => $order_track,
+            ]);
+        }
+    }
 
     /**
      * Updates an existing Orders model.
@@ -145,18 +167,18 @@ class OrdersController extends Controller {
         $model = $this->findModel($id);
         $orderbilling_model = new OrderBillings();
         $tmodel = new OrderTrack();
-        
+
         $model->scenario = 'createadmin';
         $paid_amount = $model->orderBillingsSum;
         $pending_amount = OrderBillings::pendingAmount($model->total_amount, $paid_amount);
-        
+
         if (Yii::$app->request->post()) {
             if ($orderbilling_model->load(Yii::$app->request->post())) {
                 $orderbilling_model->order_id = $model->order_id;
                 if ($orderbilling_model->validate()) {
                     $orderbilling_model->save();
                     Yii::$app->getSession()->setFlash('success', 'Paid Amount added successfully');
-                    return $this->redirect(['orders/update?id='.$model->order_id]);
+                    return $this->redirect(['orders/update?id=' . $model->order_id]);
                 }
             } elseif ($model->load(Yii::$app->request->post())) {
                 $model->change_status = true;
@@ -167,7 +189,7 @@ class OrdersController extends Controller {
                 }
             }
         }
-        
+
         return $this->render('update', [
                     'model' => $model,
                     'orderbilling_model' => $orderbilling_model,
@@ -247,14 +269,12 @@ class OrdersController extends Controller {
                         $order_item->order_id = $order->order_id;
                         $order_item->load($cart_item, '');
                         $order_item->save(false);
-                        
                     }
-                     foreach ($order->orderItems as $item) {
-                         $stock=Products::getStock($item->product_id);
-                         $diff=$stock ['stock']-$item->quantity;
-                         $stock->stock=$diff;
+                    foreach ($order->orderItems as $item) {
+                        $stock = Products::getStock($item->product_id);
+                        $diff = $stock ['stock'] - $item->quantity;
+                        $stock->stock = $diff;
                         $stock->save(false);
-                        
                     }
                     Carts::clearCart(); // Pending
                     Yii::$app->session->setFlash('success', "Order placed successfully");
@@ -267,5 +287,5 @@ class OrdersController extends Controller {
             return $this->redirect(['carts/index']);
         }
     }
-            
+
 }
