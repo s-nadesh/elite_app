@@ -12,16 +12,8 @@ use yii\web\Controller;
 /**
  * Site controller
  */
-class SiteController extends Controller {
-<<<<<<< .mine
-        Public $vickYY;$nadesh;$narmatha;
-||||||| .r164
-        Public $vickYY;$nadesh;
-=======
-        Public $vickYY;$nadesh;$naveen;
->>>>>>> .r165
-        Public $nadesh;
-    public $test;
+
+ 
 
 
     /**
