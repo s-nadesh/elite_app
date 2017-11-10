@@ -13,6 +13,7 @@ use yii\web\Controller;
  * Site controller
  */
 class SiteController extends Controller {
+        Public $vick;
         Public $vickyYY; $ajith;
         Public $nadesh;
     public $test;
