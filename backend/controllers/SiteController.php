@@ -12,9 +12,9 @@ use yii\web\Controller;
 /**
  * Site controller
  */
-class SiteController extends Controller {
-        Public $vickyYY;
-        public $test;
+      
+pUBLIC NADESH
+
 
 
     /**
