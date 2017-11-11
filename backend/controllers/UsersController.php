@@ -148,8 +148,8 @@ class UsersController extends Controller {
         } else {
             $login = new Logins();
             $login->email = $model->email;
+            $login->user_id = $model->user_id;
             if ($login->load(Yii::$app->request->post()) && $login->validate()) {
-                $login->user_id = $model->user_id;
                 $login->setPassword($login->password_hash);
                 $login->generateAuthKey();
                 $login->save(false);
