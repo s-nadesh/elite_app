@@ -19,7 +19,7 @@ class UsersController extends ActiveController {
         //Authenticator - It is used to login the user by using header (Authorization Bearer Token).
         $behaviors['authenticator'] = [
             'class' => HttpBearerAuth::className(),
-            'only' => ['listbyusertype','adduser'],
+            'only' => ['listbyusertype','adduser', 'profile', 'editprofile'],
         ];
         $behaviors['contentNegotiator'] = [
             'class' => ContentNegotiator::className(),
@@ -30,10 +30,10 @@ class UsersController extends ActiveController {
         //Access - After Login, Role wise access 
         $behaviors['access'] = [
             'class' => AccessControl::className(),
-            'only' => ['listbyusertype','adduser'],
+            'only' => ['listbyusertype','adduser', 'profile', 'editprofile'],
             'rules' => [
                     [
-                    'actions' => ['listbyusertype','adduser'],
+                    'actions' => ['listbyusertype','adduser', 'profile', 'editprofile'],
                     'allow' => true,
                     'roles' => ['@'],
                 ],
@@ -52,7 +52,7 @@ class UsersController extends ActiveController {
             return [
             'success' => true,
             'message' => 'Success',
-            'data' => $model->user_id
+            'user_id' => $model->user_id
         ];
             
         }else {
@@ -75,7 +75,7 @@ class UsersController extends ActiveController {
                 return [
                     'success' => true,
                     'message' => 'Success',
-                    'user_id' => $users
+                    'data' => $users
                 ];
             } else {
                 return [
@@ -91,4 +91,63 @@ class UsersController extends ActiveController {
         }
     }
 
+    public function actionProfile() {
+        $post = Yii::$app->request->getBodyParams();
+        if (!empty($post)) {
+            $profile = Users::find()
+                    ->select('user_id,user_type_id,name,address,mobile_no,email')
+                    ->user($post['user_id'])
+                    ->status()
+                    ->active()
+                    ->all();
+            if (!empty($profile)) {
+                return [
+                    'success' => 'true',
+                    'message' => 'Success',
+                    'data' => $profile
+                ];
+            } else {
+                return [
+                    'success' => true,
+                    'message' => 'No records found',
+                ];
+            }
+        } else {
+            return [
+                'success' => true,
+                'message' => 'Invalid request'
+            ];
+        }
+    }
+    public function actionEditprofile() {
+        $post = Yii::$app->request->getBodyParams();
+        $model = Users::findOne($post['user_id']);
+        if (!empty($post)) {
+            $model->load(Yii::$app->request->getBodyParams(), '');
+            $model->save();
+            $profile = Users::find()
+                    ->select('user_id,user_type_id,name,address,mobile_no')
+                    ->user($post['user_id'])
+                    ->status()
+                    ->active()
+                    ->all();
+            if (!empty($profile)) {
+                return [
+                    'success' => 'true',
+                    'message' => 'Success',
+                    'data' => $profile
+                ];
+            } else {
+                return [
+                    'success' => true,
+                    'message' => 'No records found',
+                ];
+            }
+        } else {
+            return [
+                'success' => true,
+                'message' => 'Invalid request'
+            ];
+        }
+    }
 }

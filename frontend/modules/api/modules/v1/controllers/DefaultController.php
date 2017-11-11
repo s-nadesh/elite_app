@@ -3,6 +3,7 @@
 namespace app\modules\api\modules\v1\controllers;
 
 use common\models\LoginForm;
+use common\models\Logins;
 use Yii;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\ContentNegotiator;
@@ -20,7 +21,7 @@ class DefaultController extends ActiveController {
         $behaviors = parent::behaviors();
         $behaviors['authenticator'] = [
             'class' => HttpBearerAuth::className(),
-            'only' => ['index'],
+            'only' => ['index', 'changepassword'],
         ];
         $behaviors['contentNegotiator'] = [
             'class' => ContentNegotiator::className(),
@@ -33,7 +34,7 @@ class DefaultController extends ActiveController {
 
     public function actionLogin() {
         $model = new LoginForm();
-        $model->login_from = \common\models\Logins::FRONT_LOGIN;
+        $model->login_from = Logins::FRONT_LOGIN;
         if ($model->load(Yii::$app->request->getBodyParams(), '') && $model->login()) {
             return [
                 'success' => 'true',
@@ -48,4 +49,31 @@ class DefaultController extends ActiveController {
         }
     }
 
+    public function actionChangepassword() {
+        $post = Yii::$app->request->getBodyParams();
+        if (!empty($post)) {
+            $model = Logins::findOne($post['user_id']);
+
+            $model->scenario = 'changepassword';
+            if ($model->load(Yii::$app->request->getBodyParams(), '') && $model->validate()) {
+                $model->password_hash = Yii::$app->getSecurity()->generatePasswordHash($model->new_pass);
+                $model->save();
+                return [
+                    'success' => 'true',
+                    'message' => 'Password change successfully',
+                ];
+            } else {
+                return [
+                    'success' => true,
+                    'message' => 'Incorrect password',
+                ];
+            }
+        } else {
+            return [
+                'success' => true,
+                'message' => 'Invalid request'
+            ];
+        }
+    }
+    
 }

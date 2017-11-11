@@ -15,7 +15,12 @@ class UsersQuery extends CommonQuery {
         }
         return $this->andWhere(["{$this->tblName}.user_type_id" => $user_type_id]);
     }
+     public function user($user_id) {
+        
+        return $this->andWhere(["{$this->tblName}.user_id" => $user_id]);
+    }
 
+    
     /**
      * @inheritdoc
      * @return Users[]|array

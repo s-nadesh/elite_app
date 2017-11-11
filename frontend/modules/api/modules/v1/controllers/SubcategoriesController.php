@@ -61,7 +61,7 @@ class SubcategoriesController extends ActiveController {
             return [
                 'success' => true,
                 'message' => 'Success',
-                'subcategories' => $subcategories
+                'data' => $subcategories
             ];
         } else {
             return [

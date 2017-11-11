@@ -58,7 +58,7 @@ class CategoriesController extends ActiveController {
             return [
                 'success' => true,
                 'message' => 'Success',
-                'categories' => $categories
+                'data' => $categories
             ];
         } else {
             return [
