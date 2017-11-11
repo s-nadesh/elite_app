@@ -17,7 +17,6 @@ class SiteController extends Controller {
     public function test(){
         return 'vicky';
     }
-    
     /**
      * @inheritdoc
      */
@@ -60,7 +59,7 @@ class SiteController extends Controller {
     /* n */
     public function actionIndex() {
         $searchModel = new ProductsSearch();
-        $dataProvider = $searchModel->dashboardSearch(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->reorderList();
         return $this->render('index', [
                     'searchModel' => $searchModel,
                     'dataProvider' => $dataProvider,
