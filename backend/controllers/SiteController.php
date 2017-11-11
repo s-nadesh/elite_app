@@ -14,11 +14,6 @@ use yii\web\Controller;
  */
 class SiteController extends Controller {
     
-    public function test(){
-             return 'Nadfsfsdfsdfeshss';
-             return 'APS';
-       
-    }
     /**
      * @inheritdoc
      */
