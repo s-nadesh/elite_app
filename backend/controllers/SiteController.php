@@ -16,7 +16,7 @@ class SiteController extends Controller {
     
     public function test(){
              return 'Nadeshss';
-        return 'Nadeshss';
+       
     }
     /**
      * @inheritdoc
