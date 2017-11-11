@@ -20,7 +20,7 @@ class ProductController extends ActiveController {
         //Authenticator - It is used to login the user by using header (Authorization Bearer Token).
         $behaviors['authenticator'] = [
             'class' => HttpBearerAuth::className(),
-            'only' => ['productlist', 'addcart','editcart','deletecart'],
+            'only' => ['productlist', 'addcart', 'editcart', 'deletecart'],
         ];
         $behaviors['contentNegotiator'] = [
             'class' => ContentNegotiator::className(),
@@ -31,10 +31,10 @@ class ProductController extends ActiveController {
         //Access - After Login, Role wise access 
         $behaviors['access'] = [
             'class' => AccessControl::className(),
-            'only' => ['productlist', 'addcart','editcart','deletecart'],
+            'only' => ['productlist', 'addcart', 'editcart', 'deletecart'],
             'rules' => [
                 [
-                    'actions' => ['productlist', 'addcart','editcart','deletecart'],
+                    'actions' => ['productlist', 'addcart', 'editcart', 'deletecart'],
                     'allow' => true,
                     'roles' => ['@'],
                 ],
@@ -52,79 +52,65 @@ class ProductController extends ActiveController {
         $model = new Carts();
         $post = Yii::$app->request->getBodyParams();
         if (!empty($post)) {
-            $model->load(Yii::$app->request->getBodyParams(), '');
-                $model->save();
 
-            $carts = Carts::find()
-                    ->cart($post['user_id'], $post['ordered_by'])
-                    ->status()
-                    ->active()
-                    ->all();
-            foreach ($carts as $cart):
-                 $total = $cart->qty * $cart->product->price_per_unit;
-                 $object[] =  [
-                            'cart_id' => $cart->cart_id,
-                            'ordered_by' => $cart->orderedBy->name, 
-                            'user_name' => $cart->user->name,
-                            'category_id' => $cart->product->category->category_id,
-                            'category_name' => $cart->product->category->category_name,
-                            'subcat_id' => $cart->product->subcat->subcat_id,
-                            'subcat_name' => $cart->product->subcat->subcat_name,
-                            'product_id' => $cart->product->product_id,
-                            'product_name' => $cart->product->product_name,
-                            'total' =>$total,
-                            'qty' => $cart->qty,
-                ];
-           
-            endforeach;
-          
-            return [
-                'success' => true,
-                'message' => 'Success',
-                'cart' => $object
-            ];
-        } else {
-            return [
-                'success' => true,
-                'message' => 'Invalid request'
-            ];
-        }
-    }
-     public function actionEditcart() {
-        $post = Yii::$app->request->getBodyParams();
-        $model =Carts::findOne($post['cart_id']);
-        if (!empty($model)) {
-            $model->load(Yii::$app->request->getBodyParams(), '');
-            $model->save();
-            
-            $cart = Carts::find()
-                    ->editcart($post['cart_id'])
+            $product_qnty = Products::find()
+                    ->quantity_check($post['product_id'])
                     ->status()
                     ->active()
                     ->one();
-            if (!empty($cart)) {
-                 $total = $cart->qty * $cart->product->price_per_unit;
-                 $object[] =  [
-                            'cart_id' => $cart->cart_id,
-                            'ordered_by' => $cart->orderedBy->name, 
-                            'user_name' => $cart->user->name,
-                            'category_id' => $cart->product->category->category_id,
-                            'category_name' => $cart->product->category->category_name,
-                            'subcat_id' => $cart->product->subcat->subcat_id,
-                            'subcat_name' => $cart->product->subcat->subcat_name,
-                            'product_id' => $cart->product->product_id,
-                            'product_name' => $cart->product->product_name,
-                            'total' =>$total,
-                            'qty' => $cart->qty,
+
+            if ($post['qty'] <= $product_qnty->stock) {
+
+                $cart_exist = Carts::find()
+                        ->cartexist($post['user_id'], $post['ordered_by'], $post['product_id'])
+                        ->status()
+                        ->active()
+                        ->one();
+
+                if ($cart_exist) {
+                    $cart_exist->load(Yii::$app->request->getBodyParams(), '');
+                    $cart_exist->save();
+                } else {
+                    $model->load(Yii::$app->request->getBodyParams(), '');
+                    $model->save();
+                }
+
+
+                $carts = Carts::find()
+                        ->cart($post['user_id'], $post['ordered_by'])
+                        ->status()
+                        ->active()
+                        ->all();
+
+                foreach ($carts as $cart):
+                    $total = $cart->qty * $cart->product->price_per_unit;
+                    $object[] = [
+                        'cart_id' => $cart->cart_id,
+                        'ordered_by' => $cart->orderedBy->name,
+                        'user_name' => $cart->user->name,
+                        'category_id' => $cart->product->category->category_id,
+                        'category_name' => $cart->product->category->category_name,
+                        'subcat_id' => $cart->product->subcat->subcat_id,
+                        'subcat_name' => $cart->product->subcat->subcat_name,
+                        'product_id' => $cart->product->product_id,
+                        'product_name' => $cart->product->product_name,
+                        'total' => $total,
+                        'qty' => $cart->qty,
+                    ];
+
+                endforeach;
+
+                return [
+                    'success' => true,
+                    'message' => 'Success',
+                    'cart' => $object
                 ];
-           
-              
-            return [
-                'success' => 'true',
-                'message' => 'Success',
-                'data' => $object
-            ];
-              }
+            }else {
+                return [
+                    'success' => true,
+                    'message' => 'Current stock is ' . $product_qnty->stock,
+                ];
+            }
         } else {
             return [
                 'success' => true,
@@ -133,7 +119,64 @@ class ProductController extends ActiveController {
         }
     }
 
-     public function actionDeletecart() {
+    public function actionEditcart() {
+        $post = Yii::$app->request->getBodyParams();
+        $product_qnty = Products::find()
+                ->quantity_check($post['product_id'])
+                ->status()
+                ->active()
+                ->one();
+
+        if ($post['qty'] <= $product_qnty->stock) {
+            $model = Carts::findOne($post['cart_id']);
+            if (!empty($model)) {
+                $model->load(Yii::$app->request->getBodyParams(), '');
+                $model->save();
+
+                $cart = Carts::find()
+                        ->editcart($post['cart_id'])
+                        ->status()
+                        ->active()
+                        ->one();
+
+                if (!empty($cart)) {
+                    $total = $cart->qty * $cart->product->price_per_unit;
+                    $object[] = [
+                        'cart_id' => $cart->cart_id,
+                        'ordered_by' => $cart->orderedBy->name,
+                        'user_name' => $cart->user->name,
+                        'category_id' => $cart->product->category->category_id,
+                        'category_name' => $cart->product->category->category_name,
+                        'subcat_id' => $cart->product->subcat->subcat_id,
+                        'subcat_name' => $cart->product->subcat->subcat_name,
+                        'product_id' => $cart->product->product_id,
+                        'product_name' => $cart->product->product_name,
+                        'total' => $total,
+                        'qty' => $cart->qty,
+                    ];
+
+
+                    return [
+                        'success' => 'true',
+                        'message' => 'Success',
+                        'data' => $object
+                    ];
+                }
+            } else {
+                return [
+                    'success' => true,
+                    'message' => 'Invalid request'
+                ];
+            }
+        }else {
+                return [
+                    'success' => true,
+                    'message' => 'Current stock is ' . $product_qnty->stock,
+                ];
+            }
+    }
+
+    public function actionDeletecart() {
         $post = Yii::$app->request->getBodyParams();
         if (!empty($post)) {
             $model = Carts::findOne($post['cart_id']);

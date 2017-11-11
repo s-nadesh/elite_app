@@ -16,6 +16,9 @@ class ProductsQuery extends CommonQuery
     public function subcategory($subcat_id) {
         return $this->andWhere(["{$this->tblName}.subcat_id" => $subcat_id]);
     }
+     public function quantity_check($product_id) {
+        return $this->andWhere(["{$this->tblName}.product_id" => $product_id]);
+    }
     /*public function active()
     {
         return $this->andWhere('[[status]]=1');

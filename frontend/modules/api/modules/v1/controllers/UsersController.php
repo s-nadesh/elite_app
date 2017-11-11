@@ -92,19 +92,26 @@ class UsersController extends ActiveController {
     }
 
     public function actionProfile() {
-        $post = Yii::$app->request->getBodyParams();
-        if (!empty($post)) {
             $profile = Users::find()
-                    ->select('user_id,user_type_id,name,address,mobile_no,email')
-                    ->user($post['user_id'])
+//                    ->select('user_id,user_type_id,name,address,mobile_no,email')
+                    ->user(Yii::$app->user->getId())
                     ->status()
                     ->active()
-                    ->all();
+                    ->one();
+          
+             $object[] =  [
+                            'user_id' => $profile->user_id,
+                            'user_type' => $profile->userType->type_name, 
+                            'name' => $profile->name,
+                            'address' => $profile->address,
+                            'mobile_no' => $profile->mobile_no,
+                            'email' => $profile->email,
+                ];
             if (!empty($profile)) {
                 return [
                     'success' => 'true',
                     'message' => 'Success',
-                    'data' => $profile
+                    'data' => $object
                 ];
             } else {
                 return [
@@ -112,30 +119,36 @@ class UsersController extends ActiveController {
                     'message' => 'No records found',
                 ];
             }
-        } else {
-            return [
-                'success' => true,
-                'message' => 'Invalid request'
-            ];
-        }
+       
     }
     public function actionEditprofile() {
-        $post = Yii::$app->request->getBodyParams();
+         $post = Yii::$app->request->getBodyParams();
         $model = Users::findOne($post['user_id']);
+      
         if (!empty($post)) {
             $model->load(Yii::$app->request->getBodyParams(), '');
             $model->save();
+              
             $profile = Users::find()
-                    ->select('user_id,user_type_id,name,address,mobile_no')
+//                    ->select('user_id,user_type_id,name,address,mobile_no')
                     ->user($post['user_id'])
                     ->status()
                     ->active()
-                    ->all();
+                    ->one();
+             
+             $object[] =  [
+                            'user_id' => $profile->user_id,
+                            'user_type' => $profile->userType->type_name, 
+                            'name' => $profile->name,
+                            'address' => $profile->address,
+                            'mobile_no' => $profile->mobile_no,
+                            'email' => $profile->email,
+                ];
             if (!empty($profile)) {
                 return [
                     'success' => 'true',
                     'message' => 'Success',
-                    'data' => $profile
+                    'data' => $object
                 ];
             } else {
                 return [

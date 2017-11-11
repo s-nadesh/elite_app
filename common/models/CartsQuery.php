@@ -20,6 +20,9 @@ class CartsQuery extends CommonQuery
         }
         return $this->andWhere(["{$this->tblName}.user_id" => $user_id ,"{$this->tblName}.ordered_by" => $orderedby]);
     }
+     public function cartexist($user_id,$orderedby,$product_id) {
+                 return $this->andWhere(["{$this->tblName}.user_id" => $user_id ,"{$this->tblName}.ordered_by" => $orderedby,"{$this->tblName}.product_id" => $product_id]);
+    }
     public function editcart($cart_id) {
                  return $this->andWhere(["{$this->tblName}.cart_id" => $cart_id]);
     }

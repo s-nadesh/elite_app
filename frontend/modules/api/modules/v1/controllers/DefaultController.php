@@ -52,7 +52,7 @@ class DefaultController extends ActiveController {
     public function actionChangepassword() {
         $post = Yii::$app->request->getBodyParams();
         if (!empty($post)) {
-            $model = Logins::findOne($post['user_id']);
+            $model = Logins::findOne(Yii::$app->user->getId());
 
             $model->scenario = 'changepassword';
             if ($model->load(Yii::$app->request->getBodyParams(), '') && $model->validate()) {
