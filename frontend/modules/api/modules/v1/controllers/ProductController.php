@@ -20,7 +20,7 @@ class ProductController extends ActiveController {
         //Authenticator - It is used to login the user by using header (Authorization Bearer Token).
         $behaviors['authenticator'] = [
             'class' => HttpBearerAuth::className(),
-            'only' => ['productlist', 'addcart', 'editcart', 'deletecart', 'stockcheck', 'placeorder','cartlist'],
+            'only' => ['productlist', 'addcart', 'editcart', 'deletecart', 'stockcheck', 'placeorder', 'cartlist'],
         ];
         $behaviors['contentNegotiator'] = [
             'class' => ContentNegotiator::className(),
@@ -31,10 +31,10 @@ class ProductController extends ActiveController {
         //Access - After Login, Role wise access 
         $behaviors['access'] = [
             'class' => AccessControl::className(),
-            'only' => ['productlist', 'addcart', 'editcart', 'deletecart', 'stockcheck', 'placeorder','cartlist'],
+            'only' => ['productlist', 'addcart', 'editcart', 'deletecart', 'stockcheck', 'placeorder', 'cartlist'],
             'rules' => [
                 [
-                    'actions' => ['productlist', 'addcart', 'editcart', 'deletecart', 'stockcheck', 'placeorder','cartlist'],
+                    'actions' => ['productlist', 'addcart', 'editcart', 'deletecart', 'stockcheck', 'placeorder', 'cartlist'],
                     'allow' => true,
                     'roles' => ['@'],
                 ],
@@ -207,12 +207,12 @@ class ProductController extends ActiveController {
     public function actionCartlist() {
         $post = Yii::$app->request->getBodyParams();
         if (!empty($post)) {
-            $cartlist= Carts::find()
+            $cartlist = Carts::find()
                     ->cart($post['user_id'], $post['ordered_by'])
                     ->status()
                     ->active()
                     ->all();
-            
+
             foreach ($cartlist as $cart):
                 $total = $cart->qty * $cart->product->price_per_unit;
                 $object[] = [
@@ -225,11 +225,13 @@ class ProductController extends ActiveController {
                     'subcat_name' => $cart->product->subcat->subcat_name,
                     'product_id' => $cart->product->product_id,
                     'product_name' => $cart->product->product_name,
-                    'total' => $total,
+                    'stock' => $cart->product->stock,
                     'qty' => $cart->qty,
+                    'total' => $total,
+                    
                 ];
-                 endforeach;
-                 
+            endforeach;
+
             if (!empty($cartlist)) {
                 return [
                     'success' => true,
@@ -300,13 +302,16 @@ class ProductController extends ActiveController {
                         'cart_id' => $cart->cart_id,
                         'ordered_by' => $cart->orderedBy->name,
                         'user_name' => $cart->user->name,
+                        'user_email' => $cart->user->email,
+                        'user_address' => $cart->user->address,
+                        'user_phone' => $cart->user->mobile_no,
                         'category_id' => $cart->product->category->category_id,
                         'category_name' => $cart->product->category->category_name,
                         'subcat_id' => $cart->product->subcat->subcat_id,
                         'subcat_name' => $cart->product->subcat->subcat_name,
                         'product_id' => $cart->product->product_id,
                         'product_name' => $cart->product->product_name,
-                        'total' => $total,
+                        'product_rate' => $total,
                         'qty' => $cart->qty,
                     ];
 
