@@ -84,7 +84,7 @@ $this->registerJs(
                 '],
                     'data' => $product_data,
                     'pluginOptions' => [
-                        'initialize' => true,
+//                        'initialize' => true,
                         'depends' => ['carts-category_id', 'carts-subcat_id'],
                         'placeholder' => '--Select--',
                         'url' => Url::to(['/products/getproducts'])
