@@ -89,6 +89,9 @@ class CartsController extends Controller {
             $model->user_id = $session['carts']['user_id'];
             $model->ordered_by = $session['carts']['ordered_by'];
             $queryParams['CartSearch'] = $session['carts'];
+        } else {
+            //Shows only current session products in cart.
+            $queryParams['CartSearch'] = ['sessionid' => $session->getId()];
         }
 
         $dataProvider = $searchModel->search($queryParams);
