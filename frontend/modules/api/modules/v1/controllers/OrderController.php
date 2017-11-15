@@ -23,7 +23,7 @@ class OrderController extends ActiveController {
         //Authenticator - It is used to login the user by using header (Authorization Bearer Token).
         $behaviors['authenticator'] = [
             'class' => HttpBearerAuth::className(),
-            'only' => ['confirmorder', 'vieworder', 'orderlist'],
+            'only' => ['confirmorder', 'vieworderlist', 'orderview', 'statuslist', 'changestatus'],
         ];
         $behaviors['contentNegotiator'] = [
             'class' => ContentNegotiator::className(),
@@ -34,10 +34,10 @@ class OrderController extends ActiveController {
         //Access - After Login, Role wise access 
         $behaviors['access'] = [
             'class' => AccessControl::className(),
-            'only' => ['confirmorder', 'vieworder', 'orderlist'],
+            'only' => ['confirmorder', 'vieworderlist', 'orderview', 'statuslist', 'changestatus'],
             'rules' => [
                 [
-                    'actions' => ['confirmorder', 'vieworder', 'orderlist'],
+                    'actions' => ['confirmorder', 'vieworderlist', 'orderview', 'statuslist', 'changestatus'],
                     'allow' => true,
                     'roles' => ['@'],
                 ],
@@ -104,7 +104,7 @@ class OrderController extends ActiveController {
         }
     }
 
-    public function actionOrderlist() {
+    public function actionOrderview() {
         $post = Yii::$app->request->getBodyParams();
         if (!empty($post)) {
             $order = Orders::find()
@@ -121,9 +121,6 @@ class OrderController extends ActiveController {
                     'invoice_no' => $order->invoice_no,
                     'order_placed_on' => $order->invoice_date,
                     'status' => $order->orderStatus->status_name,
-//                    'user_name' => $order->user->name,
-//                    'product_name' => $order->orderItems->product->product_name,
-//                    'status_id' => $order->order_status_id,
                 ];
                 $object1[] = [
                     'user_name' => $order->user->name,
@@ -159,24 +156,19 @@ class OrderController extends ActiveController {
                 endforeach;
 
                 foreach ($order->orderTrack as $info):
-                    $responseArray = json_decode($info->value, true);
-                    if ($info->order_status_id == OrderStatus::OR_DISPATCHED) {
-                        $object5[] = [
-                            'track_id' => $responseArray['dispatch_track_id'],
-                            'dispatch_date' => $info->created_at,
-                            'courier_company_name' => $responseArray['dispatch_courier_comapny'],
-                            'comments' => $responseArray['dispatch_comment'],
+                    if ($info->value) {
+                        $responseArray = json_decode($info->value, true);
+                        $tracklist[] = [
+                            'track_status' => $info->orderStatus->status_name,
+                            'date' => date('d/M/Y', $info->created_at),
+                            'value' => [
+                                $responseArray
+                            ]
                         ];
-                    } elseif ($info->order_status_id == OrderStatus::OR_DELEVERED) {
-                        $object6[] = [
-                            'deliver_name' => $responseArray['deliver_to'],
-                            'deliver_date' => $info->created_at,
-                            'deliver_mobile' => $responseArray['deliver_phone'],
-                            'deliver_addr' => $responseArray['deliver_address'],
-                        ];
-                    } elseif ($info->order_status_id == OrderStatus::OR_CANCELED) {
-                        $object7[] = [
-                            'cancel_comments' => $responseArray['cancel_comment'],
+                    } else {
+                        $tracklist[] = [
+                            'track_status' => $info->orderStatus->status_name,
+                            'date' => date('d/M/Y', $info->created_at)
                         ];
                     }
                 endforeach;
@@ -188,9 +180,7 @@ class OrderController extends ActiveController {
                     'product_details' => $object2,
                     'amount_details' => $object3,
                     'payment_log_details' => $object4,
-                    'dispatch_details' => $object5,
-                    'delivery_details' => $object6,
-                    'cancel_details' => $object7,
+                    'order_track' => $tracklist,
                 ];
             } else {
                 return [
@@ -206,7 +196,57 @@ class OrderController extends ActiveController {
         }
     }
 
-    public function actionVieworder() {
+    public function actionStatuslist() {
+        $post = Yii::$app->request->getBodyParams();
+        if (!empty($post)) {
+            $order_status = OrderStatus::find()
+                    ->select('order_status_id,status_name')
+                    ->orderstatuslist($post['order_status_id'])
+                    ->status()
+                    ->active()
+                    ->all();
+            if (!empty($order_status)) {
+
+                return [
+                    'success' => true,
+                    'message' => 'success',
+                    'data' => $order_status,
+                ];
+            } else {
+                return [
+                    'success' => true,
+                    'message' => 'No records found',
+                ];
+            }
+        } else {
+            return [
+                'success' => true,
+                'message' => 'Invalid request'
+            ];
+        }
+    }
+
+    public function actionChangestatus() {
+        $post = Yii::$app->request->getBodyParams();
+        $model = Orders::findOne($post['order_id']);
+
+        if (!empty($model)) {
+            $model->load(Yii::$app->request->getBodyParams(), '');
+            $model->change_status = true;
+            $model->save();
+                return [
+                    'success' => true,
+                    'message' => 'success',
+                ];
+        } else {
+            return [
+                'success' => true,
+                'message' => 'Invalid request'
+            ];
+        }
+    }
+
+    public function actionVieworderlist() {
         $post = Yii::$app->request->getBodyParams();
         if (!empty($post)) {
             $orderlist = Orders::find()

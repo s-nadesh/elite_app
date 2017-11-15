@@ -91,7 +91,7 @@ class OrdersController extends Controller {
 
     public function actionStatus($id) {
         $model = $this->findModel($id);
-        $model->scenario = 'createadmin';
+//        $model->scenario = 'createadmin';
         if (Yii::$app->request->post()) {
             $model->load(Yii::$app->request->post());
             $model->change_status = true;

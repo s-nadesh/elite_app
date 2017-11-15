@@ -68,21 +68,21 @@ class Orders extends RActiveRecord {
                 [['user_id', 'order_status_id', 'ordered_by', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
                 [['items_total_amount', 'tax_percentage', 'tax_amount', 'total_amount'], 'number'],
                 [['payment_status'], 'string'],
-                [['dispatch_track_id', 'dispatch_courier_comapny', 'dispatch_comment'], 'required', 'on' => 'createadmin', 'when' => function ($model) {
-                    return ($model->order_status_id == '4');
-                }, 'whenClient' => "function (attribute, value) {
-                return ($('#orders-order_status_id').val() =='4');
-            }"],
-                [['deliver_to', 'deliver_phone', 'deliver_address'], 'required', 'on' => 'createadmin', 'when' => function ($model) {
-                    return ($model->order_status_id == '5');
-                }, 'whenClient' => "function (attribute, value) {
-                return ($('#orders-order_status_id').val() =='5');
-            }"],
-                [['cancel_comment'], 'required', 'on' => 'createadmin', 'when' => function ($model) {
-                    return ($model->order_status_id == '6');
-                }, 'whenClient' => "function (attribute, value) {
-                return ($('#orders-order_status_id').val() =='6');
-            }"],
+//                [['dispatch_track_id', 'dispatch_courier_comapny', 'dispatch_comment'], 'required', 'on' => 'createadmin', 'when' => function ($model) {
+//                    return ($model->order_status_id == '4');
+//                }, 'whenClient' => "function (attribute, value) {
+//                return ($('#orders-order_status_id').val() =='4');
+//            }"],
+//                [['deliver_to', 'deliver_phone', 'deliver_address'], 'required', 'on' => 'createadmin', 'when' => function ($model) {
+//                    return ($model->order_status_id == '5');
+//                }, 'whenClient' => "function (attribute, value) {
+//                return ($('#orders-order_status_id').val() =='5');
+//            }"],
+//                [['cancel_comment'], 'required', 'on' => 'createadmin', 'when' => function ($model) {
+//                    return ($model->order_status_id == '6');
+//                }, 'whenClient' => "function (attribute, value) {
+//                return ($('#orders-order_status_id').val() =='6');
+//            }"],
                 [['invoice_no'], 'string', 'max' => 50],
                 [['signature'], 'string', 'max' => 300],
                 [['invoice_no'], 'unique'],
