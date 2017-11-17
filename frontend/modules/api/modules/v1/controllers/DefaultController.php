@@ -4,6 +4,7 @@ namespace app\modules\api\modules\v1\controllers;
 
 use common\models\LoginForm;
 use common\models\Logins;
+use common\models\ResetPassword;
 use Yii;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\ContentNegotiator;
@@ -29,6 +30,7 @@ class DefaultController extends ActiveController {
                 'application/json' => Response::FORMAT_JSON,
             ],
         ];
+        
         return $behaviors;
     }
 
@@ -56,7 +58,6 @@ class DefaultController extends ActiveController {
         $post = Yii::$app->request->getBodyParams();
         if (!empty($post)) {
             $model = Logins::findOne(Yii::$app->user->getId());
-
             $model->scenario = 'changepassword';
             if ($model->load(Yii::$app->request->getBodyParams(), '') && $model->validate()) {
                 $model->password_hash = Yii::$app->getSecurity()->generatePasswordHash($model->new_pass);
@@ -78,5 +79,29 @@ class DefaultController extends ActiveController {
             ];
         }
     }
+     public function actionForgotpassword() {
+          $model = new Logins();
+        $post = Yii::$app->request->getBodyParams();
+        if (!empty($post)) {
+            if ($model->load(Yii::$app->request->getBodyParams(), '') && $model->authenticate()) {
+                
+                return [
+                    'success' => 'true',
+                    'message' => 'Please verify your gmail account',
+                ];
+            } else {
+                return [
+                    'success' => true,
+                    'message' => 'Incorrect email address',
+                ];
+            }
+        } else {
+            return [
+                'success' => true,
+                'message' => 'Invalid request'
+            ];
+        }
+    }
+    
     
 }

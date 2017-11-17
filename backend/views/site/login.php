@@ -21,7 +21,9 @@ use yii\web\View;
         </div>
         <div class="form-group">
             <?= $form->field($model, 'rememberMe')->checkbox() ?>
+            
         </div>
+         <?php echo Html::a('Forgot Password',array('site/forgotpassword')); ?>
     </div>
 
     <div class="footer">

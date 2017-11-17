@@ -51,13 +51,12 @@ class ProductController extends ActiveController {
 
     public function actionStockcheck() {
         $post = Yii::$app->request->getBodyParams();
-        if (!empty($post)) {
-            $product_qnty = Products::find()
+         $product_qnty = Products::find()
                     ->quantity_check($post['product_id'])
                     ->status()
                     ->active()
                     ->one();
-
+        if (!empty($product_qnty)) {
             if ($post['qty'] <= $product_qnty->stock) {
                 return [
                     'success' => true,

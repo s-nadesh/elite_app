@@ -22,11 +22,11 @@ class SiteController extends Controller {
             'access' => [
                 'class' => AccessControl::className(),
                 'rules' => [
-                        [
-                        'actions' => ['login'],
+                    [
+                        'actions' => ['login', 'forgotpassword'],
                         'allow' => true,
                     ],
-                        [
+                    [
                         'actions' => ['logout', 'index', 'changepassword'],
                         'allow' => true,
                         'roles' => ['@'],
@@ -46,7 +46,6 @@ class SiteController extends Controller {
             ],
         ];
     }
-    
 
     /**
      * Displays homepage.
@@ -83,6 +82,24 @@ class SiteController extends Controller {
                         'model' => $model,
             ]);
         }
+    }
+
+    public function actionForgotpassword() {
+         $this->layout = "@app/views/layouts/login";
+        if (!Yii::$app->user->isGuest) {
+            return $this->goHome();
+        }
+        $model = new Logins();
+
+        if ($model->load(Yii::$app->request->post()) && $model->authenticate()) {
+            \Yii::$app->getSession()->setFlash('success', 'Please verify your gmail account');
+            $this->redirect(array('/admin/site/login'));
+        } else {
+            $errores = $model->getErrors();
+        }
+        return $this->render('forgotpassword', [
+                    'model' => $model,
+        ]);
     }
 
     /**

@@ -13,6 +13,7 @@ use yii\filters\auth\HttpBearerAuth;
 use yii\filters\ContentNegotiator;
 use yii\rest\ActiveController;
 use yii\web\Response;
+use yii\web\UploadedFile;
 
 class OrderController extends ActiveController {
 
@@ -23,7 +24,7 @@ class OrderController extends ActiveController {
         //Authenticator - It is used to login the user by using header (Authorization Bearer Token).
         $behaviors['authenticator'] = [
             'class' => HttpBearerAuth::className(),
-            'only' => ['confirmorder', 'vieworderlist', 'orderview', 'statuslist', 'changestatus'],
+            'only' => ['confirmorder', 'vieworderlist', 'orderview', 'statuslist', 'changestatus', 'makepayment'],
         ];
         $behaviors['contentNegotiator'] = [
             'class' => ContentNegotiator::className(),
@@ -34,10 +35,10 @@ class OrderController extends ActiveController {
         //Access - After Login, Role wise access 
         $behaviors['access'] = [
             'class' => AccessControl::className(),
-            'only' => ['confirmorder', 'vieworderlist', 'orderview', 'statuslist', 'changestatus'],
+            'only' => ['confirmorder', 'vieworderlist', 'orderview', 'statuslist', 'changestatus', 'makepayment'],
             'rules' => [
                 [
-                    'actions' => ['confirmorder', 'vieworderlist', 'orderview', 'statuslist', 'changestatus'],
+                    'actions' => ['confirmorder', 'vieworderlist', 'orderview', 'statuslist', 'changestatus', 'makepayment'],
                     'allow' => true,
                     'roles' => ['@'],
                 ],
@@ -46,27 +47,20 @@ class OrderController extends ActiveController {
         return $behaviors;
     }
 
-//    public function actions() {
-//        $actions = parent::actions();
-//        unset($actions['productlist']);
-//        return $actions;
-//    }
-
-
-
     public function actionConfirmorder() {
         $model = new Orders();
         $post = Yii::$app->request->getBodyParams();
         if (!empty($post)) {
-            $model->load(Yii::$app->request->getBodyParams(), '');
-            $model->total_amount = $post['items_total_amount'];
-            $model->save(false);
             $cartlist = Carts::find()
                     ->cart($post['user_id'], $post['ordered_by'])
                     ->status()
                     ->active()
                     ->all();
             if (!empty($cartlist)) {
+                $model->load(Yii::$app->request->getBodyParams(), '');
+                $model->change_status = true;
+                $model->total_amount = $post['items_total_amount'];
+                $model->save(false);
                 foreach ($cartlist as $cart):
                     $order_item = new OrderItems();
                     $order_item->order_id = $model->order_id;
@@ -106,6 +100,7 @@ class OrderController extends ActiveController {
 
     public function actionOrderview() {
         $post = Yii::$app->request->getBodyParams();
+        $summ = 0;
         if (!empty($post)) {
             $order = Orders::find()
                     ->orders($post['order_id'])
@@ -120,6 +115,7 @@ class OrderController extends ActiveController {
                     'order_id' => $order->order_id,
                     'invoice_no' => $order->invoice_no,
                     'order_placed_on' => $order->invoice_date,
+                    'order_status_id' => $order->order_status_id,
                     'status' => $order->orderStatus->status_name,
                 ];
                 $object1[] = [
@@ -146,7 +142,8 @@ class OrderController extends ActiveController {
                 ];
 
                 foreach ($order->orderBillings as $getorderpayment):
-                    $pending_amount = OrderBillings::pendingAmount($order->items_total_amount, $getorderpayment->paid_amount);
+                    $summ += $getorderpayment->paid_amount;
+                    $pending_amount = OrderBillings::pendingAmount($order->items_total_amount, $summ);
                     $object4[] = [
                         'date' => date('d/M/Y', $getorderpayment->created_at),
                         'received_amount' => $getorderpayment->paid_amount,
@@ -234,10 +231,42 @@ class OrderController extends ActiveController {
             $model->load(Yii::$app->request->getBodyParams(), '');
             $model->change_status = true;
             $model->save();
-                return [
-                    'success' => true,
-                    'message' => 'success',
-                ];
+            return [
+                'success' => true,
+                'message' => 'success',
+            ];
+        } else {
+            return [
+                'success' => true,
+                'message' => 'Invalid request'
+            ];
+        }
+    }
+
+    public function actionMakepayment() {
+        $post = Yii::$app->request->getBodyParams();
+        $orderbilling_model = new OrderBillings();
+        $model = Orders::findOne($post['order_id']);
+        if (!empty($model)) {
+
+            $orderbilling_model->load(Yii::$app->request->getBodyParams(), '');
+            $orderbilling_model->order_id = $post['order_id'];
+            $orderbilling_model->paid_amount = $post['paid_amount'];
+            $orderbilling_model->save();
+            $model->load(Yii::$app->request->getBodyParams(), '');
+            $signature = UploadedFile::getInstancesByName("signature");
+            foreach ($signature as $file) {
+                $hidespace_image = str_replace(' ', '-', $file->name);
+                $randno = rand(11111, 99999);
+                $path = Yii::$app->basePath . '/web/uploads/signature/' . $randno . $hidespace_image;
+                $file->saveAs($path);
+                $model->signature = $hidespace_image;
+            }
+            $model->save();
+            return [
+                'success' => true,
+                'message' => 'success',
+            ];
         } else {
             return [
                 'success' => true,
@@ -251,6 +280,7 @@ class OrderController extends ActiveController {
         if (!empty($post)) {
             $orderlist = Orders::find()
                     ->orderlist($post['ordered_by'])
+                    ->orderBy(['created_at' => SORT_DESC])
                     ->status()
                     ->active()
                     ->all();
