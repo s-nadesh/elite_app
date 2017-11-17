@@ -13,7 +13,6 @@ use yii\web\Controller;
  * Site controller
  */
 class SiteController extends Controller {
-     public $vicky = 'Nadeshhh123';
     /**
      * @inheritdoc
      */
