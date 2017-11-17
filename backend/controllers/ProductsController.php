@@ -20,7 +20,7 @@ use yii\web\NotFoundHttpException;
  * ProductsController implements the CRUD actions for Products model.
  */
 class ProductsController extends Controller {
-    public $test = 'TestVickyNadesh';
+    public $test = 'TestNadesh';
 
     /**
      * @inheritdoc
