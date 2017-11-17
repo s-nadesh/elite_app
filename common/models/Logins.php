@@ -47,18 +47,18 @@ class Logins extends RActiveRecord implements IdentityInterface {
      */
     public function rules() {
         return [
-            [['user_id', 'username', 'password_hash', 'email'], 'required'],
-            [['username', 'email'], 'required', 'on' => 'update'],
-            [['old_pass', 'new_pass', 'confirm_pass'], 'required', 'on' => 'changepassword'],
-            ['old_pass', 'findPasswords', 'on' => 'changepassword'],
-            [['user_id', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
-            [['username', 'password_hash', 'password_reset_token', 'email'], 'string', 'max' => 255],
-            ['confirm_pass', 'compare', 'compareAttribute' => 'new_pass', 'on' => 'changepassword'],
-            [['auth_key'], 'string', 'max' => 32],
-            [['username'], 'unique'],
-            [['email'], 'unique'],
-            [['password_reset_token'], 'unique'],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'user_id']],
+                [['user_id', 'username', 'password_hash', 'email'], 'required'],
+                [['username', 'email'], 'required', 'on' => 'update'],
+                [['old_pass', 'new_pass', 'confirm_pass'], 'required', 'on' => 'changepassword'],
+                ['old_pass', 'findPasswords', 'on' => 'changepassword'],
+                [['user_id', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
+                [['username', 'password_hash', 'password_reset_token', 'email'], 'string', 'max' => 255],
+                ['confirm_pass', 'compare', 'compareAttribute' => 'new_pass', 'on' => 'changepassword'],
+                [['auth_key'], 'string', 'max' => 32],
+                [['username'], 'unique'],
+                [['email'], 'unique'],
+                [['password_reset_token'], 'unique'],
+                [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'user_id']],
         ];
     }
 
@@ -107,16 +107,16 @@ class Logins extends RActiveRecord implements IdentityInterface {
             $this->addError('email', "email address not exist");  // Error Code : 1         
         else:
             $randpass = self::getRandomString(8);
-//            $resetLink = Yii::$app->urlManager->createAbsoluteUrl(['admin/site/resetpassword', 'token' => $randpass]);
-
+            $hash = Yii::$app->security->generatePasswordHash($randpass);
+            $userinfo->password_hash = $hash;
+            $userinfo->save();
             $toemail = $userinfo->email;
-            Yii::$app->mailer->compose()
-                    ->setFrom('noreply@elite.in')
-                    ->setTo($toemail)
-                    ->setSubject('Elite.in - Request to reset admin password')
-                    ->setHtmlBody('Hi Admin, <br/><br/> We have received your request to reset your password.<br/><br/> Please note that the new password is  ' . $randpass . ' which is to be used to login <br/><br/>Thanks, <br/><br/> Elite Supporting Team.')
-                    ->send();
-            return true;
+            return Yii::$app->mailer->compose()
+                            ->setFrom('noreply@elite.in')
+                            ->setTo($toemail)
+                            ->setSubject('Elite.in - Request to reset admin password')
+                            ->setHtmlBody('Hi Admin, <br/><br/> We have received your request to reset your password.<br/><br/> Please note that the new password is  ' . $randpass . ' which is to be used to login <br/><br/>Thanks, <br/><br/> Elite Supporting Team.')
+                            ->send();
         endif;
     }
 

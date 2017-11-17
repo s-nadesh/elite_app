@@ -3,6 +3,7 @@
 /* @var $content string */
 
 use backend\assets\LoginThemeAsset;
+use common\widgets\Alert;
 use yii\helpers\Html;
 use yii\web\View;
 
@@ -21,6 +22,9 @@ LoginThemeAsset::register($this);
     </head>
     <body class="bg-black">
         <?php $this->beginBody() ?>
+        <div class="row">
+        <?= Alert::widget() ?>
+        </div>
         <?= $content ?>
         <?php $this->endBody() ?>
     </body>
