@@ -13,6 +13,7 @@ use yii\web\Controller;
  * Site controller
  */
 class SiteController extends Controller {
+
     /**
      * @inheritdoc
      */
@@ -21,11 +22,11 @@ class SiteController extends Controller {
             'access' => [
                 'class' => AccessControl::className(),
                 'rules' => [
-                        [
+                    [
                         'actions' => ['login', 'forgotpassword'],
                         'allow' => true,
                     ],
-                        [
+                    [
                         'actions' => ['logout', 'index', 'changepassword'],
                         'allow' => true,
                         'roles' => ['@'],
@@ -84,7 +85,7 @@ class SiteController extends Controller {
     }
 
     public function actionForgotpassword() {
-        $this->layout = "@app/views/layouts/login";
+         $this->layout = "@app/views/layouts/login";
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }

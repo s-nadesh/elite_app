@@ -33,7 +33,7 @@ use yii\db\ActiveQuery;
  * @property Users $user
  */
 class Orders extends RActiveRecord {
-    
+
     const OR_PAYMENT_P = 'P';
     const OR_PAYMENT_PC = 'PC';
     const OR_PAYMENT_C = 'C';
@@ -63,11 +63,18 @@ class Orders extends RActiveRecord {
      */
     public function rules() {
         return [
-                [['user_id', 'invoice_no', 'order_status_id', 'ordered_by', 'items_total_amount', 'total_amount'], 'required'],
-                [['invoice_date', 'dispatch_track_id', 'dispatch_courier_comapny', 'dispatch_comment', 'dispatch_date', 'deliver_to', 'deliver_phone', 'deliver_address', 'deliver_date', 'cancel_comment', 'cancel_date', 'pending_amount'], 'safe'],
-                [['user_id', 'order_status_id', 'ordered_by', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
-                [['items_total_amount', 'tax_percentage', 'tax_amount', 'total_amount'], 'number'],
-                [['payment_status'], 'string'],
+            [['user_id', 'invoice_no', 'order_status_id', 'ordered_by', 'items_total_amount', 'total_amount'], 'required'],
+            [['invoice_date', 'dispatch_track_id', 'dispatch_courier_comapny', 'dispatch_comment', 'dispatch_date', 'deliver_to', 'deliver_phone', 'deliver_address', 'deliver_date', 'cancel_comment', 'cancel_date', 'pending_amount'], 'safe'],
+            [['user_id', 'order_status_id', 'ordered_by', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
+            [['items_total_amount', 'tax_percentage', 'tax_amount', 'total_amount'], 'number'],
+            [['payment_status'], 'string'],
+//            ['end_date', //ajax is working
+//                'compare',
+//                'compareAttribute' => 'start_date',
+//                'operator' => '>=',
+//                'skipOnEmpty' => true,
+//                'message' => '{attribute} must be greater or equal to "{compareValue}".'
+//            ],
 //                [['dispatch_track_id', 'dispatch_courier_comapny', 'dispatch_comment'], 'required', 'on' => 'createadmin', 'when' => function ($model) {
 //                    return ($model->order_status_id == '4');
 //                }, 'whenClient' => "function (attribute, value) {
@@ -83,12 +90,12 @@ class Orders extends RActiveRecord {
 //                }, 'whenClient' => "function (attribute, value) {
 //                return ($('#orders-order_status_id').val() =='6');
 //            }"],
-                [['invoice_no'], 'string', 'max' => 50],
-                [['signature'], 'string', 'max' => 300],
-                [['invoice_no'], 'unique'],
-                [['order_status_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrderStatus::className(), 'targetAttribute' => ['order_status_id' => 'order_status_id']],
-                [['ordered_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['ordered_by' => 'user_id']],
-                [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'user_id']],
+            [['invoice_no'], 'string', 'max' => 50],
+            [['signature'], 'string', 'max' => 300],
+            [['invoice_no'], 'unique'],
+            [['order_status_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrderStatus::className(), 'targetAttribute' => ['order_status_id' => 'order_status_id']],
+            [['ordered_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['ordered_by' => 'user_id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'user_id']],
         ];
     }
 
@@ -124,7 +131,7 @@ class Orders extends RActiveRecord {
     public function getOrderBillings() {
         return $this->hasMany(OrderBillings::className(), ['order_id' => 'order_id']);
     }
-    
+
     public function getOrderBillingsSum() {
         return $this->hasMany(OrderBillings::className(), ['order_id' => 'order_id'])->sum('paid_amount');
     }
@@ -135,6 +142,7 @@ class Orders extends RActiveRecord {
     public function getOrderItems() {
         return $this->hasMany(OrderItems::className(), ['order_id' => 'order_id']);
     }
+
     public function getOrderTrack() {
         return $this->hasMany(OrderTrack::className(), ['order_id' => 'order_id']);
     }
@@ -168,6 +176,10 @@ class Orders extends RActiveRecord {
         return new OrdersQuery(get_called_class());
     }
 
+    public static function dateformat($cdate) {
+        return date("Y-m-d", strtotime($cdate));
+    }
+
     public function beforeSave($insert) {
         if ($insert) {
             $this->invoice_no = InternalCodes::generateInternalCode('O', 'common\models\Orders', 'invoice_no');
@@ -188,7 +200,6 @@ class Orders extends RActiveRecord {
         }
         return parent::afterSave($insert, $changedAttributes);
     }
-    
 
     public function insertOrderTrack() {
         $data = [];
@@ -204,6 +215,7 @@ class Orders extends RActiveRecord {
         } else if ($this->order_status_id == OrderStatus::OR_CANCELED) {
             $data['cancel_date'] = $this->cancel_date;
             $data['cancel_comment'] = $this->cancel_comment;
+            
         }
 
         $order_track = new OrderTrack();

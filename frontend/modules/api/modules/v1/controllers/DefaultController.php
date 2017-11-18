@@ -91,13 +91,13 @@ class DefaultController extends ActiveController {
                 ];
             } else {
                 return [
-                    'success' => true,
+                    'success' =>'false',
                     'message' => 'Incorrect email address',
                 ];
             }
         } else {
             return [
-                'success' => true,
+                'success' =>'false',
                 'message' => 'Invalid request'
             ];
         }

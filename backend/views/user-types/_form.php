@@ -25,7 +25,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'type_code')->textInput(['maxlength' => true])->label('Type Code<span class="required-label"></span>'); ?>
 
-    <?= $form->field($model, 'visible_site')->checkbox(['label' => ('Active ')])->label('Visible Site') ?>
+    <?= $form->field($model, 'visible_site')->checkbox(['label' => ('Active ')])->label('Show in App') ?>
 
     <?= $form->field($model, 'reorder_notify')->checkbox(['label' => ('Active ')])->label('Reorder Notification') ?>
     <?php

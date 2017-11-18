@@ -24,7 +24,7 @@ class OrderController extends ActiveController {
         //Authenticator - It is used to login the user by using header (Authorization Bearer Token).
         $behaviors['authenticator'] = [
             'class' => HttpBearerAuth::className(),
-            'only' => ['confirmorder', 'vieworderlist', 'orderview', 'statuslist', 'changestatus', 'makepayment'],
+            'only' => ['confirmorder', 'vieworderlist', 'orderview', 'statuslist', 'changestatus', 'makepayment', 'filterstatuslist'],
         ];
         $behaviors['contentNegotiator'] = [
             'class' => ContentNegotiator::className(),
@@ -35,10 +35,10 @@ class OrderController extends ActiveController {
         //Access - After Login, Role wise access 
         $behaviors['access'] = [
             'class' => AccessControl::className(),
-            'only' => ['confirmorder', 'vieworderlist', 'orderview', 'statuslist', 'changestatus', 'makepayment'],
+            'only' => ['confirmorder', 'vieworderlist', 'orderview', 'statuslist', 'changestatus', 'makepayment', 'filterstatuslist'],
             'rules' => [
                 [
-                    'actions' => ['confirmorder', 'vieworderlist', 'orderview', 'statuslist', 'changestatus', 'makepayment'],
+                    'actions' => ['confirmorder', 'vieworderlist', 'orderview', 'statuslist', 'changestatus', 'makepayment', 'filterstatuslist'],
                     'allow' => true,
                     'roles' => ['@'],
                 ],
@@ -149,6 +149,7 @@ class OrderController extends ActiveController {
                         'received_amount' => $getorderpayment->paid_amount,
                         'pending_amount' => $pending_amount,
                         'total_amount' => $order->items_total_amount,
+                        'signature' => $getorderpayment->signature,
                     ];
                 endforeach;
 
@@ -193,6 +194,82 @@ class OrderController extends ActiveController {
         }
     }
 
+//    public function actionFilterorders() {
+//        $post = Yii::$app->request->getBodyParams();
+//        if (!empty($post)) {
+//            $getorders = Orders::find();
+//            if (!empty($post['started_at']) && !empty($post['end_at'])) {
+//                $getorders->getorders($post['started_at'], $post['end_at']);
+//            }
+//            if (!empty($post['order_status_id']) && $post['order_status_id'] != 0) {
+//                $getorders->orderstatus($post['order_status_id']);
+//            }
+//            if (!empty($post['search_by'])) {
+//                $getorders->searchby($post['search_by'], $getorders);
+//            }
+//            $getorders1 = $getorders->orderlist($post['ordered_by'])
+//                    ->status()
+//                    ->active()
+//                    ->all();
+//
+//            if (!empty($getorders1)) {
+//                foreach ($getorders1 as $order):
+//
+//                    $paid_amount = OrderBillings::paidAmount($order->order_id);
+//                    $pending_amount = OrderBillings::pendingAmount($order->items_total_amount, $paid_amount);
+//
+//                    $object[] = [
+//                        'order_id' => $order->order_id,
+//                        'invoice_no' => $order->invoice_no,
+//                        'order_placed_on' => $order->invoice_date,
+//                        'user_name' => $order->user->name,
+//                        'total_amount' => $order->items_total_amount,
+//                        'pending_amount' => $pending_amount,
+//                        'status' => $order->orderStatus->status_name,
+//                        'status_id' => $order->order_status_id,
+//                    ];
+//                endforeach;
+//
+//                return [
+//                    'success' => true,
+//                    'message' => 'success',
+//                    'data' => $object,
+//                ];
+//            } else {
+//                return [
+//                    'success' => true,
+//                    'message' => 'No records found',
+//                ];
+//            }
+//        } else {
+//            return [
+//                'success' => true,
+//                'message' => 'Invalid request'
+//            ];
+//        }
+//    }
+
+    public function actionFilterstatuslist() {
+        $order_status = OrderStatus::find()
+                ->select('order_status_id,status_name')
+                ->status()
+                ->active()
+                ->all();
+        if (!empty($order_status)) {
+
+            return [
+                'success' => true,
+                'message' => 'success',
+                'data' => $order_status,
+            ];
+        } else {
+            return [
+                'success' => true,
+                'message' => 'No records found',
+            ];
+        }
+    }
+
     public function actionStatuslist() {
         $post = Yii::$app->request->getBodyParams();
         if (!empty($post)) {
@@ -229,6 +306,8 @@ class OrderController extends ActiveController {
 
         if (!empty($model)) {
             $model->load(Yii::$app->request->getBodyParams(), '');
+            if (!empty($post['invoice_no']))
+                $model->invoice_no = $post['invoice_no'];
             $model->change_status = true;
             $model->save();
             return [
@@ -246,23 +325,20 @@ class OrderController extends ActiveController {
     public function actionMakepayment() {
         $post = Yii::$app->request->getBodyParams();
         $orderbilling_model = new OrderBillings();
-        $model = Orders::findOne($post['order_id']);
-        if (!empty($model)) {
+        if (!empty($post)) {
 
             $orderbilling_model->load(Yii::$app->request->getBodyParams(), '');
             $orderbilling_model->order_id = $post['order_id'];
             $orderbilling_model->paid_amount = $post['paid_amount'];
-            $orderbilling_model->save();
-            $model->load(Yii::$app->request->getBodyParams(), '');
             $signature = UploadedFile::getInstancesByName("signature");
             foreach ($signature as $file) {
                 $hidespace_image = str_replace(' ', '-', $file->name);
                 $randno = rand(11111, 99999);
                 $path = Yii::$app->basePath . '/web/uploads/signature/' . $randno . $hidespace_image;
                 $file->saveAs($path);
-                $model->signature = $hidespace_image;
+                $orderbilling_model->signature = $randno . $hidespace_image;
             }
-            $model->save();
+            $orderbilling_model->save();
             return [
                 'success' => true,
                 'message' => 'success',
@@ -278,12 +354,22 @@ class OrderController extends ActiveController {
     public function actionVieworderlist() {
         $post = Yii::$app->request->getBodyParams();
         if (!empty($post)) {
-            $orderlist = Orders::find()
-                    ->orderlist($post['ordered_by'])
+            $getorders = Orders::find();
+            if (!empty($post['started_at']) && !empty($post['end_at'])) {
+                $getorders->getorders($post['started_at'], $post['end_at']);
+            }
+            if (!empty($post['order_status_id']) && $post['order_status_id'] != 0) {
+                $getorders->orderstatus($post['order_status_id']);
+            }
+            if (!empty($post['search_by'])) {
+                $getorders->searchby($post['search_by'], $getorders);
+            }
+            $orderlist = $getorders->orderlist($post['ordered_by'])
                     ->orderBy(['created_at' => SORT_DESC])
                     ->status()
                     ->active()
                     ->all();
+
             if (!empty($orderlist)) {
                 foreach ($orderlist as $order):
                     $paid_amount = OrderBillings::paidAmount($order->order_id);
@@ -294,7 +380,6 @@ class OrderController extends ActiveController {
                         'invoice_no' => $order->invoice_no,
                         'order_placed_on' => $order->invoice_date,
                         'user_name' => $order->user->name,
-//                    'product_name' => $order->orderItems->product->product_name,
                         'total_amount' => $order->items_total_amount,
                         'pending_amount' => $pending_amount,
                         'status' => $order->orderStatus->status_name,

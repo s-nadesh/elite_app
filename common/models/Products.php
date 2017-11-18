@@ -56,7 +56,7 @@ class Products extends RActiveRecord {
             'subcat_id' => 'Sub Category Type',
             'product_name' => 'Product Name',
             'min_reorder' => 'Minimum Reorder Level',
-            'stock' => 'Quantity Purchased',
+            'stock' => 'Current Stock',
             'price_per_unit' => 'Price Per Unit',
             'status' => 'Status',
             'created_at' => 'Created At',

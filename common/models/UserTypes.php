@@ -58,7 +58,7 @@ class UserTypes extends RActiveRecord {
             'user_type_id' => 'User Type ID',
             'type_name' => 'Type Name',
             'type_code' => 'Type Code',
-            'visible_site' => 'Visible Site',
+            'visible_site' => 'Show in App',
             'reorder_notify' => 'Reorder Notify',
             'status' => 'Status',
             'created_at' => 'Created At',
