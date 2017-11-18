@@ -78,6 +78,7 @@ class ProductsSearch extends Products {
         return $dataProvider;
     }
 
+    /* n */
     public function reorderList() {
         $query = Products::find()
                 ->status()

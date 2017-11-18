@@ -173,12 +173,12 @@ class ProductsController extends Controller {
             $stock->save();
             return $this->redirect(['stocklog?id=' . $model->product_id]);
         }
-        
+
         $queryParams = [];
         $queryParams['StockLogSearch'] = [
             'product_id' => $id
         ];
-        
+
         $dataProvider = $searchModel->search($queryParams);
         return $this->render('stocklog', [
                     'model' => $model,
@@ -188,28 +188,25 @@ class ProductsController extends Controller {
         ]);
     }
 
+    /* n */
     public function actionReorderstock($id) {
         $model = $this->findModel($id);
         $stock = new StockLog();
         if ($stock->load(Yii::$app->request->post())) {
             $stock->adjust_from = $model->stock;
-            if ($stock->adjust_quantity != NULL) {
-                $quantity = $stock->adjust_quantity + $model->stock;
-            } else {
-                $quantity = $model->stock;
-            }
-            $model->stock = $quantity;
-            $model->save();
             $stock->product_id = $model->product_id;
+            if ($stock->adjust_quantity != NULL) {
+                $model->stock = $stock->adjust_quantity + $model->stock;
+            }
+            $model->save();
             $stock->adjust_to = $model->stock;
-            $stock->save();
-            if ($model->save() && $stock->save()) {
+            if ($stock->save()) {
                 Yii::$app->getSession()->setFlash('success', 'Stock reordered successfully');
                 return $this->redirect(['site/index']);
             }
         }
         return $this->renderAjax('reorderstock', [
-                    'model' => $this->findModel($id),
+                    'model' => $model,
                     'stock' => $stock,
         ]);
     }
