@@ -57,6 +57,7 @@ class Logins extends RActiveRecord implements IdentityInterface {
                 [['auth_key'], 'string', 'max' => 32],
                 [['username'], 'unique'],
                 [['email'], 'unique'],
+                [['email'], 'email'],
                 [['password_reset_token'], 'unique'],
                 [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'user_id']],
         ];
@@ -101,7 +102,6 @@ class Logins extends RActiveRecord implements IdentityInterface {
     }
 
     public function authenticate() {
-
         $userinfo = Logins::findEmail($this->email);
         if ($userinfo === null):
             $this->addError('email', "email address not exist");  // Error Code : 1         
@@ -115,7 +115,7 @@ class Logins extends RActiveRecord implements IdentityInterface {
                             ->setFrom('noreply@elite.in')
                             ->setTo($toemail)
                             ->setSubject('Elite.in - Request to reset admin password')
-                            ->setHtmlBody('Hi Admin, <br/><br/> We have received your request to reset your password.<br/><br/> Please note that the new password is  ' . $randpass . ' which is to be used to login <br/><br/>Thanks, <br/><br/> Elite Supporting Team.')
+                            ->setHtmlBody('Hi, <br/><br/> We have received your request to reset your password.<br/><br/> Please note that the new password is  <b>' . $randpass . '</b> which is to be used to login <br/><br/>Thanks, <br/><br/> Elite Supporting Team.')
                             ->send();
         endif;
     }

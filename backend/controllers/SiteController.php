@@ -22,11 +22,11 @@ class SiteController extends Controller {
             'access' => [
                 'class' => AccessControl::className(),
                 'rules' => [
-                    [
+                        [
                         'actions' => ['login', 'forgotpassword'],
                         'allow' => true,
                     ],
-                    [
+                        [
                         'actions' => ['logout', 'index', 'changepassword'],
                         'allow' => true,
                         'roles' => ['@'],
@@ -84,13 +84,15 @@ class SiteController extends Controller {
         }
     }
 
+    /* n */
+
     public function actionForgotpassword() {
-         $this->layout = "@app/views/layouts/login";
+        $this->layout = "@app/views/layouts/login";
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
+        
         $model = new Logins();
-
         if ($model->load(Yii::$app->request->post()) && $model->authenticate()) {
             Yii::$app->getSession()->setFlash('success', 'Check your email for further instructions.');
             return $this->redirect('login');
