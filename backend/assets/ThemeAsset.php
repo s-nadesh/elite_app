@@ -25,6 +25,7 @@ class ThemeAsset extends AssetBundle {
         'css/AdminLTE.css',
 //        'css/AdminLTE.min.css',
         'css/custom.css',
+        'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css',
     ];
     public $js = [
 //        '//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js',
@@ -41,6 +42,8 @@ class ThemeAsset extends AssetBundle {
         'js/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js',
         'js/plugins/iCheck/icheck.min.js',
         'js/AdminLTE/app.js',
+        'http://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js',
+        'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js',
 //        'js/AdminLTE/dashboard.js',
 //        'js/AdminLTE/demo.js', // Layout change option not need.
     ];
