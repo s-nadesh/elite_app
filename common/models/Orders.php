@@ -215,7 +215,12 @@ class Orders extends RActiveRecord {
         } else if ($this->order_status_id == OrderStatus::OR_CANCELED) {
             $data['cancel_date'] = $this->cancel_date;
             $data['cancel_comment'] = $this->cancel_comment;
-            
+
+            foreach ($this->orderItems as $orderitem):
+                $model = Products::findOne($orderitem->product_id);
+                $model->stock = $model->stock + $orderitem->quantity;
+                $model->save(false);
+            endforeach;
         }
 
         $order_track = new OrderTrack();

@@ -51,11 +51,11 @@ class ProductController extends ActiveController {
 
     public function actionStockcheck() {
         $post = Yii::$app->request->getBodyParams();
-         $product_qnty = Products::find()
-                    ->quantity_check($post['product_id'])
-                    ->status()
-                    ->active()
-                    ->one();
+        $product_qnty = Products::find()
+                ->quantity_check($post['product_id'])
+                ->status()
+                ->active()
+                ->one();
         if (!empty($product_qnty)) {
             if ($post['qty'] <= $product_qnty->stock) {
                 return [
@@ -205,6 +205,7 @@ class ProductController extends ActiveController {
 
     public function actionCartlist() {
         $post = Yii::$app->request->getBodyParams();
+        $summ = 0;
         if (!empty($post)) {
             $cartlist = Carts::find()
                     ->cart($post['user_id'], $post['ordered_by'])
@@ -214,6 +215,7 @@ class ProductController extends ActiveController {
 
             foreach ($cartlist as $cart):
                 $total = $cart->qty * $cart->product->price_per_unit;
+                $summ += $total;
                 $object[] = [
                     'cart_id' => $cart->cart_id,
                     'ordered_by' => $cart->orderedBy->name,
@@ -227,7 +229,6 @@ class ProductController extends ActiveController {
                     'stock' => $cart->product->stock,
                     'qty' => $cart->qty,
                     'total' => $total,
-                    
                 ];
             endforeach;
 
@@ -235,7 +236,8 @@ class ProductController extends ActiveController {
                 return [
                     'success' => true,
                     'message' => 'Success',
-                    'data' => $object
+                    'data' => $object,
+                    'cart_total' => $summ
                 ];
             } else {
                 return [

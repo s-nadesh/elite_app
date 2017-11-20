@@ -365,7 +365,7 @@ class OrderController extends ActiveController {
                 $getorders->searchby($post['search_by'], $getorders);
             }
             $orderlist = $getorders->orderlist($post['ordered_by'])
-                    ->orderBy(['created_at' => SORT_DESC])
+                    ->orderBy(['updated_at' => SORT_DESC])
                     ->status()
                     ->active()
                     ->all();
