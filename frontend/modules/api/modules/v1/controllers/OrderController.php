@@ -37,7 +37,7 @@ class OrderController extends ActiveController {
             'class' => AccessControl::className(),
             'only' => ['confirmorder', 'vieworderlist', 'orderview', 'statuslist', 'changestatus', 'makepayment', 'filterstatuslist'],
             'rules' => [
-                [
+                    [
                     'actions' => ['confirmorder', 'vieworderlist', 'orderview', 'statuslist', 'changestatus', 'makepayment', 'filterstatuslist'],
                     'allow' => true,
                     'roles' => ['@'],
@@ -305,11 +305,20 @@ class OrderController extends ActiveController {
         $model = Orders::findOne($post['order_id']);
 
         if (!empty($model)) {
-            $model->load(Yii::$app->request->getBodyParams(), '');
-            if (!empty($post['invoice_no']))
+            if ($model->load(Yii::$app->request->getBodyParams(), '') && $model->validate()) {
                 $model->invoice_no = $post['invoice_no'];
-            $model->change_status = true;
-            $model->save();
+                $model->change_status = true;
+                $model->save();
+                return [
+                    'success' => true,
+                    'message' => 'success',
+                ];
+            } else {
+                return [
+                    'success' => false,
+                    'message' => 'Invoice Number has already been taken.'
+                ];
+            }
             return [
                 'success' => true,
                 'message' => 'success',

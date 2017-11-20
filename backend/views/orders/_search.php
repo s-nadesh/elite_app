@@ -23,12 +23,12 @@ $status_name = OrderStatus::prepareOrderStatus();
             <div class="row">
                 <div class="col-lg-3 col-md-3 ">
                     <div class="form-group">
-                        <?php echo $form->field($model, 'started_at')->textInput(['class' => 'form-control datepicker','id'=>'txtFrom'])->label('Start Date'); ?>                  
+                        <?php echo $form->field($model, 'started_at')->textInput(['class' => 'form-control datepicker', 'id' => 'from_date'])->label('Start Date'); ?>                  
                     </div>
                 </div> 
                 <div class="col-lg-3 col-md-3">
                     <div class="form-group">
-                        <?php echo $form->field($model, 'ended_at')->textInput(['class' => 'form-control datepicker','id'=>'txtTo'])->label('End Date'); ?>                  
+                        <?php echo $form->field($model, 'ended_at')->textInput(['class' => 'form-control datepicker', 'id' => 'to_date'])->label('End Date'); ?>                  
                     </div>
                 </div> 
                 <div class="col-lg-3 col-md-3">
@@ -56,24 +56,23 @@ ActiveForm::end();
 <?php
 $script = <<< JS
     jQuery(document).ready(function () { 
-        $("#txtFrom").datepicker({
-        dateFormat: 'yy-mm-dd',
-        maxDate: '0',
-        onSelect: function (selected) {
-            var dt = new Date(selected);
-            dt.setDate(dt.getDate() + 1);
-            $("#txtTo").datepicker("option", "minDate", dt);
-        }
-    });
-    $("#txtTo").datepicker({
-        dateFormat: 'yy-mm-dd',
-        maxDate: '0',
-        onSelect: function (selected) {
-            var dt = new Date(selected);
-            dt.setDate(dt.getDate() - 1);
-            $("#txtFrom").datepicker("option", "maxDate", dt);
-        }
-    });
+        $("#from_date").datepicker({          
+          format: 'yyyy-mm-dd',
+          autoclose: true,
+          endDate: new Date(),
+        }).on('changeDate', function (selected) {
+            var startDate = new Date(selected.date.valueOf());
+            $('#to_date').datepicker('setStartDate', startDate);
+        });
+
+        $("#to_date").datepicker({
+           format: 'yyyy-mm-dd',
+           autoclose: true,
+           endDate: new Date(),
+        }).on('changeDate', function (selected) {
+           var endDate = new Date(selected.date.valueOf());
+           $('#from_date').datepicker('setEndDate', endDate);       
+        });
     });
 JS;
 $this->registerJs($script, View::POS_END);
