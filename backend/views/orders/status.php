@@ -19,6 +19,7 @@ $form = ActiveForm::begin([
             'options' => [
                 'class' => 'form-horizontal',
             ],
+            'enableAjaxValidation' => true,
                 ]
 );
 ?>

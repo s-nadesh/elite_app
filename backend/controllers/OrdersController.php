@@ -16,6 +16,8 @@ use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
 
 /**
  * OrdersController implements the CRUD actions for Orders model.
@@ -92,8 +94,11 @@ class OrdersController extends Controller {
     public function actionStatus($id) {
         $model = $this->findModel($id);
 //        $model->scenario = 'createadmin';
-        if (Yii::$app->request->post()) {
-            $model->load(Yii::$app->request->post());
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ActiveForm::validate($model);
+        }
+        if ($model->load(Yii::$app->request->post())) {
             $model->change_status = true;
             if ($model->save()) {
                 Yii::$app->getSession()->setFlash('success', 'Status changed successfully');
