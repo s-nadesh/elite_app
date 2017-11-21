@@ -7,6 +7,7 @@ use common\models\OrderBillings;
 use common\models\OrderItems;
 use common\models\Orders;
 use common\models\OrderStatus;
+use common\models\OrderTrack;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\auth\HttpBearerAuth;
@@ -37,7 +38,7 @@ class OrderController extends ActiveController {
             'class' => AccessControl::className(),
             'only' => ['confirmorder', 'vieworderlist', 'orderview', 'statuslist', 'changestatus', 'makepayment', 'filterstatuslist'],
             'rules' => [
-                    [
+                [
                     'actions' => ['confirmorder', 'vieworderlist', 'orderview', 'statuslist', 'changestatus', 'makepayment', 'filterstatuslist'],
                     'allow' => true,
                     'roles' => ['@'],
@@ -248,11 +249,30 @@ class OrderController extends ActiveController {
     public function actionChangestatus() {
         $post = Yii::$app->request->getBodyParams();
         $model = Orders::findOne($post['order_id']);
-
+       
         if (!empty($model)) {
             if ($model->load(Yii::$app->request->getBodyParams(), '') && $model->validate()) {
+                if (!empty($post['invoice_no']))
                 $model->invoice_no = $post['invoice_no'];
-                $model->change_status = true;
+                if ($post['order_status_id'] == OrderStatus::OR_CANCELED) {
+                    $order_track = OrderTrack::find()
+                            ->cancel_order_track($post['order_id'], $post['order_status_id'])
+                            ->status()
+                            ->active()
+                            ->one();
+                    if ($order_track) {
+                        $data = [];
+                        if ($order_track->order_status_id == OrderStatus::OR_CANCELED) {
+                            $data['cancel_comment'] = $post['cancel_comment'];
+                        }
+                        if (!empty($data))
+                            $order_track->value = json_encode($data, true);
+                        $order_track->save(false);
+                    }
+                }
+                if(empty($order_track)) 
+                    $model->change_status = true;
+                
                 $model->save();
                 return [
                     'success' => true,

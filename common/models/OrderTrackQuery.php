@@ -7,7 +7,7 @@ namespace common\models;
  *
  * @see OrderTrack
  */
-class OrderTrackQuery extends \yii\db\ActiveQuery
+class OrderTrackQuery extends CommonQuery
 {
     /*public function active()
     {
@@ -18,6 +18,13 @@ class OrderTrackQuery extends \yii\db\ActiveQuery
      * @inheritdoc
      * @return OrderTrack[]|array
      */
+    
+    public function cancel_order_track($orderid,$order_status) {
+        
+ return $this->andWhere(["{$this->tblName}.order_id" => $orderid, "{$this->tblName}.order_status_id" => $order_status]);
+ 
+ }
+    
     public function all($db = null)
     {
         return parent::all($db);

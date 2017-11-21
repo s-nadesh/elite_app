@@ -236,8 +236,9 @@ class ProductController extends ActiveController {
                 return [
                     'success' => true,
                     'message' => 'Success',
+                    'cart_total' => $summ,
                     'data' => $object,
-                    'cart_total' => $summ
+                    
                 ];
             } else {
                 return [
