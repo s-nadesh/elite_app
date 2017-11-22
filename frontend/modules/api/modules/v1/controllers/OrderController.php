@@ -130,7 +130,7 @@ class OrderController extends ActiveController {
                         'product_id' => $getorder->product_id,
                         'product_category' => $getorder->category_name,
                         'product_subcategory' => $getorder->subcat_name,
-                        'product_name' => $getorder->product_name,
+                        'product_name' => $getorder->product->product_name,
                         'price_per_unit' => $getorder->price,
                         'quantity' => $getorder->quantity,
                     ];
