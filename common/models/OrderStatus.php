@@ -95,7 +95,7 @@ class OrderStatus extends RActiveRecord {
     public static function prepareOrderStatus($current_status = '') {
         $status = self::find();
         if ($current_status) {
-            $status->andWhere(['>', 'order_status_id', $current_status]);
+            $status->andWhere(['>=', 'order_status_id', $current_status]);
         }
         $status = $status->all();
         

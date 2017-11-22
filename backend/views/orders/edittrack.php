@@ -30,7 +30,7 @@ $form = ActiveForm::begin([
 
 <div class="change_status_fields" id="status_<?php echo OrderStatus::OR_CANCELED ?>">
     <div class="form-group">
-        <label class="col-sm-4 control-label valueleft">Reason for Cancel order</label>
+        <label class="col-sm-4 control-label valueleft">Reason for cancellation</label>
         <div class="col-sm-6 valueright">
             <?= $form->field($model, 'cancel_comment')->textarea()->label(false) ?>
         </div>

@@ -132,7 +132,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                     echo 'Phone - ' . $responseArray['deliver_phone'] . '</br> ';
                                                     echo 'Address - ' . $responseArray['deliver_address'];
                                                 } elseif ($info->order_status_id == OrderStatus::OR_CANCELED) {
-                                                    echo 'Reason for cancelled - ' . $responseArray['cancel_comment'];
+                                                    echo 'Reason for cancellation - ' . $responseArray['cancel_comment'];
                                                 } else {
                                                     echo '-';
                                                 }

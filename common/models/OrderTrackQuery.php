@@ -34,8 +34,8 @@ class OrderTrackQuery extends CommonQuery
      * @inheritdoc
      * @return OrderTrack|array|null
      */
-    public function one($db = null)
-    {
+    public function one($db = null) {
         return parent::one($db);
     }
+
 }

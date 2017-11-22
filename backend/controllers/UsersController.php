@@ -141,7 +141,8 @@ class UsersController extends Controller {
         if (!empty($login)) {
             $login->scenario = 'update';
             if ($login->load(Yii::$app->request->post()) && $login->validate()) {
-                $login->setPassword($login->password_hash);
+                $pass = $_POST['Logins']['password_hash'];
+                $login->setPassword($pass);
                 $login->save(false);
                 return $this->redirect(['index']);
             }
