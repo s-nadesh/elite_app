@@ -34,7 +34,7 @@ $this->registerJs(
                 <?= $form->field($model, 'user_id')->dropDownList($users, ['prompt' => '--Select--']) ?>
             </div>
             <div class="col-md-6">
-                <?= $form->field($model, 'ordered_by')->dropDownList($sales_exe, ['prompt' => '--Select--']) ?>
+                <?= $form->field($model, 'ordered_by')->dropDownList($sales, ['prompt' => '--Select--']) ?>
             </div>
         </div>
 

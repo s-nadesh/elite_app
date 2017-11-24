@@ -99,7 +99,8 @@ class CartsController extends Controller {
         //Form input datas
         $user_types = UserTypes::CU_USER_TYPE . ',' . UserTypes::DE_USER_TYPE;
         $users = Users::getUsersbytype($user_types);
-        $sales_exe = Users::getUsersbytype(UserTypes::SE_USER_TYPE);
+        $sales_exe = UserTypes::SE_USER_TYPE . ',' . UserTypes::BE_USER_TYPE;
+        $sales = Users::getUsersbytype($sales_exe);
         $categories = Categories::getCategories();
 
         return $this->render('index', [
@@ -107,7 +108,7 @@ class CartsController extends Controller {
                     'dataProvider' => $dataProvider,
                     'model' => $model,
                     'users' => $users,
-                    'sales_exe' => $sales_exe,
+                    'sales' => $sales,
                     'categories' => $categories,
         ]);
     }
