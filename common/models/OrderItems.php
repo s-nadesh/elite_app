@@ -116,4 +116,18 @@ class OrderItems extends RActiveRecord {
         return new OrderItemsQuery(get_called_class());
     }
 
+    public function afterSave($insert, $changedAttributes) {
+        if ($insert) {
+            $this->stock();
+        }
+        parent::afterSave($insert, $changedAttributes);
+    }
+
+    public function stock() {
+        $stock = Products::getStock($this->product_id);
+        $diff = $stock ['stock'] - $this->quantity;
+        $stock->stock = $diff;
+        $stock->save(false);
+    }
+
 }

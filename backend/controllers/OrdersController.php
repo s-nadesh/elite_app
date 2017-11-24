@@ -93,13 +93,13 @@ class OrdersController extends Controller {
 
     public function actionStatus($id) {
         $model = $this->findModel($id);
-        $model1 = OrderTrack::find()->where(['order_id'=>$id])->one();
+        $model1 = OrderTrack::find()->where(['order_id' => $id])->one();
 //        $model->scenario = 'createadmin';
         if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             return ActiveForm::validate($model);
         }
-        if ($model->load(Yii::$app->request->post())) {            
+        if ($model->load(Yii::$app->request->post())) {
             $model->change_status = true;
             if ($model->save()) {
                 Yii::$app->getSession()->setFlash('success', 'Status changed successfully');
@@ -275,12 +275,6 @@ class OrdersController extends Controller {
                         $order_item->order_id = $order->order_id;
                         $order_item->load($cart_item, '');
                         $order_item->save(false);
-                    }
-                    foreach ($order->orderItems as $item) {
-                        $stock = Products::getStock($item->product_id);
-                        $diff = $stock ['stock'] - $item->quantity;
-                        $stock->stock = $diff;
-                        $stock->save(false);
                     }
                     Carts::clearCart(); // Pending
                     Yii::$app->session->setFlash('success', "Order placed successfully");
