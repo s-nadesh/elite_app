@@ -243,6 +243,13 @@ class Logins extends RActiveRecord implements IdentityInterface {
     /**
      * @inheritdoc
      */
+    public function getUserId() {
+        return $this->user_id;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getAuthKey() {
         return $this->auth_key;
     }

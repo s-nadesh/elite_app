@@ -41,7 +41,7 @@ class DefaultController extends ActiveController {
             return [
                 'success' => 'true',
                 'message' => 'Login successful',
-                 'user_id'=> Yii::$app->user->getId(),
+                'user_id'=> Yii::$app->user->identity->getUserId(),
                 'access_token' => Yii::$app->user->identity->getAuthKey(),
                 'test'=>'test'
                
