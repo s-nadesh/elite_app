@@ -51,7 +51,7 @@ class OrdersSearch extends Orders {
         // add conditions that should always apply here
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort' => ['defaultOrder' => ['created_at' => SORT_DESC]],
+            'sort' => ['defaultOrder' => ['updated_at' => SORT_DESC]],
         ]);
 
         // Important: here is how we set up the sorting
