@@ -8,7 +8,7 @@ use yii\web\View;
 use yii\widgets\ActiveForm;
 
 /* @var $this View */
-/* @var $model Products */
+/* @var $model Orders */
 /* @var $form ActiveForm */
 
 $order_status = OrderStatus::prepareOrderStatus($model->order_status_id);
@@ -20,6 +20,8 @@ $form = ActiveForm::begin([
                 'class' => 'form-horizontal',
             ],
             'enableAjaxValidation' => true,
+            'validateOnSubmit' => true,
+            'validateOnChange' => true,
                 ]
 );
 ?>

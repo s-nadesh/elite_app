@@ -39,7 +39,7 @@ class OrderTrack extends RActiveRecord {
                 [['order_status_id'], 'required'],
                 [['order_id', 'order_status_id', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
                 [['value'], 'string'],
-                [['order_status_id'], 'unique', 'targetAttribute' => ['order_id', 'order_status_id'], 'message' => 'already exists.'],
+                [['order_status_id'], 'unique', 'targetAttribute' => ['order_id', 'order_status_id'], 'message' => 'Already exists.'],
                 [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Orders::className(), 'targetAttribute' => ['order_id' => 'order_id']],
                 [['order_status_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrderStatus::className(), 'targetAttribute' => ['order_status_id' => 'order_status_id']],
         ];
