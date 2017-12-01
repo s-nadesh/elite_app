@@ -90,16 +90,11 @@ class OrdersController extends Controller {
     }
 
     /* n */
-
     public function actionStatus($id) {
         $model = $this->findModel($id);
-        $model1 = new OrderTrack();
         if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
-            $model1->order_status_id = $model->order_status_id;
-            $model1->order_id = $model->order_id;
-//            $model1->validate();
             Yii::$app->response->format = Response::FORMAT_JSON;
-            return ActiveForm::validate($model,$model1);
+            return ActiveForm::validate($model);
         }
 
         if ($model->load(Yii::$app->request->post())) {

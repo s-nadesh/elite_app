@@ -96,7 +96,21 @@ class Orders extends RActiveRecord {
                 [['order_status_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrderStatus::className(), 'targetAttribute' => ['order_status_id' => 'order_status_id']],
                 [['ordered_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['ordered_by' => 'user_id']],
                 [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'user_id']],
+                [['order_status_id'], 'checkOrdreTrack'],
         ];
+    }
+
+    //Check order track already exists in this order.
+    public function checkOrdreTrack($attribute, $params) {
+        $orderTrack = OrderTrack::find()
+                ->andWhere([
+                    'order_id' => $this->order_id,
+                    'order_status_id' => $this->order_status_id,
+                ])
+                ->one();
+        if(!empty($orderTrack)){
+            $this->addError($attribute, "This status already exists");
+        }
     }
 
     /**
