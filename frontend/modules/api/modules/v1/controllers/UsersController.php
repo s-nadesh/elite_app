@@ -94,7 +94,7 @@ class UsersController extends ActiveController {
     public function actionProfile() {
             $profile = Users::find()
 //                    ->select('user_id,user_type_id,name,address,mobile_no,email')
-                    ->user(Yii::$app->user->getId())
+                    ->user(\Yii::$app->user->identity->user_id)
                     ->status()
                     ->active()
                     ->one();
