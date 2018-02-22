@@ -31,7 +31,7 @@ class UsersController extends Controller {
                         'allow' => true,
                     ],
                         [
-                        'actions' => ['index', 'create', 'update', 'view', 'delete', 'login'],
+                        'actions' => ['index', 'create', 'update', 'view', 'delete', 'login','gettype_showinapp'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -59,6 +59,16 @@ class UsersController extends Controller {
                     'dataProvider' => $dataProvider,
         ]);
     }
+    
+     public function actionGettype_showinapp() {
+        if (Yii::$app->request->isAjax) {
+            $type_id = $_POST['id'];
+            $type=UserTypes::find()->where('user_type_id=:id', ['id' => $type_id])->one();
+             echo $type->email_app_login;
+                exit;
+//            print_r($type->visible_site);exit;
+    }
+     }
 
     /**
      * Displays a single Users model.
@@ -78,6 +88,9 @@ class UsersController extends Controller {
      */
     public function actionCreate() {
         $model = new Users();
+//        if($model->show_in_app==""){
+//        $model->scenario ='createusertype';
+//        }
         $items = ArrayHelper::map(UserTypes::find()->where('status=:id', ['id' => 1])->all(), 'user_type_id', 'type_name');
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['index']);
@@ -99,6 +112,11 @@ class UsersController extends Controller {
         $model = $this->findModel($id);
         $items = ArrayHelper::map(UserTypes::find()->where('status=:id', ['id' => 1])->all(), 'user_type_id', 'type_name');
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+             $login = Logins::find()->where(['user_id' => $model->user_id])->one();
+        if (!empty($login)) {
+             $login->email= $model->email;
+            $login->save(false);
+        }
             return $this->redirect(['index']);
         } else {
             return $this->render('update', [

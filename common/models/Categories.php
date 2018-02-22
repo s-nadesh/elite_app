@@ -30,10 +30,12 @@ class Categories extends RActiveRecord {
      */
     public function rules() {
         return [
-                [['category_name'], 'required'],
-                [['status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
-                [['category_name'], 'string', 'max' => 20],
-                [['category_name'], 'unique'],
+            [['category_name'], 'required'],
+            [['cat_logo', 'category_name'], 'safe'],
+            [['cat_logo'], 'file', 'extensions'=>'jpeg,jpg,png'],
+            [['status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
+            [['category_name'], 'string', 'max' => 20],
+            [['category_name'], 'unique'],
         ];
     }
 
@@ -50,6 +52,7 @@ class Categories extends RActiveRecord {
             'created_by' => 'Created By',
             'updated_by' => 'Updated By',
             'deleted_at' => 'Deleted At',
+            'cat_logo'=>'Category Logo'
         ];
     }
 

@@ -50,7 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'filter' => Html::activeDropDownlist($searchModel, 'subcat_id', ArrayHelper::map(SubCategories::find()->where('status=:id', ['id' => 1])->all(), 'subcat_id', 'subcat_name'), ['class' => 'form-control', 'id' => null, 'prompt' => 'All']),
                             ],
                             'stock',
-                            'price_per_unit',
+//                            'price_per_unit',
                                 [
                                 'class' => 'backend\components\StatusColumn',
                                 'attribute' => 'status',

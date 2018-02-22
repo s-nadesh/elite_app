@@ -10,7 +10,6 @@ use common\models\Orders;
 use common\models\OrdersSearch;
 use common\models\OrderStatus;
 use common\models\OrderTrack;
-use common\models\Products;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -32,12 +31,12 @@ class OrdersController extends Controller {
             'access' => [
                 'class' => AccessControl::className(),
                 'rules' => [
-                        [
+                    [
                         'actions' => [''],
                         'allow' => true,
                     ],
-                        [
-                        'actions' => ['index', 'create', 'status', 'billing', 'update', 'view', 'delete', 'getsubcategorylist', 'getproductlist', 'placeorder', 'edittrack'],
+                    [
+                        'actions' => ['index','tvview', 'create', 'status', 'billing', 'update', 'view', 'delete', 'getsubcategorylist', 'getproductlist', 'placeorder', 'edittrack'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -66,6 +65,15 @@ class OrdersController extends Controller {
                     'dataProvider' => $dataProvider,
         ]);
     }
+      public function actionTvview() {
+        $searchModel = new OrdersSearch();
+        $dataProvider = $searchModel->search_tv_view(Yii::$app->request->queryParams);
+
+        return $this->render('tv_view', [
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
+        ]);
+    }
 
     /**
      * Displays a single Orders model.
@@ -90,6 +98,7 @@ class OrdersController extends Controller {
     }
 
     /* n */
+
     public function actionStatus($id) {
         $model = $this->findModel($id);
         if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
@@ -98,6 +107,8 @@ class OrdersController extends Controller {
         }
 
         if ($model->load(Yii::$app->request->post())) {
+            $post = Yii::$app->request->post();
+          
             $model->change_status = true;
             if ($model->save()) {
                 Yii::$app->getSession()->setFlash('success', 'Status changed successfully');
@@ -115,24 +126,67 @@ class OrdersController extends Controller {
     public function actionBilling($id) {
         $model = $this->findModel($id);
         $orderbilling_model = new OrderBillings();
+        $orderbilling_model->order_id=$model->order_id;
+        $orderbilling_model->total_amount=$model->total_amount;
+          if (Yii::$app->request->isAjax && $orderbilling_model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ActiveForm::validate($orderbilling_model);
+        }
         $paid_amount = $model->orderBillingsSum;
+        $lastpaid_amount = $model->OrderBillingslastpaid;
+        
         $pending_amount = OrderBillings::pendingAmount($model->total_amount, $paid_amount);
+       
         if (Yii::$app->request->post()) {
+           
+             $post = Yii::$app->request->post();
+            if (isset($post['OrderItems']) && ($model->order_status_id == OrderStatus::OR_NEW || $model->order_status_id == OrderStatus::OR_INPROGRESS || $model->order_status_id == OrderStatus::OR_DISPATCHED)) {
+                $array1 = $post['OrderItems']['item_id'];
+                $array2 = $post['OrderItems']['price'];
+                $array3 = $post['OrderItems']['total'];
+
+                $length = count($array1);
+                $i = 0;
+                while ($i < $length) {
+                    $arrays[] = array(
+                        $array1[$i]
+                        , $array2[$i]
+                        , $array3[$i]
+                    );
+                    $i++;
+                }
+               
+                foreach ($arrays as $key => $value) {
+                     
+                    $order_item = OrderItems::findOne($value[0]);
+                    $order_item->price = $value[1];
+                    $order_item->total = $value[2];
+                    $order_item->save();
+                  
+                }
+  
+                $order = Orders::findOne($id);
+                
+                $order->items_total_amount = $post['OrderItems']['total_amount'];
+                $order->total_amount = $post['OrderItems']['total_amount'];
+                             $order->save(false);
+            }
             $orderbilling_model->load(Yii::$app->request->post());
             $orderbilling_model->order_id = $model->order_id;
             if ($orderbilling_model->validate()) {
                 $orderbilling_model->save();
-                Yii::$app->getSession()->setFlash('success', 'Payment updated successfully');
-                return $this->redirect(['index']);
             }
-        } else {
+            Yii::$app->getSession()->setFlash('success', 'Payment updated successfully');
+                return $this->redirect(['index']);
+        }
             return $this->renderAjax('billing', [
                         'model' => $model,
                         'orderbilling_model' => $orderbilling_model,
                         'paid_amount' => $paid_amount,
                         'pending_amount' => $pending_amount,
+                'lastpaid_amount'=>$lastpaid_amount,
             ]);
-        }
+        
     }
 
     //Cancelled Order Status  - Edit Track
@@ -238,7 +292,7 @@ class OrdersController extends Controller {
                 'subcat_id' => $cart->product->subcat_id,
                 'product_id' => $cart->product_id,
                 'category_name' => $cart->product->category->category_name,
-                'subcat_name' => $cart->product->subcat->subcat_name,
+                'subcat_name' => (empty($cart->product->subcat->subcat_name)) ? '-' : $cart->product->subcat->subcat_name,
                 'product_name' => $cart->product->product_name,
                 'quantity' => $cart->qty,
                 'price' => $cart->product->price_per_unit,

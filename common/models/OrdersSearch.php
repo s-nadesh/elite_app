@@ -105,4 +105,51 @@ class OrdersSearch extends Orders {
         return $dataProvider;
     }
 
+     public function search_tv_view($params) {
+        // create ActiveQuery
+        $query = Orders::find();
+//        $query->joinWith(['orderItems oi']); //JOIN with alias
+        
+        // add conditions that should always apply here
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => array('pageSize' => 10),
+            'sort' => ['defaultOrder' => ['updated_at' => SORT_DESC]],
+        ]);
+      
+
+        $this->load($params);
+
+        if (!$this->validate()) {
+            // uncomment the following line if you do not want to return any records when validation fails
+            return $dataProvider;
+        }
+
+
+        // grid filtering conditions
+        $query->andFilterWhere([
+            'order_id' => $this->order_id,
+            'invoice_date' => $this->invoice_date,
+            'user_id' => $this->user_id,
+            'order_status_id' => $this->order_status_id,
+            'ordered_by' => $this->ordered_by,
+            'items_total_amount' => $this->items_total_amount,
+            'tax_percentage' => $this->tax_percentage,
+            'tax_amount' => $this->tax_amount,
+            'el_orders.status' => $this->status,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+            'created_by' => $this->created_by,
+            'updated_by' => $this->updated_by,
+            'deleted_at' => $this->deleted_at,
+        ]);
+        $query->andFilterWhere(['like', 'invoice_no', $this->invoice_no])
+                ->andFilterWhere(['like', 'total_amount', $this->total_amount])
+                ->andFilterWhere(['like', 'payment_status', $this->payment_status])
+                ->andFilterWhere(['like', 'us.name', $this->user])
+                ->andFilterWhere(['like', 'se.name', $this->ordered_by_name]);
+
+        return $dataProvider;
+    }
+
 }

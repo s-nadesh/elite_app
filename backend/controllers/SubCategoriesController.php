@@ -9,9 +9,11 @@ use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
+use yii\helpers\FileHelper;
 use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\UploadedFile;
 
 /**
  * SubCategoriesController implements the CRUD actions for SubCategories model.
@@ -26,11 +28,11 @@ class SubCategoriesController extends Controller {
             'access' => [
                 'class' => AccessControl::className(),
                 'rules' => [
-                        [
+                    [
                         'actions' => [''],
                         'allow' => true,
                     ],
-                        [
+                    [
                         'actions' => ['index', 'create', 'update', 'view', 'delete', 'getsubcategories'],
                         'allow' => true,
                         'roles' => ['@'],
@@ -79,7 +81,18 @@ class SubCategoriesController extends Controller {
     public function actionCreate() {
         $model = new SubCategories();
         $items = ArrayHelper::map(Categories::find()->where('status=:id', ['id' => 1])->all(), 'category_id', 'category_name');
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())) {
+             if (!empty($_FILES['SubCategories']['name']['subcat_logo'])){
+            $model->subcat_logo = UploadedFile::getInstance($model, 'subcat_logo');
+            }else{
+                   $model->subcat_logo ='no-image.jpg';
+            }
+            $model->save();
+            
+             if ($model->subcat_logo!='no-image.jpg') {
+                $this->uploadLogo($model, 'subcat_logo');
+            }
+           
             return $this->redirect(['index']);
         } else {
             return $this->render('create', [
@@ -87,6 +100,18 @@ class SubCategoriesController extends Controller {
                         'items' => $items,
             ]);
         }
+    }
+
+    public function uploadLogo($model, $attr) {
+        $folder = Yii::$app->basePath . '/web/uploads/subcategory/' . $model->subcat_id;
+
+        if (!file_exists($folder)) {
+            mkdir($folder, 0777, TRUE);
+        } else {
+            FileHelper::removeDirectory($folder);
+            mkdir($folder, 0777, TRUE);
+        }
+        $model->subcat_logo->saveAs($folder . '/' . $model->subcat_logo->baseName . '.' . $model->subcat_logo->extension);
     }
 
     /**
@@ -98,7 +123,18 @@ class SubCategoriesController extends Controller {
     public function actionUpdate($id) {
         $model = $this->findModel($id);
         $items = ArrayHelper::map(Categories::find()->where('status=:id', ['id' => 1])->all(), 'category_id', 'category_name');
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())) {
+             if (!empty($_FILES['SubCategories']['name']['subcat_logo'])){
+            $model->subcat_logo = UploadedFile::getInstance($model, 'subcat_logo');
+            }else{
+                   $model->subcat_logo ='no-image.jpg';
+            }
+          
+            $model->save();
+            
+             if ($model->subcat_logo!='no-image.jpg') {
+                $this->uploadLogo($model, 'subcat_logo');
+            }
             return $this->redirect(['index']);
         } else {
             return $this->render('update', [

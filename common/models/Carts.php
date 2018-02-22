@@ -29,7 +29,7 @@ class Carts extends RActiveRecord {
 
     public $category_id;
     public $subcat_id;
-    public $product_price;
+//    public $product_price;
     public $total_amount;
 
     /**
@@ -44,7 +44,7 @@ class Carts extends RActiveRecord {
      */
     public function rules() {
         return [
-                [['user_id', 'ordered_by', 'product_id', 'qty', 'category_id', 'subcat_id', 'product_price'], 'required'],
+                [['user_id', 'ordered_by', 'product_id', 'qty'], 'required'],
                 [['user_id', 'ordered_by', 'product_id', 'qty', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
                 [['sessionid'], 'string', 'max' => 255],
                 [['ordered_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['ordered_by' => 'user_id']],

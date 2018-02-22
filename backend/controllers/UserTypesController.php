@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use common\models\UserTypesRights;
 use common\models\UserTypes;
 use common\models\UserTypesSearch;
 use Yii;
@@ -23,12 +24,12 @@ class UserTypesController extends Controller {
             'access' => [
                 'class' => AccessControl::className(),
                 'rules' => [
-                        [
+                    [
                         'actions' => [''],
                         'allow' => true,
                     ],
-                        [
-                        'actions' => ['index', 'create', 'update', 'view', 'delete'],
+                    [
+                        'actions' => ['index', 'create', 'update', 'view', 'delete', 'rights'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -47,7 +48,7 @@ class UserTypesController extends Controller {
      * Lists all UserTypes models.
      * @return mixed
      */
-    /*checked*/
+    /* checked */
     public function actionIndex() {
         $searchModel = new UserTypesSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
@@ -76,8 +77,13 @@ class UserTypesController extends Controller {
      */
     public function actionCreate() {
         $model = new UserTypes();
-
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            
+            if (!empty($model->rightslist)) {
+                foreach ($model->rightslist as $value) {
+                    UserTypesRights::createRights($value, $model->user_type_id);
+                }
+            }
             Yii::$app->getSession()->setFlash('success', 'Type added successfully!!!');
             return $this->redirect(['index']);
         } else {
@@ -95,12 +101,36 @@ class UserTypesController extends Controller {
      */
     public function actionUpdate($id) {
         $model = $this->findModel($id);
-
+        $right_list = UserTypesRights::find()
+                ->where(['user_type_id' => $model->user_type_id])
+                ->all();
+        foreach ($right_list as $value) {
+            $get[] = $value->right_id;
+        }
+        if (empty($get))
+            $get[] = 0;
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $rights_in_post = $model->rightslist;
+            if (!empty($rights_in_post)) {
+                $result = array_diff($get, $rights_in_post);
+            } else {
+                $result = $get;
+            }
+            foreach ($result as $value) {
+                UserTypesRights::getResult($value, $model->user_type_id);
+            }
+            if (!empty($model->rightslist)) {
+                $update_rights = array_diff($rights_in_post, $get);
+                foreach ($update_rights as $value) {
+                    UserTypesRights::createRights($value, $model->user_type_id);
+                }
+            }
+
             return $this->redirect(['index', 'id' => $model->user_type_id]);
         } else {
             return $this->render('update', [
                         'model' => $model,
+                        'get' => $get
             ]);
         }
     }

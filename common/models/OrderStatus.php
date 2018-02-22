@@ -88,6 +88,10 @@ class OrderStatus extends RActiveRecord {
             if($current_status == self::OR_DISPATCHED || $current_status == self::OR_DELEVERED){
                 $unwanted[self::OR_CANCELED] = self::OR_CANCELED;
             }
+              if($current_status == self::OR_NEW){
+                $unwanted[self::OR_DISPATCHED] = self::OR_DISPATCHED;
+                 $unwanted[self::OR_DELEVERED] = self::OR_DELEVERED;
+            }
         }
         return $unwanted;
     }

@@ -1,15 +1,21 @@
 <?php
 
+use common\models\SubCategories;
 use yii\helpers\Html;
+use yii\web\View;
 use yii\widgets\ActiveForm;
 
-/* @var $this yii\web\View */
-/* @var $model common\models\SubCategories */
-/* @var $form yii\widgets\ActiveForm */
+/* @var $this View */
+/* @var $model SubCategories */
+/* @var $form ActiveForm */
 ?>
 
 <div class="box-body">
-
+ <div class="col-md-12">
+            <div class="pull-right">
+                <?= Html::a('Back', ['sub-categories/index'], ['class' => 'btn btn-success']) ?>
+            </div>
+        </div>
     <?php
     $form = ActiveForm::begin([
                 'id' => 'active-form',
@@ -27,6 +33,20 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'category_id')->dropDownList($items, ['prompt' => '--Select Type--'])->label('Category Type<span class="required-label"></span>'); ?>
 
     <?= $form->field($model, 'subcat_name')->textInput(['maxlength' => true])->label('Sub Category Name<span class="required-label"></span>'); ?>
+    <?= $form->field($model, 'subcat_logo')->fileInput() ?>
+ <div id="previewimage">
+        <img src="" class="image"  height="85" width="100">
+    </div>
+    
+    <div id="oldimage">
+         <?php
+    if (!$model->isNewRecord) {
+        if ($model->subcat_logo != 'no-image.jpg') {?>
+            <img src="/backend/web/uploads/subcategory/<?php echo $model->subcat_id . '/' . $model->subcat_logo; ?>" height="75" width="100">
+        <?php } else { ?>
+            <img src="/backend/web/uploads/no-image.jpg" height="75" width="100">
+            <?php } } ?>
+            </div>
     <?php
     if ($model->isNewRecord) {
         $model->status = true;
@@ -44,3 +64,19 @@ use yii\widgets\ActiveForm;
     <?php ActiveForm::end(); ?>
 
 </div>
+<?php
+
+$script = <<< JS
+           jQuery(document).ready(function () { 
+        $('#previewimage').hide();
+        $('#subcategories-subcat_logo').on('change', function(e) {
+         $('#oldimage').hide();
+        var img = URL.createObjectURL(e.target.files[0]);
+        $('.image').attr('src', img);
+          $('#previewimage').show();
+        
+            });
+         });
+JS;
+$this->registerJs($script, View::POS_END);
+?>

@@ -59,3 +59,28 @@ span.slug {
   text-align: left;
 }
 
+
+.amount.form-control {
+    width: 60% !important;
+   margin-left: 15px !important;
+     /*position: absolute;*/
+     /*right: 35px;*/
+}
+.getamount.form-control {
+    width: 60% !important;
+     margin-left: 15px !important;
+}
+.modal-dialog {
+    margin: 30px auto;
+    width: 750px;
+}
+.modal-body {
+    padding: 30px;
+    position: relative;
+}
+.right_align {
+   margin-left: 3px !important;
+}
+.leavespace {
+   margin-right: 25px !important;
+}

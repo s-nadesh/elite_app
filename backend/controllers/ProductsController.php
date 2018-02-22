@@ -12,9 +12,11 @@ use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
+use yii\helpers\FileHelper;
 use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\UploadedFile;
 
 /**
  * ProductsController implements the CRUD actions for Products model.
@@ -110,7 +112,18 @@ class ProductsController extends Controller {
     public function actionCreate() {
         $model = new Products();
         $categories = Categories::getCategories();
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())) {
+            $model->price_per_unit=0.00;
+             if (!empty($_FILES['Products']['name']['product_logo'])){
+            $model->product_logo = UploadedFile::getInstance($model, 'product_logo');
+            }else{
+                   $model->product_logo ='no-image.jpg';
+            }
+            
+            $model->save();
+             if ($model->product_logo!='no-image.jpg') {
+                $this->uploadLogo($model, 'product_logo');
+            }
             return $this->redirect(['index']);
         } else {
             return $this->render('create', [
@@ -119,6 +132,19 @@ class ProductsController extends Controller {
             ]);
         }
     }
+    
+     public function uploadLogo($model, $attr) {
+        $folder = Yii::$app->basePath . '/web/uploads/product/' . $model->product_id;
+
+        if (!file_exists($folder)) {
+            mkdir($folder, 0777, TRUE);
+        } else {
+            FileHelper::removeDirectory($folder);
+            mkdir($folder, 0777, TRUE);
+        }
+        $model->product_logo->saveAs($folder . '/' . $model->product_logo->baseName . '.' . $model->product_logo->extension);
+    }
+
 
     /**
      * Updates an existing Products model.
@@ -130,7 +156,16 @@ class ProductsController extends Controller {
         $model = $this->findModel($id);
         $categories = ArrayHelper::map(Categories::find()->where('status=:id', ['id' => 1])->all(), 'category_id', 'category_name');
         $sub_categories = ArrayHelper::map(SubCategories::find()->where('status=:id', ['id' => 1])->all(), 'subcat_id', 'subcat_name');
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())) {
+            if (!empty($_FILES['Products']['name']['product_logo'])){
+            $model->product_logo = UploadedFile::getInstance($model, 'product_logo');
+            }else{
+                   $model->product_logo ='no-image.jpg';
+            }
+            $model->save();
+            if ($model->product_logo!='no-image.jpg')  {
+                $this->uploadLogo($model, 'product_logo');
+            }
             return $this->redirect(['index']);
         } else {
             return $this->render('update', [
@@ -250,7 +285,7 @@ class ProductsController extends Controller {
             $ids = $_POST['depdrop_parents'];
             $cat_id = empty($ids[0]) ? null : $ids[0];
             $subcat_id = empty($ids[1]) ? null : $ids[1];
-            if ($cat_id != null && $subcat_id != null) {
+            if ($cat_id != null) {
                 $data = Products::getProducts($cat_id, $subcat_id, false);
                 foreach ($data as $key => $value) {
                     $result[] = [

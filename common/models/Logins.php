@@ -47,8 +47,8 @@ class Logins extends RActiveRecord implements IdentityInterface {
      */
     public function rules() {
         return [
-                [['user_id', 'username', 'password_hash', 'email'], 'required'],
-                [['username', 'email'], 'required', 'on' => 'update'],
+                [['user_id', 'username', 'password_hash'], 'required'],
+                [['username'], 'required', 'on' => 'update'],
                 [['old_pass', 'new_pass', 'confirm_pass'], 'required', 'on' => 'changepassword'],
                 ['old_pass', 'findPasswords', 'on' => 'changepassword'],
                 [['user_id', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
@@ -56,8 +56,8 @@ class Logins extends RActiveRecord implements IdentityInterface {
                 ['confirm_pass', 'compare', 'compareAttribute' => 'new_pass', 'on' => 'changepassword'],
                 [['auth_key'], 'string', 'max' => 32],
                 [['username'], 'unique'],
-                [['email'], 'unique'],
-                [['email'], 'email'],
+//                [['email'], 'unique'],
+//                [['email'], 'email'],
                 [['password_reset_token'], 'unique'],
                 [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'user_id']],
         ];
@@ -65,7 +65,7 @@ class Logins extends RActiveRecord implements IdentityInterface {
 
     public function scenarios() {
         $scenarios = parent::scenarios();
-        $scenarios['update'] = ['username', 'email']; //Scenario Values Only Accepted
+        $scenarios['update'] = ['username']; //Scenario Values Only Accepted
         $scenarios['changepassword'] = ['old_pass', 'new_pass', 'confirm_pass']; //Scenario Values Only Accepted
         return $scenarios;
     }

@@ -50,7 +50,7 @@ class CategoriesController extends ActiveController {
     
     public function actionIndex() {
         $categories = Categories::find()
-                ->select('category_id, category_name')
+                ->select('category_id, category_name,cat_logo')
                 ->status()
                 ->active()
                 ->all();
@@ -58,7 +58,7 @@ class CategoriesController extends ActiveController {
             return [
                 'success' => true,
                 'message' => 'Success',
-                'data' => $categories
+                'data' => $categories,
             ];
         } else {
             return [

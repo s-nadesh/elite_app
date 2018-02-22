@@ -1,8 +1,7 @@
 <?php
 
+use common\models\Orders;
 use common\models\OrderStatus;
-use common\models\Products;
-use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\web\View;
 use yii\widgets\ActiveForm;
@@ -25,19 +24,19 @@ $form = ActiveForm::begin([
                 ]
 );
 ?>
-<?php if($model->order_status_id==OrderStatus::OR_DISPATCHED){?>
-<div class="col-sm-4"><b>Invoice No</b></div>
-                        <div class="col-sm-8">
-                            <?php echo $model->invoice_no; ?>
-                        </div>&nbsp;
+<?php if ($model->order_status_id == OrderStatus::OR_DISPATCHED) { ?>
+    <div class="col-sm-4"><b>Invoice No</b></div>
+    <div class="col-sm-8">
+        <?php echo $model->invoice_no; ?>
+    </div>&nbsp;
 
-<?php  }else{ ?>
-<div class="form-group">
-    <label class="col-sm-4 control-label valueleft">Invoice No</label>
-    <div class="col-sm-6 valueright">
-                    <?= $form->field($model, 'invoice_no')->textInput(['maxlength' => true])->label(false) ?>
+<?php } else { ?>
+    <div class="form-group">
+        <label class="col-sm-4 control-label valueleft">Invoice No</label>
+        <div class="col-sm-6 valueright">
+            <?= $form->field($model, 'invoice_no')->textInput(['maxlength' => true])->label(false) ?>
+        </div>
     </div>
-</div>
 <?Php } ?>
 <div class="form-group">
     <label class="col-sm-4 control-label valueleft">Order Status</label>
@@ -100,7 +99,7 @@ $form = ActiveForm::begin([
 
 <div class="form-group">
     <div class="col-sm-12">
-        <?= Html::submitButton('Change Status', ['class' => 'btn btn-primary']); ?>
+<?= Html::submitButton('Update', ['class' => 'btn btn-primary']); ?>
     </div>
 </div>
 
@@ -112,11 +111,14 @@ $script = <<< JS
     jQuery(document).ready(function () { 
         $(".change_status_fields").hide();
         $(document.body).on('change', '#orders-order_status_id', function() {
+      
             $(".change_status_fields").hide();
             var statid = $(this).val(); 
             $("#status_"+statid).show();
+        
           });
     });
+      
 JS;
 $this->registerJs($script, View::POS_END);
 ?>

@@ -25,7 +25,7 @@ class OrderController extends ActiveController {
         //Authenticator - It is used to login the user by using header (Authorization Bearer Token).
         $behaviors['authenticator'] = [
             'class' => HttpBearerAuth::className(),
-            'only' => ['confirmorder', 'vieworderlist', 'orderview', 'statuslist', 'changestatus', 'makepayment', 'filterstatuslist'],
+            'only' => ['confirmorder', 'vieworderlist', 'edit_cancelcomment', 'orderview', 'statuslist', 'changestatus', 'makepayment', 'filterstatuslist', 'viewitemlist', 'viewamount_itemlist'],
         ];
         $behaviors['contentNegotiator'] = [
             'class' => ContentNegotiator::className(),
@@ -36,10 +36,10 @@ class OrderController extends ActiveController {
         //Access - After Login, Role wise access 
         $behaviors['access'] = [
             'class' => AccessControl::className(),
-            'only' => ['confirmorder', 'vieworderlist', 'orderview', 'statuslist', 'changestatus', 'makepayment', 'filterstatuslist'],
+            'only' => ['confirmorder', 'vieworderlist', 'edit_cancelcomment', 'orderview', 'statuslist', 'changestatus', 'makepayment', 'viewamount_itemlist', 'filterstatuslist', 'viewitemlist'],
             'rules' => [
                 [
-                    'actions' => ['confirmorder', 'vieworderlist', 'orderview', 'statuslist', 'changestatus', 'makepayment', 'filterstatuslist'],
+                    'actions' => ['confirmorder', 'vieworderlist', 'edit_cancelcomment', 'orderview', 'statuslist', 'changestatus', 'viewamount_itemlist', 'makepayment', 'filterstatuslist', 'viewitemlist'],
                     'allow' => true,
                     'roles' => ['@'],
                 ],
@@ -60,23 +60,21 @@ class OrderController extends ActiveController {
             if (!empty($cartlist)) {
                 $model->load(Yii::$app->request->getBodyParams(), '');
                 $model->change_status = true;
-                $model->total_amount = $post['items_total_amount'];
+                $model->items_total_amount = 0.00;
+                $model->total_amount = 0.00;
                 $model->save(false);
                 foreach ($cartlist as $cart):
                     $order_item = new OrderItems();
                     $order_item->order_id = $model->order_id;
-                    $total = $cart->qty * $cart->product->price_per_unit;
+//                    $total = $cart->qty * $cart->product->price_per_unit;
 
                     $order_item->category_id = $cart->product->category->category_id;
-                    $order_item->subcat_id = $cart->product->subcat->subcat_id;
+                    $order_item->subcat_id = empty($cart->product->subcat->subcat_id) ? '' : $cart->product->subcat->subcat_id;
                     $order_item->product_id = $cart->product_id;
                     $order_item->category_name = $cart->product->category->category_name;
-                    $order_item->subcat_name = $cart->product->subcat->subcat_name;
+                    $order_item->subcat_name = empty($cart->product->subcat->subcat_name) ? 'not set' : $cart->product->subcat->subcat_name;
                     $order_item->product_name = $cart->product->product_name;
-                    $order_item->price = $cart->product->price_per_unit;
                     $order_item->quantity = $cart->qty;
-                    $order_item->total = $total;
-
                     $order_item->save();
 
                     $cart->delete();
@@ -87,13 +85,13 @@ class OrderController extends ActiveController {
                 ];
             } else {
                 return [
-                    'success' => true,
+                    'success' => false,
                     'message' => 'No records found',
                 ];
             }
         } else {
             return [
-                'success' => true,
+                'success' => false,
                 'message' => 'Invalid request'
             ];
         }
@@ -121,7 +119,7 @@ class OrderController extends ActiveController {
                 ];
                 $object1[] = [
                     'user_name' => $order->user->name,
-                    'user_email' => $order->user->email,
+                    'user_email' =>( $order->user->email=="" )? 'not set' : $order->user->email,
                     'user_address' => $order->user->address,
                     'user_phone' => $order->user->mobile_no,
                 ];
@@ -129,9 +127,10 @@ class OrderController extends ActiveController {
                     $object2[] = [
                         'product_id' => $getorder->product_id,
                         'product_category' => $getorder->category->category_name,
-                        'product_subcategory' => $getorder->subcat->subcat_name,
+                        'product_subcategory' => empty($getorder->subcat->subcat_name) ? 'not set' : $getorder->subcat->subcat_name,
                         'product_name' => $getorder->product->product_name,
-                        'price_per_unit' => $getorder->price,
+                        'product_logo' => $getorder->product->product_logo,
+                        'price_per_unit' => $getorder->total,
                         'quantity' => $getorder->quantity,
                     ];
                 endforeach;
@@ -160,6 +159,7 @@ class OrderController extends ActiveController {
                         $tracklist[] = [
                             'track_status' => $info->orderStatus->status_name,
                             'date' => date('d/M/Y', $info->created_at),
+                            'order_track_id' => $info->order_track_id,
                             'value' => [
                                 $responseArray
                             ]
@@ -183,13 +183,13 @@ class OrderController extends ActiveController {
                 ];
             } else {
                 return [
-                    'success' => true,
+                    'success' => false,
                     'message' => 'No records found',
                 ];
             }
         } else {
             return [
-                'success' => true,
+                'success' => false,
                 'message' => 'Invalid request'
             ];
         }
@@ -210,7 +210,7 @@ class OrderController extends ActiveController {
             ];
         } else {
             return [
-                'success' => true,
+                'success' => false,
                 'message' => 'No records found',
             ];
         }
@@ -234,13 +234,13 @@ class OrderController extends ActiveController {
                 ];
             } else {
                 return [
-                    'success' => true,
+                    'success' => false,
                     'message' => 'No records found',
                 ];
             }
         } else {
             return [
-                'success' => true,
+                'success' => false,
                 'message' => 'Invalid request'
             ];
         }
@@ -249,11 +249,26 @@ class OrderController extends ActiveController {
     public function actionChangestatus() {
         $post = Yii::$app->request->getBodyParams();
         $model = Orders::findOne($post['order_id']);
-       
+
         if (!empty($model)) {
+
             if ($model->load(Yii::$app->request->getBodyParams(), '') && $model->validate()) {
+
                 if (!empty($post['invoice_no']))
-                $model->invoice_no = $post['invoice_no'];
+                    $model->invoice_no = $post['invoice_no'];
+                if ($post['order_status_id'] == OrderStatus::OR_INPROGRESS) {
+                    foreach ($post['amount_arrayList'] as $key => $product_arrayvalue):
+                        foreach ($product_arrayvalue as $key => $getvalue) {
+                            $item = OrderItems::find()
+                                    ->where('order_id =' . $post['order_id'] . ' and product_id =' . $key)
+                                    ->one();
+                            if (!empty($item)) {
+                                $item->total = $getvalue;
+                                $item->save();
+                            }
+                        }
+                    endforeach;
+                }
                 if ($post['order_status_id'] == OrderStatus::OR_CANCELED) {
                     $order_track = OrderTrack::find()
                             ->cancel_order_track($post['order_id'], $post['order_status_id'])
@@ -270,9 +285,10 @@ class OrderController extends ActiveController {
                         $order_track->save(false);
                     }
                 }
-                if(empty($order_track)) 
+                if (empty($order_track))
                     $model->change_status = true;
-                
+                if ($post['order_status_id'] == OrderStatus::OR_INPROGRESS)
+                    $model->items_total_amount = $post['total_amount'];
                 $model->save();
                 return [
                     'success' => true,
@@ -290,7 +306,7 @@ class OrderController extends ActiveController {
             ];
         } else {
             return [
-                'success' => true,
+                'success' => false,
                 'message' => 'Invalid request'
             ];
         }
@@ -319,11 +335,136 @@ class OrderController extends ActiveController {
             ];
         } else {
             return [
-                'success' => true,
+                'success' => false,
                 'message' => 'Invalid request'
             ];
         }
     }
+
+    public function actionEdit_cancelcomment() {
+        $post = Yii::$app->request->getBodyParams();
+        if (!empty($post)) {
+            $ordertrack = OrderTrack::find()
+                    ->ordertrack($post['order_track_id'])
+                    ->status()
+                    ->active()
+                    ->one();
+
+            if (!empty($ordertrack)) {
+                $responseArray = json_decode($ordertrack['value'], true);
+                $data = [];
+                $data['cancel_comment'] = $post['cancel_comment'];
+                $ordertrack->value = json_encode($data, true);
+                $ordertrack->save();
+                return [
+                    'success' => true,
+                    'message' => 'success',
+                ];
+            } else {
+                return [
+                    'success' => false,
+                    'message' => 'No records found',
+                ];
+            }
+        } else {
+            return [
+                'success' => false,
+                'message' => 'Invalid request'
+            ];
+        }
+    }
+
+    public function actionViewitemlist() {
+        $post = Yii::$app->request->getBodyParams();
+        if (!empty($post)) {
+            $orderlist = OrderItems::find()
+                    ->orderlist($post['order_id'])
+                    ->status()
+                    ->active()
+                    ->all();
+
+            if (!empty($orderlist)) {
+                foreach ($orderlist as $order):
+                    $object[] = [
+                        'category_name' => $order->category_name,
+                        'subcat_name' => $order->subcat_name,
+                        'product_id' => $order->product_id,
+                        'product_name' => $order->product_name,
+                        'product_logo' => $order->product->product_logo,
+                        'quantity' => $order->quantity,
+                    ];
+                endforeach;
+                return [
+                    'success' => true,
+                    'message' => 'success',
+                    'data' => $object,
+                ];
+            } else {
+                return [
+                    'success' => false,
+                    'message' => 'No records found',
+                ];
+            }
+        } else {
+            return [
+                'success' => false,
+                'message' => 'Invalid request'
+            ];
+        }
+    }
+
+//    public function actionViewamount_itemlist() {
+//        $post = Yii::$app->request->getBodyParams();
+//        if (!empty($post)) {
+//            foreach ($post['amount_arrayList'] as $key => $product_arrayvalue):
+//                foreach ($product_arrayvalue as $key => $getvalue) {
+//                    $item = OrderItems::find()
+//                            ->where('order_id =' . $post['order_id'] . ' and product_id =' . $key)
+//                            ->one();
+//                    if (!empty($item)) {
+//                        $item->total = $getvalue;
+//                        $item->save();
+//                    }
+//                }
+//            endforeach;
+//            $order = Orders::find()
+//                    ->orders($post['order_id'])
+//                    ->status()
+//                    ->active()
+//                    ->one();
+//            if (!empty($order)) {
+//                $order->order_status_id = $post['order_status_id'];
+//                $order->items_total_amount = $post['total_amount'];
+//                $order->total_amount = $post['total_amount'];
+//                $order->save();
+////                foreach ($orderlist as $order):
+////                    $object[] = [
+////                        'category_name' => $order->category_name,
+////                        'subcat_name' => $order->subcat_name,
+////                        'product_id' => $order->product_id,
+////                        'product_name' => $order->product_name,
+////                        'product_name' => $order->product->product_logo,
+////                        'quantity' => $order->quantity,
+////                    ];
+////                endforeach;
+//                return [
+//                    'success' => true,
+//                    'message' => 'success',
+////                    'data' => $object,
+//                ];
+//            } else {
+//                return [
+//                    'success' => false,
+//                    'message' => 'No records found',
+//                ];
+//            }
+//        } else {
+//            return [
+//                'success' => false,
+//                'message' => 'Invalid request'
+//            ];
+//        }
+//    }
 
     public function actionVieworderlist() {
         $post = Yii::$app->request->getBodyParams();
@@ -347,6 +488,7 @@ class OrderController extends ActiveController {
             if (!empty($orderlist)) {
                 foreach ($orderlist as $order):
                     $paid_amount = OrderBillings::paidAmount($order->order_id);
+//                    print_r($order->items_total_amount);exit;
                     $pending_amount = OrderBillings::pendingAmount($order->items_total_amount, $paid_amount);
 
                     $object[] = [
@@ -367,13 +509,13 @@ class OrderController extends ActiveController {
                 ];
             } else {
                 return [
-                    'success' => true,
+                    'success' => false,
                     'message' => 'No records found',
                 ];
             }
         } else {
             return [
-                'success' => true,
+                'success' => false,
                 'message' => 'Invalid request'
             ];
         }

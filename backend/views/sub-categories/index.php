@@ -55,15 +55,15 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                             ['class' => 'yii\grid\ActionColumn',
                                 'header' => 'Action',
-                                'template' => '{update}&nbsp;&nbsp;{delete}',
-                                'visibleButtons' => [
-                                    'delete' => function($model, $key, $index) {
-                                        $subcategorycount = Products::find()->where(['subcat_id' => $model->subcat_id])->count();
-                                        if ($subcategorycount == 0) {
-                                            return true;
-                                        }
-                                    }
-                                ],
+                                'template' => '{update}',
+//                                'visibleButtons' => [
+//                                    'delete' => function($model, $key, $index) {
+//                                        $subcategorycount = Products::find()->where(['subcat_id' => $model->subcat_id])->count();
+//                                        if ($subcategorycount == 0) {
+//                                            return true;
+//                                        }
+//                                    }
+//                                ],
                             ],
                         ],
                     ]);

@@ -30,7 +30,7 @@ use yii\helpers\ArrayHelper;
  * @property UserTypes $userType
  */
 class Users extends RActiveRecord {
-
+public $show_in_app;
     public static function tableName() {
         return '{{%users}}';
     }
@@ -40,14 +40,20 @@ class Users extends RActiveRecord {
      */
     public function rules() {
         return [
-                [['user_type_id', 'name', 'email'], 'required'],
-                [['user_type_id', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
-                [['address'], 'string'],
-                [['name'], 'string', 'max' => 255],
-                [['mobile_no'], 'string', 'max' => 20],
-                [['email'], 'string', 'max' => 64],
-                [['email'], 'unique'],
-                [['user_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserTypes::className(), 'targetAttribute' => ['user_type_id' => 'user_type_id']],
+            [['user_type_id', 'name'], 'required'],
+            [['user_type_id', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
+            [['address'], 'string'],
+            [['name'], 'string', 'max' => 255],
+            [['mobile_no'], 'string', 'max' => 20],
+//                [['email'], 'string', 'max' => 64],
+            [['name'], 'unique'],
+            [['email'], 'required', 'when' => function ($model) {
+                    return ($model->show_in_app == '1');
+                }, 'whenClient' => "function (attribute, value) {
+                return ($('#users-show_in_app').val() =='1');
+            }"],
+            [['user_type_id', 'mobile_no', 'email', 'address', 'status','show_in_app'], 'safe'],
+            [['user_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserTypes::className(), 'targetAttribute' => ['user_type_id' => 'user_type_id']],
         ];
     }
 
@@ -105,6 +111,7 @@ class Users extends RActiveRecord {
             return $users;
         }
     }
+
     public static function userExists($info) {
         $user = self::find()
                 ->andWhere([
@@ -114,8 +121,9 @@ class Users extends RActiveRecord {
                 ->one();
         return $user;
     }
- public static function getUsername($name) {
-    
+
+    public static function getUsername($name) {
+
         $user = self::find()
                 ->select('name')
                 ->andWhere([

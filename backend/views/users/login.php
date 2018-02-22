@@ -17,7 +17,11 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="col-md-12">
     <div class="box box-primary">
         <div class="box-body">
-
+ <div class="col-md-12">
+            <div class="pull-right">
+                <?= Html::a('Back', ['users/index'], ['class' => 'btn btn-success']) ?>
+            </div>
+        </div>
             <?php
             $form = ActiveForm::begin([
                         'id' => 'active-form',
@@ -32,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
             );
             ?>
 
-            <?= $form->field($login, 'email')->textInput(['readonly' => true])->label('Email<span class="required-label"></span>'); ?>
+            <?php // $form->field($login, 'email')->textInput(['readonly' => true])->label('Email<span class="required-label"></span>'); ?>
             <?= $form->field($login, 'username')->textInput(['maxlength' => true])->label('User Name<span class="required-label"></span>'); ?>                         
             <?= $login->isNewRecord ? $form->field($login, 'password_hash')->passwordInput(['maxlength' => true])->label('Password<span class="required-label"></span>') : $form->field($login, 'password_hash')->passwordInput(['value' => ""]) ?>
 

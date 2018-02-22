@@ -18,7 +18,11 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="col-md-12">
         <div class="box box-primary">
             <div class="box-body">
-
+ <div class="col-md-12">
+            <div class="pull-right">
+                <?= Html::a('Back', ['orders/index'], ['class' => 'btn btn-success']) ?>
+            </div>
+        </div>
                 <div class="row">
                     <div class="col-xs-6 ">
                         <p class="lead">User Details </p>
@@ -70,7 +74,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <th>Sub Category</th>
                                         <th>Product</th>
                                         <th>Quantity</th>
-                                        <th>Price Per Unit</th>
                                         <th>Total Amount</th>
                                     </tr>
                                 </thead>
@@ -82,10 +85,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <tr>
                                             <td><?php echo $i ?></td>
                                             <td><?php echo $info->category->category_name ?></td>
-                                            <td><?php echo $info->subcat->subcat_name ?></td>
+                                            <td><?php echo (empty($info->subcat->subcat_name)) ? '-' :$info->subcat->subcat_name ?></td>
                                             <td><?php echo $info->product->product_name ?></td>
                                             <td><?php echo $info->quantity ?></td>
-                                            <td><?php echo $info->price ?></td>
                                             <td><?php echo $info->total ?></td>
                                         </tr>
                                         <?php
@@ -174,12 +176,14 @@ $this->params['breadcrumbs'][] = $this->title;
                                         ['class' => 'yii\grid\SerialColumn'],
                                     'paid_amount',
                                         [
+                                            'header' => 'Order Fetched By',
                                         'attribute' => 'ordered_by',
                                         'value' => function ($model, $key, $index, $column) {
                                             return $model->order->orderedBy->name;
                                         },
                                     ],
                                         [
+                                             'header' => 'Order Placed On',
                                         'attribute' => 'created_at',
                                         'filter' => false,
                                         'format' => ['date', 'php:Y-m-d H:i:s'],

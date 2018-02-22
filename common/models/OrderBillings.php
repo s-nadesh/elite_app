@@ -20,6 +20,7 @@ use yii\db\ActiveQuery;
  * @property Orders $order
  */
 class OrderBillings extends RActiveRecord {
+    public $total_amount;
 
     const OR_STATUS = 1;
 
@@ -36,10 +37,10 @@ class OrderBillings extends RActiveRecord {
     public function rules() {
 
         return [
-            [['order_id', 'paid_amount'], 'required'],
+//            [['order_id', 'paid_amount'], 'required'],
             [['order_id', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
             [['paid_amount'], 'number'],
-            ['paid_amount', 'amountCheck'],
+//            ['paid_amount', 'amountCheck'],
             [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Orders::className(), 'targetAttribute' => ['order_id' => 'order_id']],
         ];
     }
@@ -48,8 +49,9 @@ class OrderBillings extends RActiveRecord {
      * @inheritdoc
      */
     public function amountCheck($attribute, $params) {
-        $paid_amount =OrderBillings::paidAmount($this->order->order_id);
-        $pending_amount = OrderBillings::pendingAmount($this->order->total_amount, $paid_amount);
+        $paid_amount =OrderBillings::paidAmount($this->order_id);
+        
+        $pending_amount = OrderBillings::pendingAmount($this->total_amount, $paid_amount);
         if (!empty($this->paid_amount)) {
             if ($this->paid_amount > $pending_amount)
                 $this->addError($attribute, "paid amount is greater than pending amount");
@@ -81,6 +83,13 @@ class OrderBillings extends RActiveRecord {
      * @inheritdoc
      * @return OrderBillingsQuery the active query used by this AR class.
      */
+      public function beforeSave($insert) {
+        if ($insert && $this->order->status!=OrderStatus::OR_DELEVERED) {
+            $this->paid_amount = ($this->paid_amount=='')? 0.00 : $this->paid_amount;
+           }
+        return parent::beforeSave($insert);
+    }
+
     public function afterSave($insert, $changedAttributes) {
         $this->checkOrderTotal();
         return parent::afterSave($insert, $changedAttributes);
@@ -101,10 +110,9 @@ class OrderBillings extends RActiveRecord {
     }
 
     public static function pendingAmount($total, $paid_amount) {
-
+        
         $pending = $total - $paid_amount;
-
-        return $pending;
+        return number_format($pending, 2, '.', '');
     }
 
     public function checkOrderTotal() {

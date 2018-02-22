@@ -7,8 +7,10 @@ use common\models\CategoriesSearch;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\helpers\FileHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\UploadedFile;
 
 /**
  * CategoriesController implements the CRUD actions for Categories model.
@@ -23,11 +25,11 @@ class CategoriesController extends Controller {
             'access' => [
                 'class' => AccessControl::className(),
                 'rules' => [
-                        [
+                    [
                         'actions' => [''],
                         'allow' => true,
                     ],
-                        [
+                    [
                         'actions' => ['index', 'create', 'update', 'view', 'delete'],
                         'allow' => true,
                         'roles' => ['@'],
@@ -76,13 +78,36 @@ class CategoriesController extends Controller {
     public function actionCreate() {
         $model = new Categories();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())) {
+            $post=Yii::$app->request->post();
+            if (!empty($_FILES['Categories']['name']['cat_logo'])){
+            $model->cat_logo = UploadedFile::getInstance($model, 'cat_logo');
+            }else{
+                   $model->cat_logo ='no-image.jpg';
+            }
+            $model->save();
+
+            if ($model->cat_logo!='no-image.jpg') {
+                $this->uploadLogo($model, 'cat_logo');
+            }
             return $this->redirect(['index', 'id' => $model->category_id]);
         } else {
             return $this->render('create', [
                         'model' => $model,
             ]);
         }
+    }
+
+    public function uploadLogo($model, $attr) {
+        $folder = Yii::$app->basePath . '/web/uploads/category/' . $model->category_id;
+
+        if (!file_exists($folder)) {
+            mkdir($folder, 0777, TRUE);
+        } else {
+            FileHelper::removeDirectory($folder);
+            mkdir($folder, 0777, TRUE);
+        }
+        $model->cat_logo->saveAs($folder . '/' . $model->cat_logo->baseName . '.' . $model->cat_logo->extension);
     }
 
     /**
@@ -94,7 +119,16 @@ class CategoriesController extends Controller {
     public function actionUpdate($id) {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())) {
+          if (!empty($_FILES['Categories']['name']['cat_logo'])){
+            $model->cat_logo = UploadedFile::getInstance($model, 'cat_logo');
+            }else{
+                   $model->cat_logo ='no-image.jpg';
+            }
+            $model->save();
+           if ($model->cat_logo!='no-image.jpg') {
+                $this->uploadLogo($model, 'cat_logo');
+            }
             return $this->redirect(['index', 'id' => $model->category_id]);
         } else {
             return $this->render('update', [

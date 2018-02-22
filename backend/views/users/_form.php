@@ -1,14 +1,20 @@
 <?php
 
+use common\models\Users;
 use yii\helpers\Html;
+use yii\web\View;
 use yii\widgets\ActiveForm;
 
-/* @var $this yii\web\View */
-/* @var $model common\models\Users */
-/* @var $form yii\widgets\ActiveForm */
+/* @var $this View */
+/* @var $model Users */
+/* @var $form ActiveForm */
 ?>
 <div class="box-body">
-
+ <div class="col-md-12">
+            <div class="pull-right">
+                <?= Html::a('Back', ['users/index'], ['class' => 'btn btn-success']) ?>
+            </div>
+        </div>
     <?php
     $form = ActiveForm::begin([
                 'id' => 'active-form',
@@ -24,12 +30,15 @@ use yii\widgets\ActiveForm;
                     ]
     );
     ?>
-
+   
+    
     <?= $form->field($model, 'name')->textInput(['maxlength' => true])->label('Name<span class="required-label"></span>'); ?>
 
-    <?= $form->field($model, 'email')->textInput(['readonly' => !$model->isNewRecord])->label('Email<span class="required-label"></span>'); ?>
-
     <?= $form->field($model, 'user_type_id')->dropDownList($items, ['prompt' => '--Select Type--'])->label('Type<span class="required-label"></span>'); ?>
+ 
+        <?php echo $form->field($model, 'show_in_app')->hiddenInput(['value' => ''])->label(false); ?>
+    
+    <?= $form->field($model, 'email')->textInput()->label('Email<span class="required-label label1"></span>'); ?>
 
     <?= $form->field($model, 'address')->textarea(['rows' => 4]) ?>
 
@@ -50,3 +59,32 @@ use yii\widgets\ActiveForm;
     <?php ActiveForm::end(); ?>
 
 </div>
+<?php
+$typecallback = Yii::$app->urlManager->createUrl(['/users/gettype_showinapp']);
+$script = <<< JS
+           jQuery(document).ready(function () { 
+         $('.label1').hide();
+        $('#users-user_type_id').on('change', function(e) {
+         var type = $(this).val();
+        $.ajax({
+                url  : "{$typecallback}",
+                type : "POST",                   
+                data: {
+                  id: type,                       
+                },
+                success: function(data1) {
+               if(data1==1){
+                  $("#users-show_in_app").val(data1);
+                $('.label1').show();
+                }else{
+                 $("#users-show_in_app").val(0);
+                 $('.label1').hide();
+                }
+                }
+           });  
+        
+            });
+         });
+JS;
+$this->registerJs($script, View::POS_END);
+?>

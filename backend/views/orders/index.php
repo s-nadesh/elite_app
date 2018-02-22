@@ -23,7 +23,15 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="pull-right">
                 <?= Html::a('Create Order', ['carts/index'], ['class' => 'btn btn-success']) ?>
             </div>
+             <div class="pull-right leavespace">
+                <?= Html::a('Tv View', ['orders/tvview'], ['class' => 'btn btn-success']) ?>
+            </div>
         </div>
+<!--         <div class="col-md-6">
+            <div class="pull-right">
+                <?= Html::a('Create Order', ['carts/index'], ['class' => 'btn btn-success']) ?>
+            </div>
+        </div>-->
         <div class="col-lg-12 col-md-12">&nbsp;</div>
         <div class="col-md-12">
             <div class="box box-primary">
@@ -36,8 +44,16 @@ $this->params['breadcrumbs'][] = $this->title;
                         'filterModel' => $searchModel,
                         'columns' => [
                                 ['class' => 'yii\grid\SerialColumn'],
-                            'invoice_no',
-                            'invoice_date',
+                             [
+                                 'header' => 'Order No',
+                                'attribute' => 'invoice_no',
+                            ],
+                             [
+                                 'header' => 'Order Date',
+                                'attribute' => 'invoice_date',
+                            ],
+//                            'invoice_no',
+//                            'invoice_date',
                                 [
                                 'attribute' => 'user',
                                 'value' => 'user.name',
@@ -111,7 +127,7 @@ echo "<div id='changeStatusContent'></div>";
 Modal::end();
 
 Modal::begin([
-    'header' => '<h4>Update Payment</h4>',
+    'header' => '<h4>Update Price And Amount</h4>',
     'id' => 'changePayment',
     'size' => 'model-lg',
 ]);
@@ -129,6 +145,9 @@ $script = <<< JS
                     .find('#changeStatusContent')
                     .load($(this).data('url'));
             });
+        
+
+ 
         
             $('.bmodelButton').click(function(e){
                 e.preventDefault();

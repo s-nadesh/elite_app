@@ -24,6 +24,11 @@ class OrderTrackQuery extends CommonQuery
  return $this->andWhere(["{$this->tblName}.order_id" => $orderid, "{$this->tblName}.order_status_id" => $order_status]);
  
  }
+ public function ordertrack($order_track_id) {
+        
+ return $this->andWhere(["{$this->tblName}.order_track_id" => $order_track_id]);
+ 
+ }
     
     public function all($db = null)
     {

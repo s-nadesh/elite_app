@@ -35,7 +35,7 @@ class OrderStatusQuery extends CommonQuery
     }
     public function orderstatuslist($order_status_id) {
       if($order_status_id==OrderStatus::OR_NEW){
-         return $this->andWhere([ 'OR',"{$this->tblName}.status_position_id!=".OrderStatus::OR_COMPLETED ]);
+         return $this->andWhere([ 'OR',"{$this->tblName}.status_position_id!=".OrderStatus::OR_COMPLETED." and {$this->tblName}.order_status_id!=".OrderStatus::OR_DELEVERED." and {$this->tblName}.order_status_id!=".OrderStatus::OR_DISPATCHED ]);
       }elseif($order_status_id==OrderStatus::OR_INPROGRESS){
          return $this->andWhere([ 'OR',"{$this->tblName}.order_status_id!=".OrderStatus::OR_COMPLETED ." and {$this->tblName}.order_status_id!=".OrderStatus::OR_NEW]);
       }elseif($order_status_id==OrderStatus::OR_COMPLETED){

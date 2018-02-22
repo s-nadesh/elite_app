@@ -2,10 +2,8 @@
 
 namespace common\models;
 
-use yii\behaviors\BlameableBehavior;
-use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
+use common\models\UserTypesRights;
 
 /**
  * This is the model class for table "{{%user_types}}".
@@ -26,6 +24,8 @@ use yii\db\ActiveRecord;
  */
 class UserTypes extends RActiveRecord {
 
+    public $rightslist;
+
     const AD_USER_TYPE = 1;
     const CU_USER_TYPE = 2;
     const DE_USER_TYPE = 3;
@@ -41,12 +41,13 @@ class UserTypes extends RActiveRecord {
      */
     public function rules() {
         return [
-                [['type_name', 'type_code'], 'required'],
-                [['visible_site', 'reorder_notify', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
-                [['type_name'], 'string', 'max' => 64],
-                [['type_code'], 'string', 'max' => 3],
-                [['type_name'], 'unique'],
-                [['type_code'], 'unique'],
+        [['type_name', 'type_code'], 'required'], 
+        [['rightslist','email_app_login'], 'safe'],
+        [['visible_site', 'reorder_notify', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
+        [['type_name'], 'string', 'max' => 64],
+        [['type_code'], 'string', 'max' => 3],
+        [['type_name'], 'unique'],
+        [['type_code'], 'unique'],
         ];
     }
 
@@ -74,6 +75,9 @@ class UserTypes extends RActiveRecord {
      */
     public function getUsers() {
         return $this->hasMany(Users::className(), ['user_type_id' => 'user_type_id']);
+    }
+    public function getUsertyperights() {
+        return $this->hasMany(UserTypeRights::className(), ['user_type_id' => 'user_type_id']);
     }
 
     /**

@@ -4,7 +4,8 @@ namespace app\modules\api\modules\v1\controllers;
 
 use common\models\LoginForm;
 use common\models\Logins;
-use common\models\ResetPassword;
+use common\models\User;
+use common\models\UserTypes;
 use Yii;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\ContentNegotiator;
@@ -30,27 +31,43 @@ class DefaultController extends ActiveController {
                 'application/json' => Response::FORMAT_JSON,
             ],
         ];
-        
+
         return $behaviors;
     }
 
     public function actionLogin() {
         $model = new LoginForm();
-        $model->login_from = Logins::FRONT_LOGIN;
-        if ($model->load(Yii::$app->request->getBodyParams(), '') && $model->login()) {
-            return [
-                'success' => 'true',
-                'message' => 'Login successful',
-                'user_id'=> Yii::$app->user->identity->getUserId(),
-                'access_token' => Yii::$app->user->identity->getAuthKey(),
-                'test'=>'test'
-               
-            ];
-        } else {
-            return [
-                'success' => 'false',
-                'message' => 'Email / Password Combination is wrong',
-            ];
+        $user = new User();
+        $admin_typeid = UserTypes::AD_USER_TYPE;
+        $post = Yii::$app->request->getBodyParams();
+        if (!empty($post)) {
+            $user_login = Logins::find()
+                    ->user($post['username'])
+                    ->status()
+                    ->active()
+                    ->one();
+
+            if ($user_login && $user_login->user->user_type_id != $admin_typeid) {
+                $password = $user_login->password_hash;
+                if (Yii::$app->security->validatePassword($post['password'], $password)) {
+                    return [
+                        'success' => 'true',
+                        'message' => 'Login successful',
+                        'user_id' => $user_login->user->user_id,
+                        'access_token' => $user_login->auth_key,
+                    ];
+                } else {
+                    return [
+                        'success' => 'false',
+                        'message' => 'Email / Password Combination is wrong',
+                    ];
+                }
+            } else {
+                return [
+                    'success' => 'false',
+                    'message' => 'Invalid request'
+                ];
+            }
         }
     }
 
@@ -68,40 +85,40 @@ class DefaultController extends ActiveController {
                 ];
             } else {
                 return [
-                    'success' => true,
+                    'success' => 'false',
                     'message' => 'Incorrect password',
                 ];
             }
         } else {
             return [
-                'success' => true,
+                'success' => 'false',
                 'message' => 'Invalid request'
             ];
         }
     }
-     public function actionForgotpassword() {
-          $model = new Logins();
+
+    public function actionForgotpassword() {
+        $model = new Logins();
         $post = Yii::$app->request->getBodyParams();
         if (!empty($post)) {
             if ($model->load(Yii::$app->request->getBodyParams(), '') && $model->authenticate()) {
-                
+
                 return [
                     'success' => 'true',
-                    'message' => 'Please verify your gmail account',
+                    'message' => 'New password has been sent to your gmail account.Kindly check it.',
                 ];
             } else {
                 return [
-                    'success' =>'false',
+                    'success' => 'false',
                     'message' => 'Incorrect email address',
                 ];
             }
         } else {
             return [
-                'success' =>'false',
+                'success' => 'false',
                 'message' => 'Invalid request'
             ];
         }
     }
-    
-    
+
 }

@@ -28,6 +28,11 @@ $this->registerJs(
     'options' => ['data-pjax' => true]
     ]); ?>
 <div class="box-body">
+     <div class="col-md-12">
+            <div class="pull-right">
+                <?= Html::a('Back', ['orders/index'], ['class' => 'btn btn-success']) ?>
+            </div>
+        </div>
     <div class="carts-form">
         <div class="row">
             <div class="col-md-6">
@@ -39,10 +44,10 @@ $this->registerJs(
         </div>
 
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <?= $form->field($model, 'category_id')->dropDownList($categories, ['prompt' => '--Select--']) ?>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <?php
                 //Set selected value after validation.
                 $data = [];
@@ -64,7 +69,7 @@ $this->registerJs(
                 ]);
                 ?>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <?php
                 //Set selected value after validation.
                 $product_data = [];
@@ -92,17 +97,18 @@ $this->registerJs(
                 ]);
                 ?>
             </div>
+            <div class="col-md-6">
+                <?= $form->field($model, 'qty')->textInput() ?>
+            </div>
         </div>
 
         <div class="row">
             <div class="col-md-4">
-                <?= $form->field($model, 'product_price')->textInput(['readOnly' => true]) ?>
+                <?php //  $form->field($model, 'product_price')->textInput(['readOnly' => true]) ?>
             </div>
-            <div class="col-md-4">
-                <?= $form->field($model, 'qty')->textInput() ?>
-            </div>
-            <div class="col-md-4">
-                <?= $form->field($model, 'total_amount')->textInput() ?>
+            
+            <div class="col-md-6">
+                <?php // $form->field($model, 'total_amount')->textInput() ?>
             </div>
         </div>
     </div>

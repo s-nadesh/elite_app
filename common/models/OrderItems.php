@@ -31,7 +31,7 @@ use yii\db\ActiveQuery;
  * @property SubCategories $subcat
  */
 class OrderItems extends RActiveRecord {
-
+ public $total_amount;
     /**
      * @inheritdoc
      */
@@ -44,7 +44,7 @@ class OrderItems extends RActiveRecord {
      */
     public function rules() {
         return [
-                [['order_id', 'category_id', 'subcat_id', 'product_id', 'category_name', 'subcat_name', 'product_name', 'quantity', 'price', 'total'], 'required'],
+                [['order_id', 'category_id', 'product_id', 'category_name', 'subcat_name', 'product_name', 'quantity','price'], 'required'],
                 [['order_id', 'category_id', 'subcat_id', 'product_id', 'quantity', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
                 [['price', 'total'], 'number'],
                 [['category_name', 'subcat_name', 'product_name'], 'string', 'max' => 20],

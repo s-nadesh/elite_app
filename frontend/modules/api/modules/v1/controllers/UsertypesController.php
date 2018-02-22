@@ -49,7 +49,7 @@ class UsertypesController extends ActiveController {
 
     public function actionIndex() {
         $user_types = UserTypes::find()
-                ->select('user_type_id, type_name')
+                ->select('user_type_id, type_name,email_app_login')
                 ->visibleSite()
                 ->status()
                 ->active()

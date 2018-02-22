@@ -66,7 +66,7 @@ class Orders extends RActiveRecord {
                 [['user_id', 'invoice_no', 'order_status_id', 'ordered_by', 'items_total_amount', 'total_amount'], 'required'],
                 [['invoice_date', 'dispatch_track_id', 'dispatch_courier_comapny', 'dispatch_comment', 'dispatch_date', 'deliver_to', 'deliver_phone', 'deliver_address', 'deliver_date', 'cancel_comment', 'cancel_date', 'pending_amount'], 'safe'],
                 [['user_id', 'order_status_id', 'ordered_by', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
-                [['items_total_amount', 'tax_percentage', 'tax_amount', 'total_amount'], 'number'],
+                [['items_total_amount', 'tax_percentage', 'tax_amount', 'total_amount','deliver_phone'], 'number'],
                 [['payment_status'], 'string'],
 //            ['end_date', //ajax is working
 //                'compare',
@@ -129,6 +129,7 @@ class Orders extends RActiveRecord {
             'tax_amount' => 'Tax Amount',
             'total_amount' => 'Total Amount',
             'payment_status' => 'Payment Status',
+            'deliver_phone' => 'Mobile Number',
             'signature' => 'Signature',
             'status' => 'Status',
             'created_at' => 'Created At',
@@ -148,6 +149,11 @@ class Orders extends RActiveRecord {
 
     public function getOrderBillingsSum() {
         return $this->hasMany(OrderBillings::className(), ['order_id' => 'order_id'])->sum('paid_amount');
+    }
+
+    public function getOrderBillingslastpaid() {
+        $amount= $this->hasMany(OrderBillings::className(), ['order_id' => 'order_id'])->orderBy(['created_at' => SORT_DESC])->one();
+       return $amount['paid_amount'];
     }
 
     /**

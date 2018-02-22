@@ -7,12 +7,17 @@ namespace common\models;
  *
  * @see OrderItems
  */
-class OrderItemsQuery extends \yii\db\ActiveQuery
+class OrderItemsQuery extends CommonQuery
 {
     /*public function active()
     {
         return $this->andWhere('[[status]]=1');
     }*/
+    
+    
+     public function orderlist($order) {
+        return $this->andWhere(["{$this->tblName}.order_id" => $order]);
+    }
 
     /**
      * @inheritdoc

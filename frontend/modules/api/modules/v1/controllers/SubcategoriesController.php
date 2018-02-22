@@ -52,7 +52,7 @@ class SubcategoriesController extends ActiveController {
         $post = Yii::$app->request->getBodyParams();
         if (!empty($post)) {
         $subcategories = SubCategories::find()
-                ->select('subcat_id, subcat_name')
+                ->select('subcat_id, subcat_name,subcat_logo')
                 ->category($post['category_id'])
                 ->status()
                 ->active()
@@ -61,7 +61,7 @@ class SubcategoriesController extends ActiveController {
             return [
                 'success' => true,
                 'message' => 'Success',
-                'data' => $subcategories
+                'data' => $subcategories,
             ];
         } else {
             return [

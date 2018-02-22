@@ -18,6 +18,11 @@ $this->title = "Product View";
 $this->params['breadcrumbs'][] = ['label' => 'Products', 'url' => ['index']];
 $this->params['breadcrumbs'][] = "Stock Log";
 ?>
+<div class="col-md-12">
+            <div class="pull-right">
+                <?= Html::a('Back', ['products/index'], ['class' => 'btn btn-success']) ?>
+            </div>
+        </div>
 <div class="col-md-6">
     <div class="box box-primary">
         <?=

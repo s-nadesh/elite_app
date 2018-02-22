@@ -7,7 +7,7 @@ namespace common\models;
  *
  * @see Logins
  */
-class LoginsQuery extends \yii\db\ActiveQuery
+class LoginsQuery extends CommonQuery
 {
     /*public function active()
     {
@@ -18,6 +18,16 @@ class LoginsQuery extends \yii\db\ActiveQuery
      * @inheritdoc
      * @return Logins[]|array
      */
+     public function user($username) {
+        
+        return $this->andWhere(["{$this->tblName}.username" => $username]);
+    }
+    public function userid($userid) {
+        
+        return $this->andWhere(["{$this->tblName}.user_id" => $userid]);
+    }
+    
+    
     public function all($db = null)
     {
         return parent::all($db);
