@@ -35,13 +35,18 @@ $this->params['breadcrumbs'][] = $this->title;
 //                        'filterModel' => $searchModel,
                         'columns' => [
                                 ['class' => 'yii\grid\SerialColumn'],
-                             [
-                                 'header' => 'Order No',
-                                'attribute' => 'invoice_no',
-                            ],
+//                             [
+//                                 'header' => 'Order No',
+//                                'attribute' => 'invoice_no',
+//                            ],
                              [
                                  'header' => 'Order Date',
                                 'attribute' => 'invoice_date',
+                            ],
+                             [
+                                  'header' => 'Customer/Dealer',
+                                 'attribute' => 'user',
+                               'value' => 'user.name',
                             ],
                              [
                                  'header' => 'Products',
@@ -62,3 +67,17 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 </div>
+<?php
+/* For update the status of the schedule */
+$script = <<< JS
+      
+    jQuery(document).ready(function () { 
+         $(document).keyup(function(e) {
+     if (e.keyCode == 27) { 
+      window.history.go(-1);
+    }
+});
+    });
+JS;
+$this->registerJs($script, View::POS_END);
+?>

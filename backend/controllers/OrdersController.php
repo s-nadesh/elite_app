@@ -66,6 +66,8 @@ class OrdersController extends Controller {
         ]);
     }
       public function actionTvview() {
+          $this->layout = 'main_1';
+
         $searchModel = new OrdersSearch();
         $dataProvider = $searchModel->search_tv_view(Yii::$app->request->queryParams);
 

@@ -113,7 +113,7 @@ class OrdersSearch extends Orders {
         // add conditions that should always apply here
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'pagination' => array('pageSize' => 10),
+            'pagination' => false,
             'sort' => ['defaultOrder' => ['updated_at' => SORT_DESC]],
         ]);
       

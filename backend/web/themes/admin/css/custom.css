@@ -84,3 +84,7 @@ span.slug {
 .leavespace {
    margin-right: 25px !important;
 }
+
+.rightalign {
+  margin-left: 25px !important;
+}
