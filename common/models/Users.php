@@ -17,6 +17,7 @@ use yii\helpers\ArrayHelper;
  * @property integer $user_type_id
  * @property string $name
  * @property string $address
+ * @property string $city
  * @property string $mobile_no
  * @property string $email
  * @property integer $status
@@ -42,7 +43,7 @@ public $show_in_app;
         return [
             [['user_type_id', 'name'], 'required'],
             [['user_type_id', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
-            [['address'], 'string'],
+            [['address','city'], 'string'],
             [['name'], 'string', 'max' => 255],
             [['mobile_no'], 'string', 'max' => 20],
 //                [['email'], 'string', 'max' => 64],
@@ -66,6 +67,7 @@ public $show_in_app;
             'user_type_id' => 'User Type',
             'name' => 'Name',
             'address' => 'Address',
+            'city' => 'City',
             'mobile_no' => 'Mobile No',
             'email' => 'Email',
             'status' => 'Status',

@@ -59,6 +59,12 @@ $this->params['breadcrumbs'][] = $this->title;
                                                
                                             },
                             ],
+                                                   
+                            [
+                                  'header' => 'City',
+                                 'attribute' => 'user',
+                               'value' => 'user.city',
+                            ],
                                 
                         ],
                     ]);

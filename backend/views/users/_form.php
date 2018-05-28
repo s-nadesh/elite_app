@@ -41,6 +41,8 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'email')->textInput()->label('Email<span class="required-label label1"></span>'); ?>
 
     <?= $form->field($model, 'address')->textarea(['rows' => 4]) ?>
+    
+    <?= $form->field($model, 'city')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'mobile_no')->textInput(['maxlength' => true]) ?>
     <?php

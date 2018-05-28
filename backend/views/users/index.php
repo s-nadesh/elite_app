@@ -43,6 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'filter' => Html::activeDropDownlist($searchModel, 'user_type_id', ArrayHelper::map(UserTypes::find()->where('status=:id', ['id' => 1])->all(), 'user_type_id', 'type_name'), ['class' => 'form-control', 'id' => null, 'prompt' => 'All']),
                             ],
                             'address:ntext',
+                            'city',
                             'mobile_no',
                             'email',
                                 [
