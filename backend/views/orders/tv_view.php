@@ -51,10 +51,11 @@ $this->params['breadcrumbs'][] = $this->title;
                              [
                                  'header' => 'Products',
                                'value' => function ($model, $key, $index, $column) {
+                                    $res = '';
                                    foreach ($model->orderItems as $key => $value) {
-                                        $array[]= $value->product_name.' ( '.$value->quantity.' ) ';
+                                       $res .= $value->product_name.' ( '.$value->quantity.' ) ' . ', ';
                                    }
-                                   return join(", ",$array);
+                                   return $res;
                                                
                                             },
                             ],
