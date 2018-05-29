@@ -34,7 +34,7 @@ use yii\widgets\ActiveForm;
                 <th>SubCategory</th>
                 <th>Product</th>
                 <th>Quantity</th>
-                <th>PricePerUnit</th>
+                <th>Rate</th>
                 <th>Amount</th>
             </tr>
         </thead>
