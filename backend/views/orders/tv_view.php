@@ -19,53 +19,56 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="services-index">
     <div class="row">
-       
+
         <div class="col-lg-12 col-md-12">&nbsp;</div>
         <div class="col-md-12">
             <div class="box box-primary">
                 <div class="box-body">
-<div class="col-md-12">
-            <div class="pull-right">
-                <?= Html::a('Back', ['orders/index'], ['class' => 'btn btn-success']) ?>
-            </div>
-        </div>
+                    <div class="col-md-12">
+                        <div class="pull-right">
+                            <?= Html::a('Back', ['orders/index'], ['class' => 'btn btn-success']) ?>
+                        </div>
+                    </div>
                     <?=
                     GridView::widget([
                         'dataProvider' => $dataProvider,
 //                        'filterModel' => $searchModel,
                         'columns' => [
-                                ['class' => 'yii\grid\SerialColumn'],
+                                [
+                                'header' => 'S.No',
+                                'class' => 'yii\grid\SerialColumn'],
 //                             [
 //                                 'header' => 'Order No',
 //                                'attribute' => 'invoice_no',
 //                            ],
-                             [
-                                 'header' => 'Order Date',
+                            [
+                                'header' => 'Order Date',
                                 'attribute' => 'invoice_date',
                             ],
-                             [
-                                  'header' => 'Customer/Dealer',
-                                 'attribute' => 'user',
-                               'value' => 'user.name',
+                                [
+                                'header' => 'Customer/Dealer',
+                                'attribute' => 'user',
+                                'value' => 'user.name',
                             ],
-                             [
-                                 'header' => 'Products',
-                               'value' => function ($model, $key, $index, $column) {
+                                [
+                                'header' => 'City',
+                                'attribute' => 'user',
+                                'value' => 'user.city',
+                            ],
+                                [
+                                'header' => 'Products',
+                                'value' => function ($model, $key, $index, $column) {
                                     $res = '';
-                                   foreach ($model->orderItems as $key => $value) {
-                                       $res .= $value->product_name.' ( '.$value->quantity.' ) ' . ', ';
-                                   }
-                                   return $res;
-                                               
-                                            },
+                                    foreach ($model->orderItems as $key => $value) {
+                                        $res .= $value->product_name . ' ( ' . $value->quantity . ' ) ' . ', ';
+                                    }
+                                    return $res;
+                                },
                             ],
-                                                   
-                            [
-                                  'header' => 'City',
-                                 'attribute' => 'user',
-                               'value' => 'user.city',
+                                [
+                                'header' => 'Total Amount',
+                                'attribute' => 'total_amount',
                             ],
-                                
                         ],
                     ]);
                     ?>
