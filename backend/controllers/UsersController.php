@@ -2,8 +2,10 @@
 
 namespace backend\controllers;
 
+use common\models\Categories;
 use common\models\Logins;
 use common\models\Users;
+use common\models\UsersCategories;
 use common\models\UsersSearch;
 use common\models\UserTypes;
 use Yii;
@@ -31,7 +33,7 @@ class UsersController extends Controller {
                         'allow' => true,
                     ],
                         [
-                        'actions' => ['index', 'create', 'update', 'view', 'delete', 'login','gettype_showinapp'],
+                        'actions' => ['index', 'create', 'update', 'view', 'delete', 'login', 'gettype_showinapp'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -59,16 +61,16 @@ class UsersController extends Controller {
                     'dataProvider' => $dataProvider,
         ]);
     }
-    
-     public function actionGettype_showinapp() {
+
+    public function actionGettype_showinapp() {
         if (Yii::$app->request->isAjax) {
             $type_id = $_POST['id'];
-            $type=UserTypes::find()->where('user_type_id=:id', ['id' => $type_id])->one();
-             echo $type->email_app_login;
-                exit;
+            $type = UserTypes::find()->where('user_type_id=:id', ['id' => $type_id])->one();
+            echo $type->email_app_login;
+            exit;
 //            print_r($type->visible_site);exit;
+        }
     }
-     }
 
     /**
      * Displays a single Users model.
@@ -88,11 +90,17 @@ class UsersController extends Controller {
      */
     public function actionCreate() {
         $model = new Users();
-//        if($model->show_in_app==""){
-//        $model->scenario ='createusertype';
-//        }
         $items = ArrayHelper::map(UserTypes::find()->where('status=:id', ['id' => 1])->all(), 'user_type_id', 'type_name');
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $categorylists = Yii::$app->request->post('Users')['categorylist'];
+            $users = Users::findOne($model->user_id);
+            foreach ($categorylists as $categorylist) {
+                $categories[] = Categories::findOne($categorylist);
+            }
+            $extraColumns = ['status' => 1]; // extra columns to be saved to the many to many table
+            $unlink = true; // unlink tags not in the list
+            $delete = true; // delete unlinked tags
+            $users->linkAll('categories', $categories, $extraColumns, $unlink, $delete);
             return $this->redirect(['index']);
         } else {
             return $this->render('create', [
@@ -110,18 +118,35 @@ class UsersController extends Controller {
      */
     public function actionUpdate($id) {
         $model = $this->findModel($id);
-        $items = ArrayHelper::map(UserTypes::find()->where('status=:id', ['id' => 1])->all(), 'user_type_id', 'type_name');
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-             $login = Logins::find()->where(['user_id' => $model->user_id])->one();
-        if (!empty($login)) {
-             $login->email= $model->email;
-            $login->save(false);
+        $items = ArrayHelper::map(UserTypes::find()->where('status=:id', ['id' => 1])->all(), 'user_type_id', 'type_name');        
+
+        $category_list = $model->categories;
+        foreach ($category_list as $value) {
+            $get[] = $value->category_id;
         }
+        if (empty($get))
+            $get[] = 0;
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $categorylists = Yii::$app->request->post('Users')['categorylist'];
+            $users = Users::findOne($model->user_id);
+            foreach ($categorylists as $categorylist) {
+                $categories[] = Categories::findOne($categorylist);
+            }
+            $extraColumns = ['status' => 1]; // extra columns to be saved to the many to many table
+            $unlink = true; // unlink tags not in the list
+            $delete = true; // delete unlinked tags
+            $users->linkAll('categories', $categories, $extraColumns, $unlink, $delete);
+            $login = Logins::find()->where(['user_id' => $model->user_id])->one();
+            if (!empty($login)) {
+                $login->email = $model->email;
+                $login->save(false);
+            }
             return $this->redirect(['index']);
         } else {
             return $this->render('update', [
                         'model' => $model,
                         'items' => $items,
+                        'get' => $get,
             ]);
         }
     }

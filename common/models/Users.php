@@ -29,11 +29,21 @@ use yii\helpers\ArrayHelper;
  *
  * @property Logins[] $logins
  * @property UserTypes $userType
+ * @property UsersCategories[] $UsersCategories
  */
 class Users extends RActiveRecord {
-public $show_in_app;
+
+    public $show_in_app;
+    public $categorylist;
+
     public static function tableName() {
         return '{{%users}}';
+    }
+
+    public function behaviors() {
+        return [
+            \cornernote\linkall\LinkAllBehavior::className(),
+        ];
     }
 
     /**
@@ -41,20 +51,20 @@ public $show_in_app;
      */
     public function rules() {
         return [
-            [['user_type_id', 'name'], 'required'],
-            [['user_type_id', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
-            [['address','city'], 'string'],
-            [['name'], 'string', 'max' => 255],
-            [['mobile_no'], 'string', 'max' => 20],
+                [['user_type_id', 'name'], 'required'],
+                [['user_type_id', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
+                [['address', 'city'], 'string'],
+                [['name'], 'string', 'max' => 255],
+                [['mobile_no'], 'string', 'max' => 20],
 //                [['email'], 'string', 'max' => 64],
             [['name'], 'unique'],
-            [['email'], 'required', 'when' => function ($model) {
+                [['email'], 'required', 'when' => function ($model) {
                     return ($model->show_in_app == '1');
                 }, 'whenClient' => "function (attribute, value) {
                 return ($('#users-show_in_app').val() =='1');
             }"],
-            [['user_type_id', 'mobile_no', 'email', 'address', 'status','show_in_app'], 'safe'],
-            [['user_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserTypes::className(), 'targetAttribute' => ['user_type_id' => 'user_type_id']],
+                [['user_type_id', 'mobile_no', 'email', 'address', 'status', 'show_in_app'], 'safe'],
+                [['user_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserTypes::className(), 'targetAttribute' => ['user_type_id' => 'user_type_id']],
         ];
     }
 
@@ -135,5 +145,11 @@ public $show_in_app;
                 ->one();
         return $user;
     }
+
+    public function getCategories() {
+        return $this->hasMany(Categories::className(), ['category_id' => 'category_id'])
+                        ->viaTable('el_users_categories', ['user_id' => 'user_id']);
+        
+    }     
 
 }

@@ -13,6 +13,7 @@ use common\models\UserTypesRights;
  * @property string $type_code
  * @property integer $visible_site
  * @property integer $reorder_notify
+ * @property integer $update_rate
  * @property integer $status
  * @property integer $created_at
  * @property integer $updated_at
@@ -41,13 +42,13 @@ class UserTypes extends RActiveRecord {
      */
     public function rules() {
         return [
-        [['type_name', 'type_code'], 'required'], 
-        [['rightslist','email_app_login'], 'safe'],
-        [['visible_site', 'reorder_notify', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
-        [['type_name'], 'string', 'max' => 64],
-        [['type_code'], 'string', 'max' => 3],
-        [['type_name'], 'unique'],
-        [['type_code'], 'unique'],
+                [['type_name', 'type_code'], 'required'],
+                [['rightslist', 'email_app_login'], 'safe'],
+                [['visible_site', 'reorder_notify', 'update_rate', 'status', 'created_at', 'updated_at', 'created_by', 'updated_by', 'deleted_at'], 'integer'],
+                [['type_name'], 'string', 'max' => 64],
+                [['type_code'], 'string', 'max' => 3],
+                [['type_name'], 'unique'],
+                [['type_code'], 'unique'],
         ];
     }
 
@@ -76,6 +77,7 @@ class UserTypes extends RActiveRecord {
     public function getUsers() {
         return $this->hasMany(Users::className(), ['user_type_id' => 'user_type_id']);
     }
+
     public function getUsertyperights() {
         return $this->hasMany(UserTypeRights::className(), ['user_type_id' => 'user_type_id']);
     }

@@ -40,6 +40,8 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'email_app_login')->checkbox(['label' => ('Active ')])->label('App Login <br/> (Email compulsory)') ?>
 
     <?= $form->field($model, 'reorder_notify')->checkbox(['label' => ('Active ')])->label('Reorder Notification') ?>
+    
+    <?= $form->field($model, 'update_rate')->checkbox(['label' => ('Active ')])->label('Update Rate') ?>
     <?php
     if ($model->isNewRecord) {
         $model->status = true;
