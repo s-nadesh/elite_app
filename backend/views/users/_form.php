@@ -38,7 +38,19 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'user_type_id')->dropDownList($items, ['prompt' => '--Select Type--'])->label('Type<span class="required-label"></span>'); ?>
 
     <?php echo $form->field($model, 'show_in_app')->hiddenInput(['value' => ''])->label(false); ?>
-
+    <div class="categorylist">
+        <?php
+        if (!$model->isNewRecord && !empty($get)) {
+            $model->categorylist = $get;
+        }
+        ?>
+        <?=
+        $form->field($model, 'categorylist')->dropDownList(Categories::getCategories(), [
+            'multiple' => true,
+            'size' => 4,
+        ])
+        ?>
+    </div>
     <?= $form->field($model, 'email')->textInput()->label('Email<span class="required-label label1"></span>'); ?>
 
     <?= $form->field($model, 'address')->textarea(['rows' => 4]) ?>
@@ -53,17 +65,6 @@ use yii\widgets\ActiveForm;
     ?>
     <?= $form->field($model, 'status')->checkbox(['label' => ('Active ')])->label('Status') ?>
 
-    <?php
-    if (!$model->isNewRecord && !empty($get)) {
-        $model->categorylist = $get;
-    }
-    ?>
-    <?=
-    $form->field($model, 'categorylist')->dropDownList(Categories::getCategories(), [
-        'multiple' => true,
-        'size' => 4,
-    ])
-    ?>
 
     <div class="box-footer">
         <div class="col-sm-0 col-sm-offset-2">
@@ -99,6 +100,17 @@ $script = <<< JS
            });  
         
             });
+                $('.categorylist').hide();
+                
+        $(document.body).on('change', '#users-user_type_id', function() {
+            var selected = $(this).find("option:selected").text();
+                if(selected == "Dealer" || selected == "Sales Executive") {
+                        $(".categorylist").show();
+                } else {
+                    $(".categorylist").hide();
+                }
+        });
+                
          });
 JS;
 $this->registerJs($script, View::POS_END);
