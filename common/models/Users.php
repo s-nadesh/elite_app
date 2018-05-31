@@ -5,8 +5,7 @@ namespace common\models;
 use common\models\Logins;
 use common\models\UsersQuery;
 use common\models\UserTypes;
-use yii\behaviors\BlameableBehavior;
-use yii\behaviors\TimestampBehavior;
+use cornernote\linkall\LinkAllBehavior;
 use yii\db\ActiveQuery;
 use yii\helpers\ArrayHelper;
 
@@ -42,7 +41,7 @@ class Users extends RActiveRecord {
 
     public function behaviors() {
         return [
-            \cornernote\linkall\LinkAllBehavior::className(),
+            LinkAllBehavior::className(),
         ];
     }
 

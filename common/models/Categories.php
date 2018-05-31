@@ -84,16 +84,4 @@ class Categories extends RActiveRecord {
         }
     }
 
-    public static function getCategoryList() {
-        $categories = Categories::find()
-                ->select('category_id,category_name')
-                ->all();
-        foreach ($categories as $category) {
-            $category_name[] = $category['category_name'];
-            $category_id[] = $category['category_id'];
-        }
-        $category_ids = array_combine($category_id, $category_name);
-        return $category_ids;
-    }
-
 }

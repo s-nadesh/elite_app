@@ -59,7 +59,7 @@ use yii\widgets\ActiveForm;
     }
     ?>
     <?=
-    $form->field($model, 'categorylist')->dropDownList(Categories::getCategoryList(), [
+    $form->field($model, 'categorylist')->dropDownList(Categories::getCategories(), [
         'multiple' => true,
         'size' => 4,
     ])
