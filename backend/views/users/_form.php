@@ -35,7 +35,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true])->label('Name<span class="required-label"></span>'); ?>
 
-    <?= $form->field($model, 'user_type_id')->dropDownList($items, ['prompt' => '--Select Type--'])->label('Type<span class="required-label"></span>'); ?>
+    <?= $form->field($model, 'user_type_id')->dropDownList($items, ['prompt' => '--Select Type--','disabled' => !$model->isNewRecord])->label('Type<span class="required-label"></span>'); ?>
 
     <?php echo $form->field($model, 'show_in_app')->hiddenInput(['value' => ''])->label(false); ?>
     <div class="categorylist">
@@ -100,7 +100,12 @@ $script = <<< JS
            });  
         
             });
-                $('.categorylist').hide();
+                
+                if($('#users-user_type_id').find(":selected").text() == "Dealer" || $('#users-user_type_id').find(":selected").text() == "Sales Executive") {
+                    $('.categorylist').show();
+                } else {
+                        $('.categorylist').hide();
+                    }
                 
         $(document.body).on('change', '#users-user_type_id', function() {
             var selected = $(this).find("option:selected").text();
