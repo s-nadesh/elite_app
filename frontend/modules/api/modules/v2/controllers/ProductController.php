@@ -339,8 +339,8 @@ class ProductController extends ActiveController {
                 return [
                     'success' => 'true',
                     'message' => 'Success',
-                    'selected_category_id' => $productlist->product_id,
-                    'selected_category' => $productlist->product_name,
+                    'selected_category_id' => $categorylist->category_id,
+                    'selected_category_name' => $categorylist->category_name,
                     'data' => $object
                 ];
             } else {
