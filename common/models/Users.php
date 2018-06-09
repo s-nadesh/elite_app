@@ -6,6 +6,7 @@ use common\models\Logins;
 use common\models\UsersQuery;
 use common\models\UserTypes;
 use cornernote\linkall\LinkAllBehavior;
+use yii2tech\ar\softdelete\SoftDeleteBehavior;
 use yii\db\ActiveQuery;
 use yii\helpers\ArrayHelper;
 
@@ -42,9 +43,16 @@ class Users extends RActiveRecord {
     public function behaviors() {
         return [
             LinkAllBehavior::className(),
+            'softDeleteBehavior' => [
+                'class' => SoftDeleteBehavior::className(),
+                'softDeleteAttributeValues' => [
+                    'deleted_at' => true
+                ],
+                'replaceRegularDelete' => true // mutate native `delete()` method
+            ],
         ];
     }
-
+       
     /**
      * @inheritdoc
      */

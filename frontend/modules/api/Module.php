@@ -24,6 +24,9 @@ class Module extends \yii\base\Module
             'v1' => [
                 'class' => 'app\modules\api\modules\v1\Module',
             ],
+            'v2' => [
+                'class' => 'app\modules\api\modules\v2\Module',
+            ],
         ];
     }
 }

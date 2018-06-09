@@ -1,5 +1,6 @@
 <?php
 
+use common\models\Orders;
 use common\models\UsersSearch;
 use common\models\UserTypes;
 use yii\data\ActiveDataProvider;
@@ -57,11 +58,31 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                                 ['class' => 'yii\grid\ActionColumn',
                                 'header' => 'Action',
-                                'template' => '{update}&nbsp;&nbsp;{login}',
+                                'template' => '{update}&nbsp;&nbsp;{login}&nbsp;&nbsp;{delete}',
                                 'buttons' => [
                                     'login' => function($url, $model) {
                                         $url = Url::toRoute('users/login?id=' . $model->user_id);
                                         return Html::a('<span title="Login" class="glyphicon glyphicon-lock"></span>', $url);
+                                    },
+                                    'delete' => function($url, $model) {
+                                        $order = Orders::find()->where(['user_id' => $model->user_id])->one();
+                                        if ($order) {
+                                            return Html::a('<span class="glyphicon glyphicon-trash"></span>', ['delete', 'id' => $model->user_id], [
+                                                        'class' => '',
+                                                        'data' => [
+                                                            'confirm' => 'This user has orders associated with it.Do you still wish to delete?',
+                                                            'method' => 'post',
+                                                        ],
+                                            ]);
+                                        } else {
+                                            return Html::a('<span class="glyphicon glyphicon-trash"></span>', ['delete', 'id' => $model->user_id], [
+                                                        'class' => '',
+                                                        'data' => [
+                                                            'confirm' => 'Are you sure you want to delete this user?',
+                                                            'method' => 'post',
+                                                        ],
+                                            ]);
+                                        }
                                     }
                                 ],
                             ],

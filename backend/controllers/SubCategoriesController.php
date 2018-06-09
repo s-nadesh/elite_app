@@ -28,11 +28,11 @@ class SubCategoriesController extends Controller {
             'access' => [
                 'class' => AccessControl::className(),
                 'rules' => [
-                    [
+                        [
                         'actions' => [''],
                         'allow' => true,
                     ],
-                    [
+                        [
                         'actions' => ['index', 'create', 'update', 'view', 'delete', 'getsubcategories'],
                         'allow' => true,
                         'roles' => ['@'],
@@ -82,17 +82,17 @@ class SubCategoriesController extends Controller {
         $model = new SubCategories();
         $items = ArrayHelper::map(Categories::find()->where('status=:id', ['id' => 1])->all(), 'category_id', 'category_name');
         if ($model->load(Yii::$app->request->post())) {
-             if (!empty($_FILES['SubCategories']['name']['subcat_logo'])){
-            $model->subcat_logo = UploadedFile::getInstance($model, 'subcat_logo');
-            }else{
-                   $model->subcat_logo ='no-image.jpg';
+            if (!empty($_FILES['SubCategories']['name']['subcat_logo'])) {
+                $model->subcat_logo = UploadedFile::getInstance($model, 'subcat_logo');
+            } else {
+                $model->subcat_logo = 'no-image.jpg';
             }
             $model->save();
-            
-             if ($model->subcat_logo!='no-image.jpg') {
+
+            if ($model->subcat_logo != 'no-image.jpg') {
                 $this->uploadLogo($model, 'subcat_logo');
             }
-           
+
             return $this->redirect(['index']);
         } else {
             return $this->render('create', [
@@ -124,15 +124,15 @@ class SubCategoriesController extends Controller {
         $model = $this->findModel($id);
         $items = ArrayHelper::map(Categories::find()->where('status=:id', ['id' => 1])->all(), 'category_id', 'category_name');
         if ($model->load(Yii::$app->request->post())) {
-             if (!empty($_FILES['SubCategories']['name']['subcat_logo'])){
-            $model->subcat_logo = UploadedFile::getInstance($model, 'subcat_logo');
-            }else{
-                   $model->subcat_logo ='no-image.jpg';
+            if (!empty($_FILES['SubCategories']['name']['subcat_logo'])) {
+                $model->subcat_logo = UploadedFile::getInstance($model, 'subcat_logo');
+            } else {
+                $model->subcat_logo = 'no-image.jpg';
             }
-          
+
             $model->save();
-            
-             if ($model->subcat_logo!='no-image.jpg') {
+
+            if ($model->subcat_logo != 'no-image.jpg') {
                 $this->uploadLogo($model, 'subcat_logo');
             }
             return $this->redirect(['index']);
@@ -192,10 +192,11 @@ class SubCategoriesController extends Controller {
                     ];
                 }
                 echo Json::encode(['output' => $result, 'selected' => '']);
-                return;
+                exit;
             }
         }
         echo Json::encode(['output' => '', 'selected' => '']);
+        exit;
     }
 
 }

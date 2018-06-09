@@ -41,7 +41,7 @@ class Logins extends RActiveRecord implements IdentityInterface {
     public static function tableName() {
         return '{{%logins}}';
     }
-
+    
     /**
      * @inheritdoc
      */

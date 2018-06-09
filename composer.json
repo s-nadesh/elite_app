@@ -19,7 +19,9 @@
         "yiisoft/yii2-bootstrap": "~2.0.0",
         "yiisoft/yii2-swiftmailer": "~2.0.0",
         "kartik-v/yii2-widget-depdrop": "@dev",
-        "cornernote/yii2-linkall": "*"
+        "cornernote/yii2-linkall": "*",
+        "yii2tech/ar-softdelete": "^1.0"
+        
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

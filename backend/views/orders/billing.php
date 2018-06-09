@@ -62,7 +62,7 @@ use yii\widgets\ActiveForm;
                     <td>
                         <?php
                         if ($model->order_status_id == OrderStatus::OR_NEW || $model->order_status_id == OrderStatus::OR_INPROGRESS || $model->order_status_id == OrderStatus::OR_DISPATCHED) {
-                            echo $form->field($info, 'total[]')->textInput(['class' => 'getamount form-control', 'id' => 'getamountid_' . $info->item_id, 'value' => $info->total])->label(false);
+                            echo $form->field($info, 'total[]')->textInput(['class' => 'getamount form-control', 'id' => 'getamountid_' . $info->item_id, 'readOnly' => true, 'value' => $info->total])->label(false);
                         } else {
                             echo $form->field($info, 'total[]')->textInput(['class' => 'getamount form-control', 'id' => 'getamountid_' . $info->item_id, 'readOnly' => true, 'value' => $info->total])->label(false);
                         }

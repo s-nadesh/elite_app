@@ -1,9 +1,10 @@
 <?php
 
-namespace app\modules\api\modules\v1\controllers;
+namespace app\modules\api\modules\v2\controllers;
 
 use common\models\Carts;
 use common\models\Products;
+use common\models\Users;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\auth\HttpBearerAuth;
@@ -33,7 +34,7 @@ class ProductController extends ActiveController {
             'class' => AccessControl::className(),
             'only' => ['productlist', 'addcart', 'editcart', 'deletecart', 'stockcheck', 'placeorder', 'cartlist'],
             'rules' => [
-                [
+                    [
                     'actions' => ['productlist', 'addcart', 'editcart', 'deletecart', 'stockcheck', 'placeorder', 'cartlist'],
                     'allow' => true,
                     'roles' => ['@'],
@@ -317,27 +318,30 @@ class ProductController extends ActiveController {
     public function actionProductlist() {
         $post = Yii::$app->request->getBodyParams();
         if (!empty($post)) {
-            if (!empty($post['category_id'])) {
-                $products = Products::find()
-                        ->select('product_id, product_name,price_per_unit,stock,product_logo')
-                        ->category($post['category_id'])
-                        ->status()
-                        ->active()
-                        ->all();
+            $user = Users::find()->where(['user_id' => $post['user_id']])->one();
+            $categorylists = $user->categories;
+            if (!empty($categorylists)) {
+                foreach ($categorylists as $categorylist) {
+                    $productlists = Products::find()->where(['category_id' => $categorylist->category_id])->all();
+                }
+
+                foreach ($productlists as $productlist) {
+                    $object[] = [
+                        'product_id' => $productlist->product_id,
+                        'product_name' => $productlist->product_name,
+                        'stock' => $productlist->stock,
+                        'price_per_unit' => $productlist->price_per_unit,
+                        'product_logo' => $productlist->product_logo,
+                    ];
+                }
             }
-            if (!empty($post['subcat_id'])) {
-                $products = Products::find()
-                        ->select('product_id, product_name,price_per_unit,stock,product_logo')
-                        ->subcategory($post['subcat_id'])
-                        ->status()
-                        ->active()
-                        ->all();
-            }
-            if (!empty($products)) {
+            if (!empty($productlists)) {
                 return [
-                    'success' => true,
+                    'success' => 'true',
                     'message' => 'Success',
-                    'data' => $products
+                    'selected_category_id' => $productlist->product_id,
+                    'selected_category' => $productlist->product_name,
+                    'data' => $object
                 ];
             } else {
                 return [

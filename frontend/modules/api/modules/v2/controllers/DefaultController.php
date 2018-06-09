@@ -1,6 +1,6 @@
 <?php
 
-namespace app\modules\api\modules\v1\controllers;
+namespace app\modules\api\modules\v2\controllers;
 
 use common\models\LoginForm;
 use common\models\Logins;

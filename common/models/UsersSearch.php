@@ -39,6 +39,7 @@ class UsersSearch extends Users {
      */
     public function search($params) {
         $query = Users::find();
+        $query->where("deleted_at =0");
 
         // add conditions that should always apply here
 

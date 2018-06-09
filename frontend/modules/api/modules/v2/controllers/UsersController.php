@@ -1,7 +1,11 @@
 <?php
-namespace app\modules\api\modules\v1\controllers;
+
+namespace app\modules\api\modules\v2\controllers;
+
 use common\models\Logins;
 use common\models\Users;
+use common\models\UsersCategories;
+use common\models\UserTypes;
 use common\models\UserTypesRights;
 use Yii;
 use yii\filters\AccessControl;
@@ -9,8 +13,11 @@ use yii\filters\auth\HttpBearerAuth;
 use yii\filters\ContentNegotiator;
 use yii\rest\ActiveController;
 use yii\web\Response;
+
 class UsersController extends ActiveController {
+
     public $modelClass = 'common\models\Users';
+
     public function behaviors() {
         $behaviors = parent::behaviors();
         //Authenticator - It is used to login the user by using header (Authorization Bearer Token).
@@ -29,7 +36,7 @@ class UsersController extends ActiveController {
             'class' => AccessControl::className(),
             'only' => ['listbyusertype', 'adduser', 'profile', 'editprofile', 'user_rolerights'],
             'rules' => [
-                [
+                    [
                     'actions' => ['listbyusertype', 'adduser', 'profile', 'editprofile', 'user_rolerights'],
                     'allow' => true,
                     'roles' => ['@'],
@@ -38,6 +45,7 @@ class UsersController extends ActiveController {
         ];
         return $behaviors;
     }
+
     public function actionAdduser() {
         $model = new Users();
         $post = Yii::$app->request->getBodyParams();
@@ -62,8 +70,10 @@ class UsersController extends ActiveController {
             ];
         }
     }
+
     public function actionUser_rolerights() {
         $post = Yii::$app->request->getBodyParams();
+
         if (!empty($post)) {
             $user = Users::find()
                     ->user($post['user_id'])
@@ -98,28 +108,37 @@ class UsersController extends ActiveController {
             ];
         }
     }
+
     public function actionListbyusertype() {
         $post = Yii::$app->request->getBodyParams();
         if (!empty($post)) {
-            $users = Users::find()
-//                    ->select('user_id, user_type_id, name, address, mobile_no, email')
-                    ->userType($post['type_id'])
-                    ->status()
-                    ->active()
+            $user_id = Yii::$app->user->identity->user_id;
+            $user = Users::find()->where(['user_id' => $user_id])->one();
+            $categorylists = $user->categories;
+            foreach ($categorylists as $categorylist) {
+                $category_ids[] = $categorylist->category_id;
+            }
+            if (empty($category_ids))
+                $category_ids[] = 0;
+            $dealer_categories = UsersCategories::find()
+                    ->joinWith('user')
+                    ->where(['category_id' => $category_ids])
+                    ->andWhere(['=', 'el_users.user_type_id', $post['type_id']])
                     ->all();
-            if (!empty($users)) {
-                foreach ($users as $user):
-                    $object[] = [
-                        'user_id' => $user->user_id,
-                        'user_type' => $user->userType->type_name,
-                        'name' => $user->name,
-                        'address' => ($user->address == '') ? 'not set' : $user->address,
-                        'mobile_no' => ($user->mobile_no == '') ? 'not set' : $user->mobile_no,
-                        'email' => ($user->email == '') ? 'not set' : $user->email,
-                    ];
-                endforeach;
+
+            foreach ($dealer_categories as $dealer_category) {
+                $object[] = [
+                    'user_id' => $dealer_category->user->user_id,
+                    'user_type_id' => $dealer_category->user->user_type_id,
+                    'name' => $dealer_category->user->name,
+                    'address' => $dealer_category->user->address,
+                    'mobile_no' => $dealer_category->user->mobile_no,
+                    'email' => $dealer_category->user->email,
+                ];
+            }
+            if (!empty($dealer_categories)) {
                 return [
-                    'success' => true,
+                    'success' => 'true',
                     'message' => 'Success',
                     'data' => $object
                 ];
@@ -136,6 +155,7 @@ class UsersController extends ActiveController {
             ];
         }
     }
+
     public function actionProfile() {
         $profile = Users::find()
 //                    ->select('user_id,user_type_id,name,address,mobile_no,email')
@@ -143,16 +163,17 @@ class UsersController extends ActiveController {
                 ->status()
                 ->active()
                 ->one();
-          $login = Logins::find()
-                    ->userid($profile->user_id)
-                    ->status()
-                    ->active()
-                    ->one();
-          
+
+        $login = Logins::find()
+                ->userid($profile->user_id)
+                ->status()
+                ->active()
+                ->one();
+
         $object[] = [
             'user_id' => $profile->user_id,
             'user_type' => $profile->userType->type_name,
-            'username' => (empty($login)||$login->username == '') ? 'not set' : $login->username  ,
+            'username' => (empty($login) || $login->username == '') ? 'not set' : $login->username,
             'fullname' => $profile->name,
             'address' => ($profile->address == '') ? 'not set' : $profile->address,
             'mobile_no' => ($profile->mobile_no == '') ? 'not set' : $profile->mobile_no,
@@ -171,34 +192,37 @@ class UsersController extends ActiveController {
             ];
         }
     }
+
     public function actionEditprofile() {
         $post = Yii::$app->request->getBodyParams();
         $model = Users::findOne($post['user_id']);
+
         if (!empty($post)) {
             $model->load(Yii::$app->request->getBodyParams(), '');
             $model->save();
+
             $profile = Users::find()
 //                    ->select('user_id,user_type_id,name,address,mobile_no')
                     ->user($post['user_id'])
                     ->status()
                     ->active()
                     ->one();
-            
-             $login = Logins::find()
+
+            $login = Logins::find()
                     ->userid($post['user_id'])
                     ->status()
                     ->active()
                     ->one();
-              if (!empty($login) && !empty($post['email'])) {
-             $login->email= $model->email;
-            $login->save(false);
-        }
+            if (!empty($login) && !empty($post['email'])) {
+                $login->email = $model->email;
+                $login->save(false);
+            }
             $object[] = [
                 'user_id' => $profile->user_id,
                 'user_type' => $profile->userType->type_name,
-                'username' => (empty($login)||$login->username == '') ? 'not set' : $login->username  ,
-                'fullname' => ($profile->name == '') ? 'not set' : $profile->name  ,
-                'address' =>($profile->address == '') ? 'not set' : $profile->address ,
+                'username' => (empty($login) || $login->username == '') ? 'not set' : $login->username,
+                'fullname' => ($profile->name == '') ? 'not set' : $profile->name,
+                'address' => ($profile->address == '') ? 'not set' : $profile->address,
                 'mobile_no' => ($profile->mobile_no == '') ? 'not set' : $profile->mobile_no,
                 'email' => ($profile->email == '') ? 'not set' : $profile->email,
             ];
@@ -221,4 +245,10 @@ class UsersController extends ActiveController {
             ];
         }
     }
+
+//    public function actionProductlist() {
+//        $post = Yii::$app->request->getBodyParams();
+//        $user = Users::find()->where(['user_id' => $post['user_id']])->one();
+//        $categorylists = $user->categories;
+//    }
 }

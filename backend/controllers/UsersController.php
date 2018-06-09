@@ -4,8 +4,8 @@ namespace backend\controllers;
 
 use common\models\Categories;
 use common\models\Logins;
+use common\models\Orders;
 use common\models\Users;
-use common\models\UsersCategories;
 use common\models\UsersSearch;
 use common\models\UserTypes;
 use Yii;
@@ -162,8 +162,11 @@ class UsersController extends Controller {
      * @return mixed
      */
     public function actionDelete($id) {
-        $this->findModel($id)->delete();
-
+        $user = $this->findModel($id);
+//        $orders = Orders::find()->joinWith('user')->one();
+//        $orders->delete();
+//        Logins::deleteAll(array('user_id' => $user->user_id));
+        $user->delete();
         return $this->redirect(['index']);
     }
 

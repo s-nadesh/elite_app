@@ -14,6 +14,12 @@ return [
         'api' => [
             'class' => 'app\modules\api\Module',
         ],
+        'v1' => [
+            'class' => 'app\modules\v1\Module',
+        ],
+        'v2' => [
+            'class' => 'app\modules\v2\Module',
+        ],
     ],
     'components' => [
         'request' => [
@@ -56,7 +62,13 @@ return [
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'api/v1/categories'],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'api/v1/subCategories'],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'api/v1/product'],
-                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/v1/order']
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/v1/order'],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/v2/users'],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/v2/categories'],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/v2/subCategories'],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/v2/product'],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/v2/order'],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/v2/usertypes'],
             ],
         ],
     ],

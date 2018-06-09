@@ -294,10 +294,11 @@ class ProductsController extends Controller {
                     ];
                 }
                 echo Json::encode(['output' => $result, 'selected' => '']);
-                return;
+                exit;
             }
         }
         echo Json::encode(['output' => '', 'selected' => '']);
+        exit;
     }
 
 }
