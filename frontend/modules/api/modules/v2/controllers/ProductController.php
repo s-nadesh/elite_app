@@ -21,7 +21,7 @@ class ProductController extends ActiveController {
         //Authenticator - It is used to login the user by using header (Authorization Bearer Token).
         $behaviors['authenticator'] = [
             'class' => HttpBearerAuth::className(),
-            'only' => ['productlist', 'addcart', 'editcart', 'deletecart', 'stockcheck', 'placeorder', 'cartlist'],
+            'only' => ['productlist', 'addcart', 'editcart', 'deletecart', 'stockcheck', 'placeorder', 'cartlist', 'emptycart'],
         ];
         $behaviors['contentNegotiator'] = [
             'class' => ContentNegotiator::className(),
@@ -32,10 +32,10 @@ class ProductController extends ActiveController {
         //Access - After Login, Role wise access 
         $behaviors['access'] = [
             'class' => AccessControl::className(),
-            'only' => ['productlist', 'addcart', 'editcart', 'deletecart', 'stockcheck', 'placeorder', 'cartlist'],
+            'only' => ['productlist', 'addcart', 'editcart', 'deletecart', 'stockcheck', 'placeorder', 'cartlist', 'emptycart'],
             'rules' => [
                     [
-                    'actions' => ['productlist', 'addcart', 'editcart', 'deletecart', 'stockcheck', 'placeorder', 'cartlist'],
+                    'actions' => ['productlist', 'addcart', 'editcart', 'deletecart', 'stockcheck', 'placeorder', 'cartlist', 'emptycart'],
                     'allow' => true,
                     'roles' => ['@'],
                 ],
@@ -410,6 +410,23 @@ class ProductController extends ActiveController {
             return [
                 'success' => false,
                 'message' => 'Invalid request'
+            ];
+        }
+    }
+
+    public function actionEmptycart() {
+        $user_id = Yii::$app->user->identity->user_id;
+        $checkuser = Carts::find()->where(['ordered_by' => $user_id])->all();
+        if (!empty($checkuser)) {
+            $cart = Carts::deleteAll(['ordered_by' => $user_id]);
+            return [
+                'success' => true,
+                'message' => 'Your Cart is Empty now',
+            ];
+        } else {
+            return [
+                'success' => false,
+                'message' => 'No records found',
             ];
         }
     }

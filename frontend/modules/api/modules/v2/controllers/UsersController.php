@@ -120,25 +120,55 @@ class UsersController extends ActiveController {
             }
             if (empty($category_ids))
                 $category_ids[] = 0;
-            $dealer_categories = UsersCategories::find()
-                    ->joinWith('user')
-                    ->where(['category_id' => $category_ids])
-                    ->andWhere(['=', 'el_users.user_type_id', $post['type_id']])
-                    ->all();
+            if ($post['type_id'] == UserTypes::DE_USER_TYPE || $post['type_id'] == UserTypes::SE_USER_TYPE) {
+                $dealer_categories = UsersCategories::find()
+                        ->joinWith('user')
+                        ->where(['category_id' => $category_ids])
+                        ->andWhere(['=', 'el_users.user_type_id', $post['type_id']])
+                        ->all();
 
-            foreach ($dealer_categories as $dealer_category) {
-                $object[] = [
-                    'user_id' => $dealer_category->user->user_id,
-                    'user_type_id' => $dealer_category->user->user_type_id,
-                    'name' => $dealer_category->user->name,
-                    'address' => $dealer_category->user->address,
-                    'mobile_no' => $dealer_category->user->mobile_no,
-                    'email' => $dealer_category->user->email,
-                ];
+                foreach ($dealer_categories as $dealer_category) {
+                    $object[] = [
+                        'user_id' => $dealer_category->user->user_id,
+                        'user_type_id' => $dealer_category->user->user_type_id,
+                        'name' => $dealer_category->user->name,
+                        'address' => $dealer_category->user->address,
+                        'mobile_no' => $dealer_category->user->mobile_no,
+                        'email' => $dealer_category->user->email,
+                    ];
+                }
+                if (!empty($dealer_categories)) {
+                    return [
+                        'success' => 'true',
+                        'message' => 'Success',
+                        'data' => $object
+                    ];
+                } else {
+                    return [
+                        'success' => true,
+                        'message' => 'No records found',
+                    ];
+                }
+            } elseif ($post['type_id'] == UserTypes::CU_USER_TYPE) {
+                $users = Users::find()
+                        ->userType($post['type_id'])
+                        ->status()
+                        ->active()
+                        ->all();
             }
-            if (!empty($dealer_categories)) {
+            if (!empty($users)) {
+                foreach ($users as $user):
+                    $object[] = [
+                        'user_id' => $user->user_id,
+                        'user_type' => $user->userType->type_name,
+                        'name' => $user->name,
+                        'address' => ($user->address == '') ? 'not set' : $user->address,
+                        'mobile_no' => ($user->mobile_no == '') ? 'not set' : $user->mobile_no,
+                        'email' => ($user->email == '') ? 'not set' : $user->email,
+                    ];
+                endforeach;
                 return [
-                    'success' => 'true',
+                    'success' => true,
                     'message' => 'Success',
                     'data' => $object
                 ];
