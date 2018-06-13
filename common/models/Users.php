@@ -41,18 +41,18 @@ class Users extends RActiveRecord {
     }
 
     public function behaviors() {
-        return [
-            LinkAllBehavior::className(),
-            'softDeleteBehavior' => [
-                'class' => SoftDeleteBehavior::className(),
-                'softDeleteAttributeValues' => [
-                    'deleted_at' => true
-                ],
-                'replaceRegularDelete' => true // mutate native `delete()` method
-            ],
-        ];
+        return ArrayHelper::merge(parent::behaviors(), [
+                    LinkAllBehavior::className(),
+                    'softDeleteBehavior' => [
+                        'class' => SoftDeleteBehavior::className(),
+                        'softDeleteAttributeValues' => [
+                            'deleted_at' => true
+                        ],
+                        'replaceRegularDelete' => true // mutate native `delete()` method
+                    ],
+        ]);
     }
-       
+
     /**
      * @inheritdoc
      */
@@ -156,7 +156,6 @@ class Users extends RActiveRecord {
     public function getCategories() {
         return $this->hasMany(Categories::className(), ['category_id' => 'category_id'])
                         ->viaTable('el_users_categories', ['user_id' => 'user_id']);
-        
-    }     
+    }
 
 }
