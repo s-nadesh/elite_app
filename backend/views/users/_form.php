@@ -32,10 +32,9 @@ use yii\widgets\ActiveForm;
     );
     ?>
 
-
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true])->label('Name<span class="required-label"></span>'); ?>
-
     <?= $form->field($model, 'user_type_id')->dropDownList($items, ['prompt' => '--Select Type--','disabled' => !$model->isNewRecord])->label('Type<span class="required-label"></span>'); ?>
+
+    <?= $form->field($model, 'name')->textInput(['maxlength' => true])->label('Name<span class="required-label"></span>'); ?>    
 
     <?php echo $form->field($model, 'show_in_app')->hiddenInput(['value' => ''])->label(false); ?>
     <div class="categorylist">
