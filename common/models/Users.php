@@ -64,7 +64,9 @@ class Users extends RActiveRecord {
                 [['name'], 'string', 'max' => 255],
                 [['mobile_no'], 'string', 'max' => 20],
 //                [['email'], 'string', 'max' => 64],
-            [['name'], 'unique'],
+            [['name'], 'unique', 'when' => function ($model) {
+                    return ($model->user_type_id !== '2' && $model->user_type_id !== '3');
+                }],
                 [['email'], 'required', 'when' => function ($model) {
                     return ($model->show_in_app == '1');
                 }, 'whenClient' => "function (attribute, value) {
